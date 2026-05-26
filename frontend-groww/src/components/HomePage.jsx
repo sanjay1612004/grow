@@ -5,6 +5,9 @@ import IndiaComponent from './IndiaComponent'
 // import InvestmentSection from './InvestmentSection'
 import InvestmentLayout from './InvestmentLayout'
 import MutualFundGrid from './MutualFundGrid'
+import AnimatedCards from './AnimatedCards'
+import HeroFrames from './HeroFrames'
+import HeroText from './HeroText'
 
 const HomePage = () => {
   return (
@@ -44,6 +47,7 @@ const HomePage = () => {
           font-semibold
           hover:bg-[#009f78]
           transition
+          cursor-pointer
           "
         >
           Get started
@@ -53,11 +57,11 @@ const HomePage = () => {
           src="https://resources.groww.in/web-assets/story_assets/landing-page/home_page/cityScape.svg"
           alt="city"
           className="
-          -mt-45
+          -mt-35
           w-full
           max-w-375
           object-contain
-          
+          pointer-events-none
           "
         />
         
@@ -87,7 +91,10 @@ const HomePage = () => {
 
       </div>
       <MutualFundGrid/>
+      <HeroFrames/>
+      <AnimatedCards/>
 
+      <HeroText/>
 
     </div>
   )

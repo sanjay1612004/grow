@@ -2,7 +2,7 @@ import { Search, ChevronDown } from "lucide-react";
 
 const Navbar = () => {
   return (
-    <nav className="w-full h-22  bg-white px-8 flex items-center justify-between">
+    <nav className="w-full h-22   px-8 flex items-center justify-between sticky top-0 z-1000 bg-white/70 backdrop-blur-md">
 
       {/* LEFT */}
       <div className="flex items-center gap-10">
