@@ -1,0 +1,134 @@
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+const Googleauth = () => {
+  const navigate = useNavigate();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const idToken = credentialResponse?.credential;
+
+      // token missing
+      if (!idToken) {
+        navigate("/login");
+        return;
+      }
+
+      // optional
+      const user = jwtDecode(idToken);
+
+      console.log("Google User:", user);
+
+      const res = await axios.post(
+        "https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/google",
+        {
+          idToken,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log("backend response", res);
+
+      if (
+        res.status === 200 &&
+        res.data?.statusCode === 200
+      ) {
+        const data = res.data?.data;
+
+        console.log("nextStep =", data?.nextStep);
+
+        // Existing user → Login
+        if (
+          data?.nextStep === "LOGIN_REQUIRED" ||
+          data?.redirectTo === "LOGIN_PAGE"
+        ) {
+          navigate("/login", {
+            state: {
+              userId: data?.userId,
+              email: data?.email,
+            },
+          });
+
+          return;
+        }
+
+        // PIN verification
+        if (data?.nextStep === "PIN_REQUIRED") {
+          navigate("/pin-verify", {
+            state: {
+              userId: data?.userId,
+            },
+          });
+
+          return;
+        }
+
+
+        if (data?.nextStep === "VERIFY_LOGIN_PIN") {
+          navigate("/pin-verify", {
+            state: {
+              userId: data?.userId,
+            },
+          });
+
+          return;
+        }
+
+        // Mobile verification
+        if ( data?.nextStep === "MOBILE_VERIFICATION_REQUIRED") {
+          navigate("/mobileVerification", {
+            state: {
+              userId: data?.userId,
+            },
+          });
+
+          return;
+        }
+
+        if ( data?.nextStep === "PIN_OTP_PENDING") {
+          navigate("/pin-verify", {
+            state: {
+              userId: data?.userId,
+            },
+          });
+
+          return;
+        }
+      }
+    } catch (err) {
+      console.log(
+        "google err:",
+        err.response?.data?.message ||
+          err.message
+      );
+
+      navigate("/login");
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.log("Google Login Failed");
+
+    navigate("/login");
+  };
+
+  return (
+    <div className="w-full flex justify-center">
+      <GoogleLogin
+        onSuccess={handleGoogleSuccess}
+        onError={handleGoogleError}
+        theme="outline"
+        size="large"
+        shape="pill"
+        text="signin_with"
+      />
+    </div>
+  );
+};
+
+export default Googleauth;

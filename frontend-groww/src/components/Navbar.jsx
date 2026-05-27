@@ -1,6 +1,14 @@
 import { Search, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 
 const Navbar = () => {
+    const navigate = useNavigate();
+
+  function handleclick() {
+    navigate("/signup");
+  }
+
   return (
     <nav className="w-full h-22   px-8 flex items-center justify-between sticky top-0 z-1000 bg-white/70 backdrop-blur-md">
 
@@ -68,6 +76,7 @@ const Navbar = () => {
           hover:bg-[#00be8e]
           transition
           "
+          onClick={handleclick}
         >
           Login/Sign up
         </button>

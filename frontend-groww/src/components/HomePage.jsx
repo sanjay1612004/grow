@@ -8,6 +8,9 @@ import MutualFundGrid from './MutualFundGrid'
 import AnimatedCards from './AnimatedCards'
 import HeroFrames from './HeroFrames'
 import HeroText from './HeroText'
+import GrowwFamily from './GrowwFamily'
+import FinanceLanguageCarousel from './FinanceLanguageCarousel'
+import Footer from './Footer'
 
 const HomePage = () => {
   return (
@@ -93,8 +96,10 @@ const HomePage = () => {
       <MutualFundGrid/>
       <HeroFrames/>
       <AnimatedCards/>
-
       <HeroText/>
+      <GrowwFamily/>
+      <FinanceLanguageCarousel/>
+      <Footer/>
 
     </div>
   )
