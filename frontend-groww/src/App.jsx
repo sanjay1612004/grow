@@ -4,7 +4,7 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 import {Routes, Route} from 'react-router-dom';
-import HomePage from './components/HomePage'
+import HomePage from './components/landingpage/HomePage'
 import Signup from './components/authentication/Signup'
 import VerifyMobile from './components/authentication/VerifyMobile'
 import OtpVerification from './components/authentication/OtpVerification'
