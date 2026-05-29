@@ -15,6 +15,7 @@ import Login from './components/authentication/Login'
 import VerifyPinOtp from './components/authentication/VerifyPinOtp'
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import Explore from "./components/pages/Explore"
+import Common from './components/pages/Common'
 
 export const UserIdProvider=createContext()
 function App() {
@@ -35,6 +36,11 @@ function App() {
         <Route path="login" element={<Login/>}/>
         <Route path="/pin-verify" element={<PinVerification/>}/>
         <Route path="/explore" element={<Explore/>}/>
+        <Route path="/user/explore" element={<Common/>}/>
+        <Route path="/user/holding" element={<Common />} />
+        <Route path="/user/positions" element={<Common />} />
+        <Route path="/user/orders" element={<Common />} />
+
       </Routes>
       </UserIdProvider.Provider>
       </GoogleOAuthProvider>
