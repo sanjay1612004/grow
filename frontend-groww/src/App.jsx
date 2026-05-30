@@ -16,6 +16,11 @@ import VerifyPinOtp from './components/authentication/VerifyPinOtp'
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import Explore from "./components/pages/Explore"
 import Common from './components/pages/Common'
+import GrowwMostBought from './components/pages/GrowwMostBought'
+import GrowwMostTraded from './components/pages/GrowwMostTraded'
+import GrowwTopMover from './components/pages/GrowwTopMover'
+import GrowwSectorTrending from './components/pages/GrowwSectorTrending'
+import GrowwETfs from './components/pages/GrowwETfs'
 
 export const UserIdProvider=createContext()
 function App() {
@@ -35,11 +40,17 @@ function App() {
         <Route path="/password-set" element={<SetPassword/>}/>
         <Route path="login" element={<Login/>}/>
         <Route path="/pin-verify" element={<PinVerification/>}/>
-        <Route path="/explore" element={<Explore/>}/>
         <Route path="/user/explore" element={<Common/>}/>
-        <Route path="/user/holding" element={<Common />} />
+        <Route path="/user/holdings" element={<Common />} />
         <Route path="/user/positions" element={<Common />} />
         <Route path="/user/orders" element={<Common />} />
+        <Route path="/user/watchlist" element={<Common />} />
+        <Route path="/stocks/most-bought-stocks-on-groww" element={<GrowwMostBought/>}/>
+        <Route path='/stocks/mtf/most-traded' element={<GrowwMostTraded/>}/>
+        <Route path='/topmovers' element={<GrowwTopMover/>}/>
+        <Route path="/stocks/sectors-trending" element={<GrowwSectorTrending/>}/>
+        <Route path='/etf-nfo' element={<GrowwETfs/>}/>
+
 
       </Routes>
       </UserIdProvider.Provider>

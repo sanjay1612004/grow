@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Footer from "../landingpage/Footer";
 
 // ── tiny SVG spark line ──────────────────────────────────────────────────────
 function Spark({ up = true }) {
@@ -605,12 +604,12 @@ useEffect(() => {
                 {mtfStocks.map(s => <StockCard key={s.name} {...s} />)}
               </div>
 
-              <button className="mt-4 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
+              <a className="mt-4 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/stocks/most-bought-stocks-on-groww">
                 See more
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
-              </button>
+              </a>
             </section>
 
             {/* Top movers */}
@@ -657,12 +656,12 @@ useEffect(() => {
                 )}
               </div>
 
-              <button className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
+              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/topmovers">
                 See more
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
-              </button>
+              </a>
             </section>
 
             {/* Most traded stocks in MTF */}
@@ -675,12 +674,12 @@ useEffect(() => {
                   </div>
                 ))}
               </div>
-              <button className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
+              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/stocks/mtf/most-traded">
                 See more
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
-              </button>
+              </a>
             </section>
 
             {/* Top intraday stocks */}
@@ -705,9 +704,9 @@ useEffect(() => {
                 </div>
                 {Sectorstrendingtoday.map(s => <SectorRow key={s.name} {...s} />)}
               </div>
-              <button className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
+              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/stocks/sectors-trending">
                 See all sectors <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-              </button>
+              </a>
             </section>
 
             {/* Most bought ETFs */}
@@ -716,9 +715,9 @@ useEffect(() => {
               <div className="grid grid-cols-4 gap-3">
                 {MostboughtETFs.map(s => <StockCard key={s.name} {...s} />)}
               </div>
-              <button className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
+              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" >
                 See all ETFs <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-              </button>
+              </a>
             </section>
 
             {/* ETFs by Groww */}
@@ -727,9 +726,9 @@ useEffect(() => {
               <div className="grid grid-cols-4 gap-3">
                 {ETFsbyGroww.map(s => <StockCard key={s.name + "-groww"} {...s} />)}
               </div>
-              <button className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
+              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/etf-nfo">
                 See all ETFs <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-              </button>
+              </a>
             </section>
 
             {/* Stocks in news today */}
@@ -738,12 +737,12 @@ useEffect(() => {
               <div className="grid grid-cols-2 gap-4">
                 {Stocksinnewstoday.map(s => <NewsCard key={s.name} {...s} />)}
               </div>
-              <button className="mt-4 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
+              <a className="mt-4 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
                 See more news
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
-              </button>
+              </a>
             </section>
 
           </div>
@@ -803,7 +802,6 @@ useEffect(() => {
         </div>
       </main>
 
-      <Footer/>
 
     </div>
   );

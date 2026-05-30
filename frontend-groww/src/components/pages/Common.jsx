@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Holdings from './Holdings';
 import Orders from './Orders';
 import Positions from './Positions';
+import Watchlist from './Watchlist';
+import Footer from '../landingpage/Footer';
 
 const Common = () => {
       const [activeTab, setActiveTab] = useState("Explore");
@@ -65,7 +67,7 @@ useEffect(() => {
   navigate(
     {
       Explore: "/user/explore",
-      Holdings: "/user/holding",
+      Holdings: "/user/holdings",
       Positions: "/user/positions",
       Orders: "/user/orders",
       Watchlist: "/user/watchlist",
@@ -115,9 +117,9 @@ useEffect(() => {
   {activeTab === "Holdings" && <Holdings/>}
   {activeTab === "Positions" && <Positions/>}
   {activeTab === "Orders" && <Orders/>}
-  {/* {activeTab === "Watchlist" && <WatchlistPage />} */}
+  {activeTab === "Watchlist" && <Watchlist/>}
 </main>
-
+    <Footer/>
     </div>
   )
 }

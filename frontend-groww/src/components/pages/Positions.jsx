@@ -129,12 +129,12 @@ const Positions = () => {
               </h3>
 
               <div className="mt-auto">
-                <p className="text-[20px] font-semibold text-[#44475b]">
+                <p className="text-[17px] font-semibold text-[#44475b]">
                   {stock.price}
                 </p>
 
                 <p
-                  className={`mt-2 text-[16px] font-semibold ${
+                  className={`mt-2 text-[13px] font-semibold ${
                     stock.up
                       ? "text-[#00b386]"
                       : "text-[#eb5757]"
