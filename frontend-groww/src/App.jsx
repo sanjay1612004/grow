@@ -21,6 +21,8 @@ import GrowwMostTraded from './components/pages/GrowwMostTraded'
 import GrowwTopMover from './components/pages/GrowwTopMover'
 import GrowwSectorTrending from './components/pages/GrowwSectorTrending'
 import GrowwETfs from './components/pages/GrowwETfs'
+import GrowwInteradaystock from './components/pages/GrowwInteradaystock'
+import GrowwStockScreener from './components/pages/GrowwStockScreener'
 
 export const UserIdProvider=createContext()
 function App() {
@@ -50,7 +52,8 @@ function App() {
         <Route path='/topmovers' element={<GrowwTopMover/>}/>
         <Route path="/stocks/sectors-trending" element={<GrowwSectorTrending/>}/>
         <Route path='/etf-nfo' element={<GrowwETfs/>}/>
-
+        <Route path="/stocks/intraday" element={<GrowwInteradaystock/>}/>
+        <Route path='/etfs' element={<GrowwStockScreener/>}/>
 
       </Routes>
       </UserIdProvider.Provider>

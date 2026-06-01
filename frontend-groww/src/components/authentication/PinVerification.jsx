@@ -38,7 +38,7 @@ const PinVerification = () => {
       console.log(res.data);
 
       if (res.data.success) {
-        navigate("/", {
+        navigate("/user/explore", {
           state: {
             userId,
           },

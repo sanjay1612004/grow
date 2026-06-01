@@ -688,9 +688,9 @@ useEffect(() => {
               <div className="grid grid-cols-4 gap-3">
                 {Topintradaystocks.map(s => <StockCard key={s.name} {...s} />)}
               </div>
-              <button className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
+              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/stocks/intraday">
                 Intraday screener <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-              </button>
+              </a>
             </section>
 
             {/* Sectors trending today */}
@@ -704,7 +704,7 @@ useEffect(() => {
                 </div>
                 {Sectorstrendingtoday.map(s => <SectorRow key={s.name} {...s} />)}
               </div>
-              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/stocks/sectors-trending">
+              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/stocks/sectors-trending" >
                 See all sectors <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </a>
             </section>
@@ -715,7 +715,7 @@ useEffect(() => {
               <div className="grid grid-cols-4 gap-3">
                 {MostboughtETFs.map(s => <StockCard key={s.name} {...s} />)}
               </div>
-              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" >
+              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/etfs">
                 See all ETFs <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </a>
             </section>
