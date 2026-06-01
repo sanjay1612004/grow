@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import Footer from "../landingpage/Footer";
+import { UserPicture } from "../../App";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -104,6 +105,8 @@ function SectorRow({ sector, isLast }) {
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 
 function Navbar() {
+    const {userPic,setuserPic}=useContext(UserPicture)
+
   return (
     <div className="border-b border-gray-100 bg-white">
       <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6">
@@ -157,7 +160,8 @@ function Navbar() {
               />
             </svg>
           </button>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 cursor-pointer" />
+            {userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'/>}
+            {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}             
         </div>
       </div>
     </div>
@@ -170,6 +174,7 @@ export default function GrowwSectorTrending() {
   const [sectors, setSectors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error,   setError  ] = useState(null);
+  
 
   useEffect(() => {
     let cancelled = false;

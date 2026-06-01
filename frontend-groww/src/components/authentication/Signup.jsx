@@ -80,6 +80,9 @@ export default function Signup() {
       }
     }catch(err){
       console.log(err.message)
+        console.log("FULL ERROR:", err);
+  console.log("RESPONSE:", err.response);
+  console.log("REQUEST:", err.request);
     }
     
   }

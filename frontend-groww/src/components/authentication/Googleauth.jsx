@@ -1,11 +1,13 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserPicture } from "../../App";
 
 const Googleauth = () => {
   const navigate = useNavigate();
+  const {userPic,setuserPic}=useContext(UserPicture)
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -21,6 +23,7 @@ const Googleauth = () => {
       const user = jwtDecode(idToken);
 
       console.log("Google User:", user);
+      setuserPic(user?.picture)
 
       const res = await axios.post(
         "https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/google",

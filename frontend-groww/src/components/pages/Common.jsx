@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useContext } from 'react'
 import Explore from './Explore';
 import { useNavigate } from "react-router-dom";
 import Holdings from './Holdings';
@@ -6,9 +6,12 @@ import Orders from './Orders';
 import Positions from './Positions';
 import Watchlist from './Watchlist';
 import Footer from '../landingpage/Footer';
+import { UserPicture } from '../../App';
 
 const Common = () => {
       const [activeTab, setActiveTab] = useState("Explore");
+      const {userPic,setuserPic}=useContext(UserPicture)
+      
       const tabs = ["Explore", "Holdings", "Positions", "Orders", "Watchlist"];
       const indices = [
     { name: "NIFTY", val: "23,910.80", chg: "-2.90", pct: "0.01%", up: false },
@@ -51,9 +54,11 @@ useEffect(() => {
             <button className="text-gray-500 hover:text-gray-700">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
             </button>
-            <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden cursor-pointer">
+            {/* <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden cursor-pointer">
               <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400"/>
-            </div>
+            </div> */}
+            {userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'/>}
+            {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}
           </div>
         </div>
 

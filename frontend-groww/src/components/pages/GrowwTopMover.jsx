@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import Footer from '../landingpage/Footer';
+import { UserPicture } from '../../App';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -259,6 +260,7 @@ export default function GrowwTopMover() {
   const [stocks, setStocks]   = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
+ const {userPic,setuserPic}=useContext(UserPicture)
 
   const currentFilter = FILTERS.find(f => f.label === activeFilter) || FILTERS[0];
 
@@ -328,7 +330,8 @@ export default function GrowwTopMover() {
                   stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               </svg>
             </button>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 cursor-pointer" />
+                      {userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'/>}
+            {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}             
           </div>
         </div>
       </div>

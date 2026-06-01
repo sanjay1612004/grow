@@ -62,9 +62,10 @@ const Login = () => {
       res.data.statusCode === 200 &&
       res.data.data.nextStep === "PIN_REQUIRED"
     ){
+      const loginUserId = res.data.data.userId || userId;
               navigate("/pin-verify", {
             state: {
-              userId,
+              userId: loginUserId,
             },
           })
         }else{
@@ -79,6 +80,9 @@ const Login = () => {
     }catch(err){
       setError(err.message)
       console.log(err.message)
+        console.log("FULL ERROR:", err);
+  console.log("RESPONSE:", err.response);
+  console.log("REQUEST:", err.request);
     }
     
   }

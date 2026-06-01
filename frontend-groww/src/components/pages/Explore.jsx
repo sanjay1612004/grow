@@ -737,7 +737,7 @@ useEffect(() => {
               <div className="grid grid-cols-2 gap-4">
                 {Stocksinnewstoday.map(s => <NewsCard key={s.name} {...s} />)}
               </div>
-              <a className="mt-4 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1">
+              <a className="mt-4 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/market-news/stocks">
                 See more news
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>

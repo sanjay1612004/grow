@@ -23,14 +23,18 @@ import GrowwSectorTrending from './components/pages/GrowwSectorTrending'
 import GrowwETfs from './components/pages/GrowwETfs'
 import GrowwInteradaystock from './components/pages/GrowwInteradaystock'
 import GrowwStockScreener from './components/pages/GrowwStockScreener'
+import GrowwStockNews from './components/pages/GrowwStockNews'
 
 export const UserIdProvider=createContext()
+export const UserPicture=createContext()
 function App() {
   const [userId,setuserId]=useState('')
+  const [userPic,setuserPic]=useState('')
   const clientid=import.meta.env.VITE_GOOGLE_CLIENT_ID
   return (
     <>
     <GoogleOAuthProvider clientId={clientid}>
+      <UserPicture.Provider value={{userPic,setuserPic}}>
       <UserIdProvider.Provider value={{userId,setuserId}}>
       <Routes>
         <Route path="/" element={<HomePage/>} />
@@ -54,9 +58,10 @@ function App() {
         <Route path='/etf-nfo' element={<GrowwETfs/>}/>
         <Route path="/stocks/intraday" element={<GrowwInteradaystock/>}/>
         <Route path='/etfs' element={<GrowwStockScreener/>}/>
-
+        <Route path="/market-news/stocks" element={<GrowwStockNews/>}/>
       </Routes>
       </UserIdProvider.Provider>
+      </UserPicture.Provider>
       </GoogleOAuthProvider>
     </>
   )

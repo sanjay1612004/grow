@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { UserPicture } from "../../App";
 
 // ── Spark-line mini chart ────────────────────────────────────────────────────
 function SparkLine({ points, color }) {
@@ -186,6 +187,7 @@ export default function GrowwInteradaystock() {
   const [clearTooltip, setClearTooltip] = useState(false);
   const [spinning, setSpinning] = useState(false);
   const [activeFilters, setActiveFilters] = useState(["Price change >1%", "52W Performance", "RSI", "MACD"]);
+  const {userPic,setuserPic}=useContext(UserPicture)
 
   function handleSort(col) {
     if (sortCol === col) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -260,8 +262,8 @@ export default function GrowwInteradaystock() {
             </svg>
           </button>
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden cursor-pointer">
-            <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400" />
-          </div>
+{userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'/>}
+            {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}             </div>
         </div>
       </div>
 
