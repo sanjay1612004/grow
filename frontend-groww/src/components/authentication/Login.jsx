@@ -32,6 +32,14 @@ const TopographicSVG = () => (
   </svg>
 );
 
+const getResponseUserId = (data) =>
+  data?.userId ||
+  data?._id ||
+  data?.id ||
+  data?.user?._id ||
+  data?.user?.id ||
+  data?.user?.userId;
+
 const Login = () => {
   const [current, setCurrent] = useState(0);
   const [anim, setAnim] = useState(false);
@@ -62,7 +70,11 @@ const Login = () => {
       res.data.statusCode === 200 &&
       res.data.data.nextStep === "PIN_REQUIRED"
     ){
-      const loginUserId = res.data.data.userId || userId;
+      const loginUserId = getResponseUserId(res.data.data) || userId;
+      if (!loginUserId) {
+        throw new Error("UserId missing from login response");
+      }
+      localStorage.setItem("userId", loginUserId);
               navigate("/pin-verify", {
             state: {
               userId: loginUserId,

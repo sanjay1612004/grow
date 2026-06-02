@@ -5,6 +5,14 @@ import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserPicture } from "../../App";
 
+const getResponseUserId = (data) =>
+  data?.userId ||
+  data?._id ||
+  data?.id ||
+  data?.user?._id ||
+  data?.user?.id ||
+  data?.user?.userId;
+
 const Googleauth = () => {
   const navigate = useNavigate();
   const {userPic,setuserPic}=useContext(UserPicture)
@@ -42,6 +50,11 @@ const Googleauth = () => {
         res.data?.statusCode === 200
       ) {
         const data = res.data?.data;
+        const responseUserId = getResponseUserId(data);
+
+        if (responseUserId) {
+          localStorage.setItem("userId", responseUserId);
+        }
 
         console.log("nextStep =", data?.nextStep);
 
@@ -52,7 +65,7 @@ const Googleauth = () => {
         ) {
           navigate("/login", {
             state: {
-              userId: data?.userId,
+              userId: responseUserId,
               email: data?.email,
             },
           });
@@ -64,7 +77,7 @@ const Googleauth = () => {
         if (data?.nextStep === "PIN_REQUIRED") {
           navigate("/pin-verify", {
             state: {
-              userId: data?.userId,
+              userId: responseUserId,
             },
           });
 
@@ -75,7 +88,7 @@ const Googleauth = () => {
         if (data?.nextStep === "VERIFY_LOGIN_PIN") {
           navigate("/pin-verify", {
             state: {
-              userId: data?.userId,
+              userId: responseUserId,
             },
           });
 
@@ -86,7 +99,7 @@ const Googleauth = () => {
         if ( data?.nextStep === "MOBILE_VERIFICATION_REQUIRED") {
           navigate("/mobileVerification", {
             state: {
-              userId: data?.userId,
+              userId: responseUserId,
             },
           });
 
@@ -96,7 +109,7 @@ const Googleauth = () => {
         if ( data?.nextStep === "PIN_OTP_PENDING") {
           navigate("/pin-verify", {
             state: {
-              userId: data?.userId,
+              userId: responseUserId,
             },
           });
 

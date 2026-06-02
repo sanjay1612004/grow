@@ -24,6 +24,7 @@ import GrowwETfs from './components/pages/GrowwETfs'
 import GrowwInteradaystock from './components/pages/GrowwInteradaystock'
 import GrowwStockScreener from './components/pages/GrowwStockScreener'
 import GrowwStockNews from './components/pages/GrowwStockNews'
+import KycFlowContainer from './components/KYC/KycFlow'
 
 export const UserIdProvider=createContext()
 export const UserPicture=createContext()
@@ -59,6 +60,7 @@ function App() {
         <Route path="/stocks/intraday" element={<GrowwInteradaystock/>}/>
         <Route path='/etfs' element={<GrowwStockScreener/>}/>
         <Route path="/market-news/stocks" element={<GrowwStockNews/>}/>
+        <Route path='/kyc' element={<KycFlowContainer/>}/>
       </Routes>
       </UserIdProvider.Provider>
       </UserPicture.Provider>

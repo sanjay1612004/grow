@@ -10,7 +10,7 @@ const VerifyMobile = () => {
  const [phoneNumber,setphoneNumber]=useState('')
  const navigate=useNavigate()
  const location = useLocation();
-const userId = location.state?.userId;
+const userId = location.state?.userId || localStorage.getItem("userId");
 
  function validatePhone(phone) {
   const regex = /^[6-9]\d{9}$/;
@@ -24,6 +24,7 @@ const userId = location.state?.userId;
     if (!userId) {
       throw new Error("UserId missing");
     }
+    localStorage.setItem("userId", userId);
 
     if (!validatePhone(phoneNumber)) {
       throw new Error("Enter valid phoneNo");

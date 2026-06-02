@@ -9,13 +9,15 @@ const OtpVerification = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userId = location.state?.userId;
+  const userId = location.state?.userId || localStorage.getItem("userId");
 
   useEffect(() => {
     if (!userId) {
       navigate("/signup");
+    } else {
+      localStorage.setItem("userId", userId);
     }
-  }, []);
+  }, [navigate, userId]);
 
   useEffect(() => {
     if (seconds <= 0) return;

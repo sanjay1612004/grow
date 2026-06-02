@@ -18,7 +18,7 @@ const SetPassword = () => {
     useLocation();
 
   const userId =
-    location.state?.userId;
+    location.state?.userId || localStorage.getItem("userId");
 
   async function setpassword() {
     try {
@@ -30,6 +30,7 @@ const SetPassword = () => {
           "UserId missing"
         );
       }
+      localStorage.setItem("userId", userId);
 
       if (
         !password ||

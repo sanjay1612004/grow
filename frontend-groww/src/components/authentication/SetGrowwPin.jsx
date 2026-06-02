@@ -7,7 +7,7 @@ const SetGrowwPin = () => {
   const [pin, setPin] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const userId = location.state?.userId;
+  const userId = location.state?.userId || localStorage.getItem("userId");
   const [error, setError] = useState("");
   
 
@@ -19,6 +19,7 @@ const SetGrowwPin = () => {
     if (!userId) {
       throw new Error("UserId missing");
     }
+    localStorage.setItem("userId", userId);
 
     if (pin.length !== 4) {
       throw new Error("PIN must be 4 digits");

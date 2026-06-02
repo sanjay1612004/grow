@@ -10,7 +10,7 @@ const PinVerification = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userId = location.state?.userId;
+  const userId = location.state?.userId || localStorage.getItem("userId");
 
   async function pinverify(pinValue = pin) {
     try {
@@ -19,6 +19,7 @@ const PinVerification = () => {
       if (!userId) {
         throw new Error("UserId missing");
       }
+      localStorage.setItem("userId", userId);
 
       if (pinValue.length !== 4) {
         throw new Error("PIN must be exactly 4 digits");
