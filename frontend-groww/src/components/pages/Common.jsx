@@ -28,7 +28,7 @@ useEffect(() => {
 
   return (
     <div>
-    <header className="bg-white border-b border-gray-300 sticky top-0 z-40">
+    <header className="bg-white/60 backdrop-blur-md border-b border-gray-300 sticky top-0 z-40">
         <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6">
           <img src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp" alt="" height={30} width={30}/>
           <nav className="flex items-center gap-6">
@@ -63,7 +63,7 @@ useEffect(() => {
         </div>
 
         {/* ── Second nav row ──────────────────────────────────────────────── */}
-        <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between border-t border-gray-50">
+        <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between border-t border-gray-200 border-b  ">
           <nav className="flex">
             {tabs.map(tab => (
               <button
@@ -97,10 +97,7 @@ useEffect(() => {
             <span className="text-sm text-gray-600 font-medium">915</span>
           </div>
         </div>
-      </header>
-
-      {/* ── Index ticker ─────────────────────────────────────────────────── */}
-      <div className="bg-white border-b border-gray-200 overflow-hidden">
+         <div className="bg-white/60 backdrop-blur-md  border-b border-gray-50 ">
         <div className="flex items-center gap-8 px-6 py-2.5 overflow-x-auto scrollbar-hide">
           {indices.map(idx => (
             <div key={idx.name} className="flex items-center gap-2 flex-shrink-0 cursor-pointer">
@@ -111,11 +108,15 @@ useEffect(() => {
               </span>
             </div>
           ))}
-          <button className="flex-shrink-0 text-gray-400 hover:text-gray-600">
+          <a className="flex-shrink-0 text-gray-400 hover:text-gray-600" href='/indices'>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.8"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" stroke="currentColor" strokeWidth="1.5"/></svg>
-          </button>
+          </a>
         </div>
       </div>
+      </header>
+
+      {/* ── Index ticker ────────────────────────────────────────────────── */}
+     
 
       <main className="max-w-[1400px] mx-auto px-6 py-6">
   {activeTab === "Explore" && <Explore/>}

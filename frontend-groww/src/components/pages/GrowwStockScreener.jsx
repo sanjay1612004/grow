@@ -211,7 +211,7 @@ export default function GrowwStockScreener() {
     <div className="font-[Nunito_Sans,Segoe_UI,sans-serif]">
 
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
-      <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6">
+      <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6 sticky top-0 z-10 bg-white/60 backdrop-blur-md">
         <img
           src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp"
           alt="Groww"
@@ -271,7 +271,7 @@ export default function GrowwStockScreener() {
 
         {/* Title */}
         <div className="flex items-center gap-2.5 mb-5">
-          <h1 className="text-[24px] font-bold text-gray-700 m-0">Intraday Stocks Screener</h1>
+          <h1 className="text-[24px] font-bold text-gray-700 m-0">ETF Stocks Screener</h1>
           <button
             onClick={handleRefresh}
             title="Refresh"

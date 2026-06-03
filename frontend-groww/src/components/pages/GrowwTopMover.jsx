@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Footer from '../landingpage/Footer';
 import { UserPicture } from '../../App';
 
@@ -195,12 +195,22 @@ function InvestCard() {
 
 // ─── Index Dropdown ───────────────────────────────────────────────────────────
 
-const INDEX_OPTIONS = ['NIFTY 50', 'NIFTY 100', 'NIFTY 200', 'NIFTY 500'];
+const INDEX_OPTIONS = ['NIFTY 100', 'NIFTY 500', 'NIFTY Midcap 100', 'NIFTY Smallcap 100',"Nifty Total Market"];
 const INDEX_API_MAP = {
-  'NIFTY 50':  'GIDXNIFTY50',
   'NIFTY 100': 'GIDXNIFTY100',
-  'NIFTY 200': 'GIDXNIFTY200',
   'NIFTY 500': 'GIDXNIFTY500',
+  'NIFTY Midcap 100':'GIDXNIFMDCP100',
+  'NIFTY Smallcap 100':'GIDXNIFSMCP100',
+  'Nifty Total Market':'GIDXNIFTYTOTALMCAP'
+};
+
+const ROUTE_MAP = {
+  "Top gainers": "top-gainers",
+  "Top losers": "top-losers",
+  "Volume shockers": "volume-shockers",
+  "Top by volume": "top-by-volume",
+  "52W high": "52w-high",
+  "52W low": "52w-low",
 };
 
 function IndexDropdown({ value, onChange }) {
@@ -247,9 +257,9 @@ const FILTERS = [
   { label: 'Top gainers',      moverType: 'TOP_GAINERS',       title: 'Top gainers today',             rightCol: 'Volume' },
   { label: 'Top losers',       moverType: 'TOP_LOSERS',        title: 'Top losers today',              rightCol: 'Volume' },
   { label: 'Volume shockers',  moverType: 'VOLUME_SHOCKERS',   title: 'Volume shockers today',         rightCol: 'Vol weekly change (1D)' },
-  { label: 'Top by volume',    moverType: 'TOP_BY_VOLUME',     title: 'Top by volume stocks today',    rightCol: 'Volume' },
-  { label: '52W high',         moverType: 'YEAR_HIGH',         title: 'Stocks at 52 week high',        rightCol: '52W High / 52W Low' },
-  { label: '52W low',          moverType: 'YEAR_LOW',          title: 'Stocks at 52 week low',         rightCol: '52W High / 52W Low' },
+  { label: 'Top by volume',    moverType: 'TRADED_BY_VOLUME',     title: 'Top by volume stocks today',    rightCol: 'Volume' },
+  { label: '52W high',         moverType: 'YEARLY_HIGH',         title: 'Stocks at 52 week high',        rightCol: '52W High / 52W Low' },
+  { label: '52W low',          moverType: 'YEARLY_LOW',          title: 'Stocks at 52 week low',         rightCol: '52W High / 52W Low' },
 ];
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -261,6 +271,7 @@ export default function GrowwTopMover() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
  const {userPic,setuserPic}=useContext(UserPicture)
+ const navigate=useNavigate()
 
   const currentFilter = FILTERS.find(f => f.label === activeFilter) || FILTERS[0];
 
@@ -291,7 +302,7 @@ export default function GrowwTopMover() {
     <div className="bg-white min-h-screen font-sans">
 
       {/* ── Navbar ── */}
-      <div className="border-b border-gray-100">
+      <div className="border-b border-gray-100 sticky top-0 z-10 bg-white/60 backdrop-blur-md">
         <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6">
           <img
             src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp"
@@ -350,8 +361,17 @@ export default function GrowwTopMover() {
             {FILTERS.map(f => (
               <button
                 key={f.label}
-                onClick={() => setActiveFilter(f.label)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+onClick={() => {
+  const slug = ROUTE_MAP[f.label];
+
+  setActiveFilter(f.label);
+
+  navigate(
+    slug
+      ? `/markets/${slug}?index=${INDEX_API_MAP[selectedIndex]}`
+      : ""
+  );
+}}                className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   activeFilter === f.label
                     ? 'border-gray-800 text-gray-900 bg-white font-semibold'
                     : 'border-gray-200 text-gray-600 bg-white hover:border-gray-300'
@@ -360,8 +380,20 @@ export default function GrowwTopMover() {
                 {f.label}
               </button>
             ))}
-            <IndexDropdown value={selectedIndex} onChange={setSelectedIndex} />
-          </div>
+<IndexDropdown
+  value={selectedIndex}
+  onChange={(value) => {
+    setSelectedIndex(value);
+
+    const slug = ROUTE_MAP[activeFilter];
+
+    navigate(
+      slug
+        ? `/markets/${slug}?index=${INDEX_API_MAP[value]}`
+        : `/markets?index=${INDEX_API_MAP[value]}`
+    );
+  }}
+/>          </div>
 
           {/* Two-column layout */}
           <div className="flex gap-6 items-start">

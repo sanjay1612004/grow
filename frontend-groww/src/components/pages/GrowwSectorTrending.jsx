@@ -108,7 +108,7 @@ function Navbar() {
     const {userPic,setuserPic}=useContext(UserPicture)
 
   return (
-    <div className="border-b border-gray-100 bg-white">
+    <div className="border-b border-gray-100 bg-white sticky top-0 z-10 bg-white/60 backdrop-blur-md">
       <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6">
         <img
           src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp"

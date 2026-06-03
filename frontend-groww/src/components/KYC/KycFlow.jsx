@@ -233,10 +233,26 @@ const PanForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
+    
+    // --- Verification Logic ---
+    const cleanedPan = panNumber.trim().toUpperCase();
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    
+    if (!panRegex.test(cleanedPan)) {
+      setError('Invalid PAN Card format. Pattern must match standard layout (e.g., ABCDE1234F).');
+      setLoading(false);
+      return;
+    }
+    if (!panCardImage) {
+      setError('Please select and upload a valid image file of your PAN card.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const formData = new FormData();
       const activeUserId = appendUserId(formData, userId);
-      formData.append('panNumber', panNumber);
+      formData.append('panNumber', cleanedPan);
       formData.append('panCardImage', panCardImage);
       await axios.post(`${BASE_URL}/pan`, formData, getAuthConfig(activeUserId));
       onNext();
@@ -276,10 +292,31 @@ const AadhaarForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
+    
+    // --- Verification Logic ---
+    const cleanedAadhaar = aadhaarNumber.replace(/\s+/g, '');
+    const aadhaarRegex = /^\d{12}$/;
+
+    if (!aadhaarRegex.test(cleanedAadhaar)) {
+      setError('Invalid Aadhaar number. It must be exactly 12 numeric digits.');
+      setLoading(false);
+      return;
+    }
+    if (!frontImage) {
+      setError('Please upload the Front Side of your Aadhaar card.');
+      setLoading(false);
+      return;
+    }
+    if (!backImage) {
+      setError('Please upload the Back Side of your Aadhaar card.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const formData = new FormData();
       const activeUserId = appendUserId(formData, userId);
-      formData.append('aadhaarNumber', aadhaarNumber);
+      formData.append('aadhaarNumber', cleanedAadhaar);
       formData.append('aadhaarFrontImage', frontImage);
       formData.append('aadhaarBackImage', backImage);
       await axios.post(`${BASE_URL}/aadhaar`, formData, getAuthConfig(activeUserId));
@@ -327,11 +364,52 @@ const BankForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
+    
+    // --- Verification Logic ---
+    if (!bankData.bankName.trim()) {
+      setError('Bank Name cannot be blank.');
+      setLoading(false);
+      return;
+    }
+
+    const cleanAccNo = bankData.accountNumber.trim();
+    if (!/^\d{9,18}$/.test(cleanAccNo)) {
+      setError('Invalid Bank Account Number. It must be a numeric value containing between 9 and 18 digits.');
+      setLoading(false);
+      return;
+    }
+
+    const cleanIfsc = bankData.ifscCode.trim().toUpperCase();
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    if (!ifscRegex.test(cleanIfsc)) {
+      setError('Invalid IFSC structure. Must be 11 characters (e.g., ABCD0123456) with a zero at position 5.');
+      setLoading(false);
+      return;
+    }
+
+    if (!bankData.accountHolderName.trim()) {
+      setError('Account Holder Name cannot be blank.');
+      setLoading(false);
+      return;
+    }
+
+    if (!chequeImage) {
+      setError('Please upload an image of your Cancelled Cheque or Passbook.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const formData = new FormData();
       const activeUserId = appendUserId(formData, userId);
-      Object.keys(bankData).forEach(key => formData.append(key, bankData[key]));
+      
+      // Use clean verified strings for the payload submission
+      formData.append('bankName', bankData.bankName.trim());
+      formData.append('accountNumber', cleanAccNo);
+      formData.append('ifscCode', cleanIfsc);
+      formData.append('accountHolderName', bankData.accountHolderName.trim());
       formData.append('cancelledChequeImage', chequeImage);
+
       await axios.post(`${BASE_URL}/bank`, formData, getAuthConfig(activeUserId));
       onNext();
     } catch (err) {
@@ -371,6 +449,14 @@ const SelfieForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
+    
+    // --- Verification Logic ---
+    if (!selfie) {
+      setError('Please take or upload a live selfie photograph to continue.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const formData = new FormData();
       const activeUserId = appendUserId(formData, userId);
@@ -403,6 +489,14 @@ const SignatureForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
+    
+    // --- Verification Logic ---
+    if (!signature) {
+      setError('Please upload a clear image of your signature.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const formData = new FormData();
       const activeUserId = appendUserId(formData, userId);

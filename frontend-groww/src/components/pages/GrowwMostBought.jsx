@@ -108,14 +108,14 @@ function InvestCard() {
         <img src="https://assets-netstorage.groww.in/web-assets/billion_groww_desktop/prod/_next/static/media/newToStocks.b40891fd.svg" alt="" />
       </div>
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 leading-snug">
+        <h3 className="text-md font-medium text-gray-900 leading-snug">
           Looking to invest in Stocks?
         </h3>
         <p className="text-sm text-gray-500 mt-1">
           Create your demat account on Groww in 2 minutes
         </p>
       </div>
-      <button className="w-full bg-[#44c38a] hover:bg-[#38b07a] text-white font-semibold text-sm tracking-widest uppercase py-3.5 rounded-lg transition-colors duration-200">
+      <button className="w-full bg-[#44c38a] hover:bg-[#38b07a] text-white font-semibold text-sm tracking-widest uppercase py-2.5 rounded-lg transition-colors duration-200">
         UNLOCK STOCKS
       </button>
     </div>
@@ -216,10 +216,10 @@ export default function GrowwMostBought() {
   return (
     <div>
       {/* ── Navbar ── */}
-      <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6">
+      <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6 border-b border-gray-200 sticky top-0 z-10 bg-white/60 backdrop-blur-md">
         <img
           src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp"
-          alt="Groww"
+          alt="Groww"backdrop-blur-md
           height={30}
           width={30}
         />
@@ -268,7 +268,7 @@ export default function GrowwMostBought() {
             </svg>
           </button>
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden cursor-pointer">
-            {userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'/>}
+            {userPic && <img src={userPic} alt="" width={30} height={30} className='rounded-2xl'/>}
             {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}             
 
           </div>
@@ -276,7 +276,7 @@ export default function GrowwMostBought() {
       </div>
 
       {/* ── Page body ── */}
-      <div className="min-h-screen bg-gray-50 font-sans">
+      <div className="min-h-screen bg-white font-sans">
         <div className="max-w-6xl mx-auto px-6 py-8">
 
           {/* Title */}
@@ -344,7 +344,7 @@ export default function GrowwMostBought() {
             </div>
 
             {/* ── Sidebar ── */}
-            <div className="w-72 flex-shrink-0">
+            <div className="w-102 flex-shrink-0">
               <InvestCard />
             </div>
           </div>

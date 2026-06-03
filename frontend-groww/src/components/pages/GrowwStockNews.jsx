@@ -322,7 +322,7 @@ export default function GrowwStockNews() {
     <div className="w-full min-h-screen bg-white text-[#1c1c1c] antialiased selection:bg-[#00b386]/20 font-sans">
 
       {/* ── Navbar ── */}
-      <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6 border-b border-gray-200">
+      <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6 border-b border-gray-200 sticky top-0 z-10 bg-white/60 backdrop-blur-md">
         <img
           src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp"
           alt="Groww" height={30} width={30}

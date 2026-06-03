@@ -25,12 +25,13 @@ import GrowwInteradaystock from './components/pages/GrowwInteradaystock'
 import GrowwStockScreener from './components/pages/GrowwStockScreener'
 import GrowwStockNews from './components/pages/GrowwStockNews'
 import KycFlowContainer from './components/KYC/KycFlow'
+import GrowwIndicesDashboard from './components/pages/GrowwIndicesDashboard'
 
 export const UserIdProvider=createContext()
 export const UserPicture=createContext()
 function App() {
   const [userId,setuserId]=useState('')
-  const [userPic,setuserPic]=useState('')
+  const [userPic,setuserPic]=useState(() => localStorage.getItem("userPic") || "")
   const clientid=import.meta.env.VITE_GOOGLE_CLIENT_ID
   return (
     <>
@@ -54,13 +55,14 @@ function App() {
         <Route path="/user/watchlist" element={<Common />} />
         <Route path="/stocks/most-bought-stocks-on-groww" element={<GrowwMostBought/>}/>
         <Route path='/stocks/mtf/most-traded' element={<GrowwMostTraded/>}/>
-        <Route path='/topmovers' element={<GrowwTopMover/>}/>
+        <Route path='/markets/:type?' element={<GrowwTopMover/>}/>
         <Route path="/stocks/sectors-trending" element={<GrowwSectorTrending/>}/>
         <Route path='/etf-nfo' element={<GrowwETfs/>}/>
         <Route path="/stocks/intraday" element={<GrowwInteradaystock/>}/>
         <Route path='/etfs' element={<GrowwStockScreener/>}/>
         <Route path="/market-news/stocks" element={<GrowwStockNews/>}/>
         <Route path='/kyc' element={<KycFlowContainer/>}/>
+        <Route path='/indices' element={<GrowwIndicesDashboard/>}/>
       </Routes>
       </UserIdProvider.Provider>
       </UserPicture.Provider>

@@ -656,7 +656,7 @@ useEffect(() => {
                 )}
               </div>
 
-              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/topmovers">
+              <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/markets/:type?">
                 See more
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>

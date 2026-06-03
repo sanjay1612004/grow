@@ -31,7 +31,10 @@ const Googleauth = () => {
       const user = jwtDecode(idToken);
 
       console.log("Google User:", user);
-      setuserPic(user?.picture)
+      if (user?.picture) {
+        localStorage.setItem("userPic", user.picture);
+        setuserPic(user.picture);
+      }
 
       const res = await axios.post(
         "https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/google",
@@ -96,7 +99,7 @@ const Googleauth = () => {
         }
 
         // Mobile verification
-        if ( data?.nextStep === "MOBILE_VERIFICATION_REQUIRED") {
+        if ( data?.nextStep === "PHONE_REQUIRED") {
           navigate("/mobileVerification", {
             state: {
               userId: responseUserId,
