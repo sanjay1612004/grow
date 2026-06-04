@@ -1,424 +1,423 @@
-import { useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
+import Footer from "../landingpage/Footer"
 import { UserPicture } from "../../App";
+import { NavLink } from "react-router-dom";
 
-// ── Spark-line mini chart ────────────────────────────────────────────────────
-function SparkLine({ points, color }) {
-  const w = 90, h = 40;
-  const xs = points.map((_, i) => (i / (points.length - 1)) * w);
-  const min = Math.min(...points), max = Math.max(...points);
-  const range = max - min || 1;
-  const ys = points.map((v) => h - ((v - min) / range) * (h - 6) - 3);
-  const d = xs.map((x, i) => `${i === 0 ? "M" : "L"}${x},${ys[i]}`).join(" ");
-  const baseY = ys[0];
+
+const API_URL = "http://localhost:8000/api/etf-stocks";
+
+function getReturn(stock, key) {
+  const r = stock.returns?.find((r) => r.key === key);
+  return r ? r.value : null;
+}
+
+function Sparkline({ ltp, close }) {
+  const isUp = ltp >= close;
+  const color = isUp ? "#00b386" : "#e74c3c";
+  const pts = [0.6, 0.45, 0.55, 0.4, 0.5, isUp ? 0.3 : 0.65, isUp ? 0.2 : 0.75];
+  const w = 80, h = 32;
+  const points = pts.map((y, i) => `${(i / (pts.length - 1)) * w},${y * h}`).join(" ");
   return (
-    <svg width={w} height={h} className="block">
-      <line x1={0} y1={baseY} x2={w} y2={baseY} stroke="#ccc" strokeWidth={1} strokeDasharray="3,3" />
-      <path d={d} fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ display: "block" }}>
+      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
 
-// ── 52-week range bar ────────────────────────────────────────────────────────
-function WeekRange52({ position }) {
-  const pct = Math.min(Math.max(position, 0), 1) * 100;
+function ETFLogo({ logoUrl, name }) {
+  const [err, setErr] = useState(false);
+  const initials = (name || "").split(" ").slice(0, 2).map((w) => w[0] || "").join("").toUpperCase() || "ET";
+  if (!logoUrl || err) {
+    return (
+      <div style={{
+        width: 36, height: 36, borderRadius: 8, background: "#f0f0f0",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 11, fontWeight: 700, color: "#666", flexShrink: 0, border: "1px solid #e0e0e0"
+      }}>{initials}</div>
+    );
+  }
   return (
-    <div className="flex items-center gap-1 min-w-[120px]">
-      <span className="text-[11px] text-gray-400">L</span>
-      <div className="flex-1 h-[3px] bg-gray-200 rounded-sm relative">
-        <div
-          className="absolute w-2 h-2 bg-gray-800 rounded-full -translate-x-1/2"
-          style={{ top: -2.5, left: `${pct}%` }}
-        />
-      </div>
-      <span className="text-[11px] text-gray-400">H</span>
-    </div>
+    <img src={logoUrl} alt={name} onError={() => setErr(true)}
+      style={{ width: 36, height: 36, borderRadius: 8, objectFit: "contain", flexShrink: 0, background: "#fff", border: "1px solid #e8e8e8" }} />
   );
 }
 
-// ── Sample stock data ────────────────────────────────────────────────────────
-function generatePoints(trend, n = 30) {
-  let v = 100 + Math.random() * 20;
-  return Array.from({ length: n }, () => {
-    v += (Math.random() - (trend === "up" ? 0.35 : 0.65)) * 3;
-    return Math.max(v, 10);
-  });
-}
-
-const STOCKS = [
-  { id: 1, name: "Netweb Technolog...", logo: "N", logoColor: "#1a73e8", logoBg: "#e8f0fe", price: "₹4,670.70", change: "+598.70", changePct: "14.70%", positive: true, volume: "1,06,23,544", volDiff: "+1,011.85%", volDiffPos: true, w52pos: 0.82, trend: "up" },
-  { id: 2, name: "Adani Total Gas", logo: "adani", logoColor: "#f60", logoBg: "#fff3e0", price: "₹773.30", change: "-35.25", changePct: "4.36%", positive: false, volume: "4,47,79,830", volDiff: "+87.48%", volDiffPos: true, w52pos: 0.35, trend: "down" },
-  { id: 3, name: "MTAR Technologies", logo: "MTR", logoColor: "#555", logoBg: "#f5f5f5", price: "₹7,879.50", change: "-10.00", changePct: "0.13%", positive: false, volume: "15,28,301", volDiff: "-30.34%", volDiffPos: false, w52pos: 0.58, trend: "down" },
-  { id: 4, name: "Apollo Micro Syste...", logo: "AMS", logoColor: "#0057a8", logoBg: "#e3f0fb", price: "₹409.00", change: "-8.85", changePct: "2.12%", positive: false, volume: "1,90,00,777", volDiff: "-66.43%", volDiffPos: false, w52pos: 0.22, trend: "down" },
-  { id: 5, name: "HFCL", logo: "HF", logoColor: "#fff", logoBg: "#1565c0", price: "₹179.94", change: "+6.02", changePct: "3.46%", positive: true, volume: "11,11,12,652", volDiff: "+45.68%", volDiffPos: true, w52pos: 0.65, trend: "up" },
-  { id: 6, name: "KCP", logo: "kcp", logoColor: "#e65100", logoBg: "#fff8e1", price: "₹164.53", change: "+2.83", changePct: "1.75%", positive: true, volume: "7,63,591", volDiff: "+569.40%", volDiffPos: true, w52pos: 0.48, trend: "up" },
-  { id: 7, name: "Swelect Energy Sy...", logo: "SE", logoColor: "#388e3c", logoBg: "#e8f5e9", price: "₹661.35", change: "+11.05", changePct: "1.70%", positive: true, volume: "94,525", volDiff: "+110.64%", volDiffPos: true, w52pos: 0.55, trend: "up" },
+const FILTERS = [
+  { label: "Nifty 50", key: "nifty50" },
+  { label: "Gold", key: "gold" },
+  { label: "Silver", key: "silver" },
+  { label: "International", key: "international" },
+  { label: "Debt", key: "debt" },
 ];
 
-const SPARKLINES = Object.fromEntries(STOCKS.map((s) => [s.id, generatePoints(s.trend)]));
+function matchFilter(stock, key) {
+  const name = (stock.companyData?.shortName || "").toLowerCase();
+  const code = (stock.nseScriptCode || "").toLowerCase();
+  if (key === "gold") return name.includes("gold");
+  if (key === "silver") return name.includes("silver");
+  if (key === "nifty50") return (
+    code === "niftybees" || code === "setfnif50" || code === "niftyietf" ||
+    code === "hdfcnifty" || code === "bslnifty" || code === "niftycase" ||
+    code === "aonenifty" || code === "growwnifty"
+  );
+  if (key === "international") return (
+    name.includes("nasdaq") || name.includes("hang seng") || name.includes("fang") ||
+    name.includes("s&p") || name.includes("global") || name.includes("nyse")
+  );
+  if (key === "debt") return (
+    name.includes("liquid") || name.includes("gilt") || name.includes("bond") ||
+    name.includes("debt") || name.includes("1d rate")
+  );
+  return true;
+}
 
-// ── Filter chip ──────────────────────────────────────────────────────────────
-function FilterChip({ label, active, onClick }) {
+function SortIcon({ active, dir }) {
   return (
-    <button
-      onClick={onClick}
-      className={`relative flex items-center gap-1 px-3 py-1.5 rounded-full border text-[13px] cursor-pointer whitespace-nowrap transition-all duration-150 font-[inherit]
-        ${active
-          ? "border-[#00b386] bg-[#e6f7f2] text-[#00b386]"
-          : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
-        }`}
+    <span style={{ display: "inline-flex", flexDirection: "column", gap: 1, marginLeft: 4, verticalAlign: "middle" }}>
+      <span style={{ fontSize: 8, lineHeight: 1, color: active && dir === "asc" ? "#333" : "#bbb" }}>▲</span>
+      <span style={{ fontSize: 8, lineHeight: 1, color: active && dir === "desc" ? "#333" : "#bbb" }}>▼</span>
+    </span>
+  );
+}
+
+function Row({ stock }) {
+  const [hovered, setHovered] = useState(false);
+  const ltp = stock.ltp ?? 0;
+  const close = stock.close ?? ltp;
+  const change = ltp - close;
+  const changePct = close ? (change / close) * 100 : 0;
+  const nav = stock.nav ?? 0;
+  const navDelta = ltp ? ((nav - ltp) / ltp) * 100 : 0;
+  const return1Y = getReturn(stock, "return1Y");
+  const isUp = change >= 0;
+  const navUp = navDelta >= 0;
+
+  return (
+    
+    <tr
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: hovered ? "#f7fffe" : "#fff",
+        borderBottom: "1px solid #f0f0f0",
+        transition: "background 0.1s",
+        cursor: "pointer",
+      }}
     >
-      {label}
-    </button>
+      {/* Company */}
+      <td style={{ padding: "14px 16px 14px 20px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <ETFLogo logoUrl={stock.companyData?.logoUrl} name={stock.companyData?.shortName} />
+          <span style={{
+            fontSize: 13, fontWeight: 500, color: "#1a1a1a",
+            maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
+          }}>
+            {stock.companyData?.shortName}
+          </span>
+        </div>
+      </td>
+
+      {/* Sparkline */}
+      <td style={{ padding: "14px 12px", width: 96 }}>
+        <Sparkline ltp={ltp} close={close} />
+      </td>
+
+      {/* Market price */}
+      <td style={{ padding: "14px 20px", textAlign: "right", fontSize: 13, fontWeight: 500, color: "#1a1a1a", whiteSpace: "nowrap" }}>
+        ₹{ltp.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </td>
+
+      {/* 1D price change */}
+      <td style={{ padding: "14px 20px", textAlign: "right", whiteSpace: "nowrap" }}>
+        <span style={{ fontSize: 13, fontWeight: 500, color: isUp ? "#00b386" : "#e74c3c" }}>
+          {isUp ? "+" : ""}{change.toFixed(2)} ({isUp ? "+" : ""}{changePct.toFixed(2)}%)
+        </span>
+      </td>
+
+      {/* NAV / delta from mkt */}
+      <td style={{ padding: "14px 20px", textAlign: "right", whiteSpace: "nowrap" }}>
+        <div style={{ fontSize: 13, color: "#1a1a1a", fontWeight: 500 }}>
+          ₹{nav.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+        <div style={{ fontSize: 12, color: navUp ? "#00b386" : "#e74c3c", marginTop: 1 }}>
+          {navUp ? "+" : ""}{navDelta.toFixed(2)}%
+        </div>
+      </td>
+
+      {/* Today's volume / hover actions */}
+      <td style={{ padding: "14px 20px", textAlign: "right", minWidth: 180 }}>
+        {hovered ? (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
+            <button style={{
+              background: "none", border: "none", cursor: "pointer", padding: "4px 6px",
+              color: "#888", display: "flex", alignItems: "center"
+            }} title="Watchlist">
+              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+              </svg>
+            </button>
+            <button style={{
+              background: "none", border: "1px solid #00b386", borderRadius: 6, padding: "4px 10px",
+              fontSize: 12, fontWeight: 600, color: "#00b386", cursor: "pointer", letterSpacing: 0.3
+            }}>SIP</button>
+            <button style={{
+              background: "#00b386", border: "none", borderRadius: 6, padding: "5px 12px",
+              fontSize: 13, fontWeight: 700, color: "#fff", cursor: "pointer"
+            }}>B</button>
+            <button style={{
+              background: "#e74c3c", border: "none", borderRadius: 6, padding: "5px 12px",
+              fontSize: 13, fontWeight: 700, color: "#fff", cursor: "pointer"
+            }}>S</button>
+          </div>
+        ) : (
+          <span style={{ fontSize: 13, color: "#1a1a1a" }}>
+            {stock.volume ? stock.volume.toLocaleString("en-IN") : "0"}
+          </span>
+        )}
+      </td>
+
+      {/* 1Y returns */}
+      <td style={{ padding: "14px 20px 14px 16px", textAlign: "right", whiteSpace: "nowrap" }}>
+        {return1Y === null ? (
+          <span style={{ fontSize: 13, color: "#aaa" }}>-</span>
+        ) : (
+          <span style={{ fontSize: 13, fontWeight: 600, color: return1Y >= 0 ? "#00b386" : "#e74c3c" }}>
+            {return1Y >= 0 ? "+" : ""}{return1Y.toFixed(2)}%
+          </span>
+        )}
+      </td>
+    </tr>
   );
 }
 
-// ── Left filter panel ────────────────────────────────────────────────────────
-const FILTER_SECTIONS = ["Sort by", "Price change >1%", "52W Performance", "RSI", "MACD", "Near breakout", "Index", "Sector", "Market Cap"];
-const INDEX_OPTIONS = ["All", "Nifty 50", "Nifty 100", "Nifty 500", "Nifty midcap 100", "Nifty midcap 150", "Nifty smallcap 100", "Nifty smallcap 250", "Nifty total market"];
-
-function FilterPanel({ onClose }) {
-  const [activeSection, setActiveSection] = useState("Index");
-  const [selectedIndex, setSelectedIndex] = useState("All");
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-start">
-      {/* overlay */}
-      <div onClick={onClose} className="absolute inset-0 bg-black/25" />
-      {/* panel */}
-      <div className="relative flex w-[470px] h-screen bg-white shadow-[4px_0_24px_rgba(0,0,0,0.12)] z-10">
-        {/* left nav */}
-        <div className="w-40 border-r border-gray-100 pt-4">
-          {FILTER_SECTIONS.map((s) => (
-            <div
-              key={s}
-              onClick={() => setActiveSection(s)}
-              className={`px-4 py-3 text-[13px] cursor-pointer transition-all duration-150
-                ${activeSection === s
-                  ? "text-[#00b386] font-semibold border-l-[3px] border-[#00b386] bg-[#f0fbf7]"
-                  : "text-gray-700 font-normal border-l-[3px] border-transparent hover:bg-gray-50"
-                }`}
-            >
-              {s}
-            </div>
-          ))}
-        </div>
-        {/* right content */}
-        <div className="flex-1 py-4 overflow-y-auto">
-          {activeSection === "Index"
-            ? INDEX_OPTIONS.map((opt) => (
-              <div
-                key={opt}
-                onClick={() => setSelectedIndex(opt)}
-                className="flex items-center gap-2.5 px-5 py-3 cursor-pointer text-sm text-gray-700 hover:bg-gray-50"
-              >
-                <div
-                  className="w-[18px] h-[18px] rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ border: `2px solid ${selectedIndex === opt ? "#00b386" : "#bbb"}` }}
-                >
-                  {selectedIndex === opt && (
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#00b386]" />
-                  )}
-                </div>
-                {opt}
-              </div>
-            ))
-            : (
-              <div className="p-5 text-sm text-gray-400">
-                Configure {activeSection} filters here.
-              </div>
-            )
-          }
-        </div>
-        {/* footer */}
-        <div className="absolute bottom-0 left-0 right-0 flex border-t border-gray-100">
-          <button
-            onClick={onClose}
-            className="flex-1 py-3.5 bg-white border-none text-sm cursor-pointer text-gray-400 font-[inherit] hover:bg-gray-50 transition-colors"
-          >
-            Clear all
-          </button>
-          <button
-            onClick={onClose}
-            className="flex-1 py-3.5 bg-gray-100 border-none text-sm cursor-pointer text-gray-700 font-[inherit] font-semibold hover:bg-gray-200 transition-colors"
-          >
-            Apply
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Sort icon ────────────────────────────────────────────────────────────────
-function SortIcon({ dir }) {
-  if (dir === "asc") return <span className="text-[10px]"> ↑</span>;
-  if (dir === "desc") return <span className="text-[10px]"> ↓</span>;
-  return <span className="text-[10px] opacity-50"> ⇅</span>;
-}
-
-// ── Action buttons on hover ──────────────────────────────────────────────────
-function ActionButtons() {
-  return (
-    <div className="flex gap-1.5 items-center">
-      <button className="w-8 h-8 rounded-md border border-gray-200 bg-white cursor-pointer flex items-center justify-center text-sm hover:bg-gray-50 transition-colors">
-        ⚖
-      </button>
-      <button className="w-8 h-8 rounded-md border border-gray-200 bg-white cursor-pointer flex items-center justify-center text-sm hover:bg-gray-50 transition-colors">
-        🔖
-      </button>
-      <button className="px-3.5 py-1.5 rounded-md border-none bg-[#00b386] text-white font-bold text-[13px] cursor-pointer font-[inherit] hover:bg-[#00a077] transition-colors">
-        B
-      </button>
-      <button className="px-3.5 py-1.5 rounded-md border-none bg-[#e05d5d] text-white font-bold text-[13px] cursor-pointer font-[inherit] hover:bg-[#cc4d4d] transition-colors">
-        S
-      </button>
-    </div>
-  );
-}
-
-// ── Main component ───────────────────────────────────────────────────────────
 export default function GrowwStockScreener() {
-  const [showPanel, setShowPanel] = useState(false);
-  const [hoveredRow, setHoveredRow] = useState(null);
-  const [sortCol, setSortCol] = useState(null);
-  const [sortDir, setSortDir] = useState("asc");
-  const [clearTooltip, setClearTooltip] = useState(false);
-  const [spinning, setSpinning] = useState(false);
-  const [activeFilters, setActiveFilters] = useState(["Price change >1%", "52W Performance", "RSI", "MACD"]);
- const {userPic,setuserPic}=useContext(UserPicture)
+  const [stocks, setStocks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeFilters, setActiveFilters] = useState([]);
+  const [sortCol, setSortCol] = useState("return1Y");
+  const [sortDir, setSortDir] = useState("desc");
+  const [filterCount, setFilterCount] = useState(0);
+  const { userPic } = useContext(UserPicture);
 
-  function handleSort(col) {
-    if (sortCol === col) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    else { setSortCol(col); setSortDir("asc"); }
-  }
 
-  function handleRefresh() {
-    setSpinning(true);
-    setTimeout(() => setSpinning(false), 800);
-  }
+  const fetchData = useCallback(async () => {
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      setStocks(json?.data?.screenerList || []);
+      setError(null);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const displayStocks = [...STOCKS].sort((a, b) => {
-    if (!sortCol) return 0;
-    const mul = sortDir === "asc" ? 1 : -1;
-    if (sortCol === "price") return mul * (parseFloat(a.price.replace(/[₹,]/g, "")) - parseFloat(b.price.replace(/[₹,]/g, "")));
-    if (sortCol === "change") return mul * (parseFloat(a.change) - parseFloat(b.change));
-    if (sortCol === "volume") return mul * (parseFloat(a.volume.replace(/,/g, "")) - parseFloat(b.volume.replace(/,/g, "")));
-    return 0;
+  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => { setFilterCount(activeFilters.length); }, [activeFilters]);
+
+  const toggleFilter = (key) => {
+    setActiveFilters((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+  };
+
+  const clearAll = () => setActiveFilters([]);
+
+  const handleSort = (col) => {
+    if (sortCol === col) setSortDir((d) => d === "desc" ? "asc" : "desc");
+    else { setSortCol(col); setSortDir("desc"); }
+  };
+
+  const filtered = stocks.filter((s) => {
+    if (activeFilters.length === 0) return true;
+    return activeFilters.some((f) => matchFilter(s, f));
   });
 
-  return (
-    <div className="font-[Nunito_Sans,Segoe_UI,sans-serif]">
+  const sorted = [...filtered].sort((a, b) => {
+    let av, bv;
+    if (sortCol === "ltp") { av = a.ltp ?? 0; bv = b.ltp ?? 0; }
+    else if (sortCol === "change") {
+      av = (a.ltp ?? 0) - (a.close ?? a.ltp ?? 0);
+      bv = (b.ltp ?? 0) - (b.close ?? b.ltp ?? 0);
+    }
+    else if (sortCol === "volume") { av = a.volume ?? 0; bv = b.volume ?? 0; }
+    else if (sortCol === "return1Y") { av = getReturn(a, "return1Y") ?? -9999; bv = getReturn(b, "return1Y") ?? -9999; }
+    else { av = 0; bv = 0; }
+    return sortDir === "desc" ? bv - av : av - bv;
+  });
 
-      {/* ── Navbar ─────────────────────────────────────────────────────────── */}
-      <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6 sticky top-0 z-10 bg-white/60 backdrop-blur-md">
-        <img
-          src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp"
-          alt="Groww"
-          height={30}
-          width={30}
-        />
+  const ColHeader = ({ label, col, align = "right" }) => (
+    <th
+      onClick={() => col && handleSort(col)}
+      style={{
+        padding: "12px 20px", textAlign: align, fontSize: 12, fontWeight: 500,
+        color: "#666", whiteSpace: "nowrap", cursor: col ? "pointer" : "default",
+        userSelect: "none", borderBottom: "1px solid #e8e8e8", background: "#fff"
+      }}
+    >
+      {label}
+      {col && <SortIcon active={sortCol === col} dir={sortDir} />}
+    </th>
+  );
+
+  return (
+    <div>
+       <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6 sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-gray-100 w-full">
+        <img src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp" alt="Groww" height={30} width={30} />
         <nav className="flex items-center gap-6">
-          {["Stocks", "Explore", "Holdings", "Positions", "WatchList"].map((item) => (
-            <NavLink
-              key={item}
-              to={`/user/${item.toLowerCase()}`}
-              className={({ isActive }) =>
-                `text-[15px] font-semibold ${isActive
-                  ? "text-gray-700 border-b-2 border-[#00d09c] pb-1"
-                  : "text-gray-500 hover:text-gray-700"
-                }`
-              }
-            >
+          {["Stocks","Explore","Holdings","Positions","WatchList"].map(item => (
+            <NavLink key={item} to={`/user/${item.toLowerCase()}`}
+              className={({ isActive }) => `text-[15px] font-semibold ${isActive ? "text-gray-700 border-b-2 border-[#00d09c] pb-1" : "text-gray-500 hover:text-gray-700"}`}>
               {item}
             </NavLink>
           ))}
         </nav>
-
-        {/* Search */}
         <div className="flex-1 max-w-xs ml-auto">
-          <div className="flex items-center bg-gray-200 border border-gray-200 rounded-lg px-3 h-9 gap-2 focus-within:border-gray-400 focus-within:bg-white transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
-              <circle cx="11" cy="11" r="7" stroke="#9ca3af" strokeWidth="2" />
-              <path d="M20 20l-3-3" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search Groww...."
-              className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none border-none"
-            />
-            <span className="text-xs text-gray-400 bg-gray-300 rounded px-1.5 py-0.5 flex-shrink-0">
-              Ctrl+K
-            </span>
+          <div className="flex items-center bg-gray-100 border border-gray-200 rounded-lg px-3 h-9 gap-2 focus-within:border-gray-400 focus-within:bg-white transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9ca3af" strokeWidth="2"/><path d="M20 20l-3-3" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round"/></svg>
+            <input type="text" placeholder="Search Groww...." className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none border-none"/>
+            <span className="text-xs text-gray-400 bg-gray-200 rounded px-1.5 py-0.5">Ctrl+K</span>
           </div>
         </div>
-
-        {/* Icons */}
         <div className="flex items-center gap-4">
-          <button className="text-gray-500 hover:text-gray-700 transition-colors">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
+          <button className="text-gray-500 hover:text-gray-700">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
           </button>
-                      {userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'/>}
-            {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}             
-
+          {userPic
+            ? <img src={userPic} alt="" width={28} height={28} className="rounded-full"/>
+            : <img src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" width={28} height={28} className="rounded-full"/>}
         </div>
       </div>
+    <div style={{ minHeight: "100vh", background: "#fff", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-      {/* ── Page content ───────────────────────────────────────────────────── */}
-      <div className="bg-white min-h-screen px-8 py-7 max-w-[1280px] mx-auto">
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
 
         {/* Title */}
-        <div className="flex items-center gap-2.5 mb-5">
-          <h1 className="text-[24px] font-bold text-gray-700 m-0">ETF Stocks Screener</h1>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#1a1a1a", margin: 0 }}>ETF Stocks Screener</h1>
           <button
-            onClick={handleRefresh}
+            onClick={fetchData}
+            style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#888", display: "flex", alignItems: "center" }}
             title="Refresh"
-            className={`bg-transparent border-none cursor-pointer text-base text-gray-600 p-1 flex items-center hover:text-gray-900 transition-colors
-              ${spinning ? "animate-spin" : ""}`}
           >
-            ↺
+            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
           </button>
         </div>
 
-        {/* Filter bar */}
-        <div className="flex gap-2 items-center mb-6 flex-wrap">
-
-          {/* Settings button */}
-          <button
-            onClick={() => setShowPanel(true)}
-            className="relative w-9 h-9 rounded-full border border-gray-300 bg-white cursor-pointer flex items-center justify-center text-base hover:border-gray-400 transition-colors"
-          >
-            ⚙
-            {activeFilters.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-gray-800 text-white rounded-full w-4 h-4 text-[10px] flex items-center justify-center">
-                {activeFilters.length}
-              </span>
+        {/* Filter chips row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24, flexWrap: "wrap" }}>
+          {/* Sliders/filter icon button */}
+          <button style={{
+            width: 36, height: 36, borderRadius: "50%", border: "1px solid #e0e0e0",
+            background: "#fff", cursor: "pointer", display: "flex", alignItems: "center",
+            justifyContent: "center", position: "relative", flexShrink: 0
+          }}>
+            <svg width="16" height="16" fill="none" stroke="#555" strokeWidth="1.8" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h18M3 8h12M3 12h8"/>
+            </svg>
+            {filterCount > 0 && (
+              <span style={{
+                position: "absolute", top: -4, right: -4, background: "#1a1a1a", color: "#fff",
+                borderRadius: "50%", width: 18, height: 18, fontSize: 10, fontWeight: 700,
+                display: "flex", alignItems: "center", justifyContent: "center"
+              }}>{filterCount}</span>
             )}
           </button>
 
-          <FilterChip label="Nifty 50" active onClick={() => setShowPanel(true)} />
-          <FilterChip label="Gold" onClick={() => setShowPanel(true)} />
-          <FilterChip label="Silver" onClick={() => setShowPanel(true)} />
-          <FilterChip label="International" onClick={() => setShowPanel(true)} />
-          <FilterChip label="Dept" onClick={() => setShowPanel(true)} />
-
-
-          {/* Clear all with tooltip */}
-          <div className="relative">
-            <button
-              onMouseEnter={() => setClearTooltip(true)}
-              onMouseLeave={() => setClearTooltip(false)}
-              onClick={() => setActiveFilters([])}
-              className={`bg-transparent border-none text-[13px] text-gray-400 cursor-pointer px-1 py-1.5 font-[inherit]
-                ${activeFilters.length > 0 ? "underline decoration-dashed" : ""}`}
-            >
-              Clear all
-            </button>
-            {clearTooltip && (
-              <div className="absolute top-[calc(100%+6px)] left-1/2 -translate-x-1/2 bg-gray-800 text-white px-2.5 py-1.5 rounded-md text-xs whitespace-nowrap z-50 pointer-events-none">
-                Clear all will remove all the applied filters
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-[0_1px_6px_rgba(0,0,0,0.06)] overflow-hidden">
-
-          {/* Header */}
-          <div className="grid px-6 py-3 bg-gray-50 border-b border-gray-100 text-[13px]"
-            style={{ gridTemplateColumns: "260px 100px 1fr 180px 160px 160px 160px" }}
-          >
-            <div className="text-gray-500 font-medium">Company</div>
-            <div />
-            <div
-              className={`cursor-pointer select-none font-medium ${sortCol === "price" ? "text-gray-900 font-semibold" : "text-gray-500"}`}
-              onClick={() => handleSort("price")}
-            >
-              Market price <SortIcon dir={sortCol === "price" ? sortDir : null} />
-            </div>
-            <div
-              className={`cursor-pointer select-none font-medium ${sortCol === "change" ? "text-gray-900 font-semibold" : "text-gray-500"}`}
-              onClick={() => handleSort("change")}
-            >
-              1D price change <SortIcon dir={sortCol === "change" ? sortDir : null} />
-            </div>
-            <div
-              className={`cursor-pointer select-none font-medium ${sortCol === "volume" ? "text-gray-900 font-semibold" : "text-gray-500"}`}
-              onClick={() => handleSort("volume")}
-            >
-              1D volume <SortIcon dir={sortCol === "volume" ? sortDir : null} />
-            </div>
-            <div className="text-gray-500 font-medium">1W avg vol diff</div>
-            <div className="text-gray-500 font-medium">52W performance</div>
-          </div>
-
-          {/* Rows */}
-          {displayStocks.map((stock) => {
-            const isHovered = hoveredRow === stock.id;
-            const sparkColor = stock.positive ? "#00b386" : "#e05d5d";
-
+          {FILTERS.map((f) => {
+            const active = activeFilters.includes(f.key);
             return (
-              <div
-                key={stock.id}
-                onMouseEnter={() => setHoveredRow(stock.id)}
-                onMouseLeave={() => setHoveredRow(null)}
-                className={`grid px-6 py-4 border-b border-gray-50 items-center cursor-pointer transition-colors duration-100
-                  ${isHovered ? "bg-[#fafff9]" : "bg-white"}`}
-                style={{ gridTemplateColumns: "260px 100px 1fr 180px 160px 160px 160px" }}
+              <button
+                key={f.key}
+                onClick={() => toggleFilter(f.key)}
+                style={{
+                  padding: "6px 16px", borderRadius: 20,
+                  border: active ? "1.5px solid #1a1a1a" : "1px solid #d0d0d0",
+                  background: "#fff", fontSize: 13, fontWeight: active ? 600 : 400,
+                  color: "#1a1a1a", cursor: "pointer", transition: "all 0.15s"
+                }}
               >
-                {/* Company */}
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-100 overflow-hidden font-bold"
-                    style={{
-                      background: stock.logoBg,
-                      color: stock.logoColor,
-                      fontSize: stock.logo.length > 2 ? 8 : 13,
-                    }}
-                  >
-                    {stock.logo}
-                  </div>
-                  <span className="font-semibold text-sm text-gray-900">{stock.name}</span>
-                </div>
-
-                {/* Sparkline */}
-                <div>
-                  <SparkLine points={SPARKLINES[stock.id]} color={sparkColor} />
-                </div>
-
-                {/* Market price */}
-                <div className="text-sm font-semibold text-gray-900">{stock.price}</div>
-
-                {/* 1D price change */}
-                <div className={`text-sm font-semibold ${stock.positive ? "text-[#00b386]" : "text-[#e05d5d]"}`}>
-                  {stock.positive ? "+" : ""}{stock.change} ({stock.changePct})
-                </div>
-
-                {/* 1D volume / action buttons */}
-                <div className="text-sm text-gray-700">
-                  {isHovered ? <ActionButtons /> : stock.volume}
-                </div>
-
-                {/* 1W avg vol diff */}
-                <div className={`text-sm font-semibold ${stock.volDiffPos ? "text-[#00b386]" : "text-[#e05d5d]"}`}>
-                  {stock.volDiff}
-                </div>
-
-                {/* 52W performance */}
-                <div>
-                  <WeekRange52 position={stock.w52pos} />
-                </div>
-              </div>
+                {f.label}
+              </button>
             );
           })}
-        </div>
-      </div>
 
-      {/* Filter panel */}
-      {showPanel && <FilterPanel onClose={() => setShowPanel(false)} />}
+          <button
+            onClick={clearAll}
+            style={{
+              background: "none", border: "none", fontSize: 13, color: activeFilters.length > 0 ? "#1a1a1a" : "#bbb",
+              cursor: activeFilters.length > 0 ? "pointer" : "default", fontWeight: 500,
+              textDecoration: activeFilters.length > 0 ? "underline" : "none", padding: "6px 4px"
+            }}
+          >
+            Clear all
+          </button>
+        </div>
+
+        {/* Error banner */}
+        {error && (
+          <div style={{
+            background: "#fff8f8", border: "1px solid #ffd0d0", borderRadius: 8,
+            padding: "10px 16px", marginBottom: 16, fontSize: 13, color: "#c0392b",
+            display: "flex", alignItems: "center", gap: 8
+          }}>
+            <span>⚠ Failed to load: {error}</span>
+            <button onClick={fetchData} style={{ marginLeft: "auto", color: "#c0392b", fontWeight: 600, background: "none", border: "none", cursor: "pointer", fontSize: 13 }}>Retry</button>
+          </div>
+        )}
+
+        {/* Table */}
+        <div style={{ border: "1px solid #e8e8e8", borderRadius: 12, overflow: "hidden" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: "#fff" }}>
+                <th style={{ padding: "12px 16px 12px 20px", textAlign: "left", fontSize: 12, fontWeight: 500, color: "#666", borderBottom: "1px solid #e8e8e8" }}>
+                  Company
+                </th>
+                <th style={{ padding: "12px 12px", width: 96, borderBottom: "1px solid #e8e8e8" }}></th>
+                <ColHeader label="Market price" col="ltp" />
+                <ColHeader label="1D price change" col="change" />
+                <ColHeader label="NAV/delta from mkt" col={null} />
+                <ColHeader label="Today's volume" col="volume" />
+                <ColHeader label="1Y returns" col="return1Y" />
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                [...Array(8)].map((_, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid #f0f0f0" }}>
+                    {[...Array(7)].map((_, j) => (
+                      <td key={j} style={{ padding: "18px 20px" }}>
+                        <div style={{
+                          height: 14, borderRadius: 6, background: "#f0f0f0",
+                          width: j === 0 ? "70%" : j === 1 ? 80 : "60%",
+                          animation: "pulse 1.5s ease-in-out infinite"
+                        }} />
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : sorted.length === 0 ? (
+                <tr><td colSpan={7} style={{ textAlign: "center", padding: 40, color: "#aaa", fontSize: 14 }}>No ETFs found</td></tr>
+              ) : (
+                sorted.map((stock) => <Row key={stock.gsin || stock.nseScriptCode} stock={stock} />)
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <style>{`
+          @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        `}</style>
+      </div>
+      <Footer/>
+    </div>
     </div>
   );
 }
