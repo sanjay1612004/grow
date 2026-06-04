@@ -26,6 +26,7 @@ import GrowwStockScreener from './components/pages/GrowwStockScreener'
 import GrowwStockNews from './components/pages/GrowwStockNews'
 import KycFlowContainer from './components/KYC/KycFlow'
 import GrowwIndicesDashboard from './components/pages/GrowwIndicesDashboard'
+import GrowwProfile from './components/UserModule/GrowwProfile'
 
 export const UserIdProvider=createContext()
 export const UserPicture=createContext()
@@ -63,6 +64,7 @@ function App() {
         <Route path="/market-news/stocks" element={<GrowwStockNews/>}/>
         <Route path='/kyc' element={<KycFlowContainer/>}/>
         <Route path='/indices' element={<GrowwIndicesDashboard/>}/>
+        <Route path='/user/profile' element={<GrowwProfile/>}/>
       </Routes>
       </UserIdProvider.Provider>
       </UserPicture.Provider>

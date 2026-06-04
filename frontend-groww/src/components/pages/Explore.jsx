@@ -565,27 +565,6 @@ useEffect(() => {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 p-3" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>
 
-      {/* ── Top nav ──────────────────────────────────────────────────────── */}
-
-   
-
-      {/* ── Index ticker ─────────────────────────────────────────────────── */}
-      {/* <div className="bg-white border-b border-gray-200 overflow-hidden">
-        <div className="flex items-center gap-8 px-6 py-2.5 overflow-x-auto scrollbar-hide">
-          {indices.map(idx => (
-            <div key={idx.name} className="flex items-center gap-2 flex-shrink-0 cursor-pointer">
-              <span className="text-sm font-medium text-gray-700">{idx.name}</span>
-              <span className="text-sm text-gray-900">{idx.val}</span>
-              <span className={`text-sm ${idx.up ? "text-[#00b386]" : "text-[#eb5757]"}`}>
-                {idx.chg} ({idx.pct})
-              </span>
-            </div>
-          ))}
-          <button className="flex-shrink-0 text-gray-400 hover:text-gray-600">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.8"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" stroke="currentColor" strokeWidth="1.5"/></svg>
-          </button>
-        </div>
-      </div> */}
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <main className="max-w-[1400px] mx-auto px-1 py-1">
