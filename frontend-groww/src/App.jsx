@@ -44,6 +44,7 @@ import Orders from './components/UserModule/Orders'
 import StocksEmptyState from './components/UserModule/StocksEmptyState'
 import FOEmptyState from './components/UserModule/FOEmptyState'
 import MutualFundsEmptyState from './components/UserModule/MutualFundsEmptyState'
+import CardDetails from './components/Details/CardDetails'
 
 export const UserIdProvider=createContext()
 export const UserPicture=createContext()
@@ -103,6 +104,7 @@ function App() {
           <Route path='futures-and-options' element={<FOEmptyState/>}/>
           <Route path='mutual-funds' element={<MutualFundsEmptyState/>}/>
         </Route>
+        <Route path="/stocks/:name" element={<CardDetails/>}/>
       </Routes>
       </UserIdProvider.Provider>
       </UserPicture.Provider>

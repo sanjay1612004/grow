@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 // ── tiny SVG spark line ──────────────────────────────────────────────────────
 function Spark({ up = true }) {
@@ -245,6 +246,7 @@ export default function Explore() {
             changeVal: `${isUp ? "+" : ""}${dayChange.toFixed(2)}`,
             change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
             up: isUp,
+            nse:item?.company?.nseScriptCode
           };
         });
 
@@ -281,6 +283,8 @@ export default function Explore() {
             changeVal: `${isUp ? "+" : ""}${dayChange.toFixed(2)}`,
             change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
             up: isUp,
+            nse:item?.company?.nseScriptCode
+
           };
         });
 
@@ -332,6 +336,8 @@ export default function Explore() {
           changeVal: `${isUp ? "+" : ""}${dayChange.toFixed(2)}`,
           change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
           up: isUp,
+          nse:item?.company?.nseScriptCode
+
         };
       });
 
@@ -436,6 +442,8 @@ useEffect(() => {
           changeVal: `${isUp ? "+" : ""}${dayChange.toFixed(2)}`,
           change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
           up: isUp,
+          nse:item?.company?.nseScriptCode
+
         };
       });
 
@@ -649,7 +657,9 @@ useEffect(() => {
               <div className="flex overflow-x-auto scrollbar-hide gap-1.5">
                 {mostBought.map((s) => (
                   <div key={s.name} className="flex-shrink-0 px-0.5">
+                    <Link to={`/stocks/${s?.nse}`}>
                     <StockCard {...s} />
+                    </Link>
                   </div>
                 ))}
               </div>
@@ -665,7 +675,8 @@ useEffect(() => {
             <section>
               <h2 className="text-base font-semibold text-gray-900 mb-4">Top intraday stocks</h2>
               <div className="grid grid-cols-4 gap-3">
-                {Topintradaystocks.map(s => <StockCard key={s.name} {...s} />)}
+                {Topintradaystocks.map(s =>                     <Link to={`/stocks/${s?.nse}`}>
+<StockCard key={s.name} {...s} /></Link>)}
               </div>
               <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/stocks/intraday">
                 Intraday screener <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
@@ -692,7 +703,8 @@ useEffect(() => {
             <section>
               <h2 className="text-base font-semibold text-gray-900 mb-4">Most bought ETFs</h2>
               <div className="grid grid-cols-4 gap-3">
-                {MostboughtETFs.map(s => <StockCard key={s.name} {...s} />)}
+                {MostboughtETFs.map(s =>                     <Link to={`/stocks/${s?.nse}`}>
+<StockCard key={s.name} {...s} /></Link>)}
               </div>
               <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/etfs">
                 See all ETFs <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
@@ -703,7 +715,8 @@ useEffect(() => {
             <section>
               <h2 className="text-base font-semibold text-gray-900 mb-4">ETFs by Groww</h2>
               <div className="grid grid-cols-4 gap-3">
-                {ETFsbyGroww.map(s => <StockCard key={s.name + "-groww"} {...s} />)}
+                {ETFsbyGroww.map(s =>                     <Link to={`/stocks/${s?.nse}`}>
+<StockCard key={s.name + "-groww"} {...s} /></Link>)}
               </div>
               <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/etf-nfo">
                 See all ETFs <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
