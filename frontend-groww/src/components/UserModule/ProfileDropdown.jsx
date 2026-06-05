@@ -12,6 +12,7 @@ const menuItems = [
     ),
     label: "₹0.00",
     sublabel: "Stocks, F&O balance",
+    url:"/user/balance/inr"
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ const menuItems = [
     ),
     label: "All Orders",
     sublabel: null,
+    url:"/"
   },
   {
     id: 3,
@@ -32,6 +34,7 @@ const menuItems = [
     ),
     label: "24 x 7 Customer Support",
     sublabel: null,
+    url:"/"
   },
   {
     id: 4,
@@ -42,6 +45,7 @@ const menuItems = [
     ),
     label: "Reports",
     sublabel: null,
+    url:'/user/profile/reports'
   },
 ];
 
@@ -96,7 +100,8 @@ export default function ProfilePanel() {
         {/* Menu Items */}
         <div className="py-1">
           {menuItems.map((item, index) => (
-            <div key={item.id}>
+            <Link to={item.url} key={item.id}>
+            <div >
               <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left group">
                 <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 flex-shrink-0 group-hover:bg-gray-200 transition-colors">
                   {item.icon}
@@ -113,6 +118,7 @@ export default function ProfilePanel() {
                 <div className="mx-4 border-t border-gray-100" />
               )}
             </div>
+            </Link>
           ))}
         </div>
 

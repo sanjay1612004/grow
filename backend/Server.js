@@ -82,6 +82,80 @@ app.get("/api/etf-stocks", async (req, res) => {
 });
 
 
+app.get("/api/indices", async (req, res) => {
+  try {
+    const response = await axios.post(
+      "https://groww.in/v1/api/stocks_data/v1/tr_live_delayed/segment/CASH/latest_aggregated",
+      {
+        exchangeAggReqMap: {
+          NSE: {
+            priceSymbolList: [],
+            indexSymbolList: [
+              "NIFTY",
+              "BANKNIFTY",
+              "FINNIFTY",
+              "NIFTYMIDSELECT",
+              "INDIAVIX",
+              "NIFTYTOTALMCAP",
+              "NIFTYJR",
+              "NIFTY100",
+              "NIFTYMIDCAP",
+              "NIFTY500",
+              "NIFTYAUTO",
+              "NIFTYSMALL",
+              "NIFTYFMCG",
+              "NIFTYMETAL",
+              "NIFTYPHARMA",
+              "NIFTYPSUBANK",
+              "NIFTYIT",
+              "NIFTYSMALLCAP250",
+              "NIFTYMIDCAP150",
+              "NIFTYCDTY",
+            ],
+          },
+          BSE: {
+            priceSymbolList: [],
+            indexSymbolList: ["1", "14", "2", "19", "23", "93"],
+          },
+        },
+      },
+      {
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+
+          "x-app-id": "growwWeb",
+          "x-device-type": "desktop",
+          "x-platform": "web",
+
+          "x-device-id": "9b50bca8-8381-5ed0-84b2-e663e094e99e",
+          "x-device-id-v2": "9b50bca8-8381-5ed0-84b2-e663e094e99e",
+
+          "x-request-id": crypto.randomUUID(),
+
+          Referer: "https://groww.in/indices/indian-indices",
+          Origin: "https://groww.in",
+
+          // Add these only if API returns 401/403
+          authorization: process.env.GROWW_AUTH_TOKEN,
+          "x-user-campaign": process.env.GROWW_CAMPAIGN_TOKEN,
+          "x-request-checksum": process.env.GROWW_CHECKSUM,
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+
+    res.status(500).json({
+      success: false,
+      error: err.response?.data || err.message,
+    });
+  }
+});
+
+
 app.listen(8000, () => {
   console.log("Server running on port 8000");
 });

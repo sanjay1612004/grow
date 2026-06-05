@@ -40,6 +40,10 @@ import NomineeDetails from './components/UserModule/NomineeDetails'
 import ActiveDevices from './components/UserModule/ActiveDevices'
 import ReportSuspiciousActivity from './components/UserModule/ReportSuspiciousActivity'
 import Balance from './components/UserModule/Balance'
+import Orders from './components/UserModule/Orders'
+import StocksEmptyState from './components/UserModule/StocksEmptyState'
+import FOEmptyState from './components/UserModule/FOEmptyState'
+import MutualFundsEmptyState from './components/UserModule/MutualFundsEmptyState'
 
 export const UserIdProvider=createContext()
 export const UserPicture=createContext()
@@ -93,6 +97,12 @@ function App() {
           <Route path="report-suspicious" element={<ReportSuspiciousActivity />} />
         </Route>     
         <Route path='/user/balance/inr' element={<Balance/>}/> 
+        <Route path='/user/order' element={<Orders/>}>
+          <Route index element={<Navigate to="stocks" replace/>}/>
+          <Route path='stocks' element={<StocksEmptyState/>}/>
+          <Route path='futures-and-options' element={<FOEmptyState/>}/>
+          <Route path='mutual-funds' element={<MutualFundsEmptyState/>}/>
+        </Route>
       </Routes>
       </UserIdProvider.Provider>
       </UserPicture.Provider>

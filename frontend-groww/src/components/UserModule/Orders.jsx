@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
-import ProfileDropdown from './ProfileDropdown'
-
+import { useState } from "react";
+import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
+// import ProfileDropdown from './ProfileDropdown'
+// import StocksEmptyState from "./StocksEmptyState";
+// import FOEmptyState from "./FOEmptyState";
+const tabs = ["Stocks", "F&O", "Mutual Funds"];
 
 const TEAL = "#00b386";
 const TEAL_LIGHT = "#e6f7f3";
@@ -13,12 +15,15 @@ const BG_HOVER = "#f7f7f7";
 const BG_ACTIVE = "#f0f0f0";
 
 
-const Balance = () => {
+export default function Orders() {
+  const [activeTab, setActiveTab] = useState("Stocks");
     const [showProfile, setShowProfile] = useState(false);
+    const navigate=useNavigate()
 
-    return (
-        <div>
-            <nav style={{
+
+  return (
+    <div>
+     <nav style={{
                 background: "#fff",
                 borderBottom: `1px solid ${BORDER}`,
                 padding: "0 60px",
@@ -77,15 +82,51 @@ const Balance = () => {
                     </div>
                 </div>
             </nav>
-            <div className='flex justify-center items-center h-screen flex-col'>
-                <img src="https://assets-netstorage.groww.in/web-assets/billion_groww_desktop/prod/_next/static/media/non_onboarded_wallet.11dfb63f.svg" alt="" width={300} height={300}/>
-                <p className='font-bold text-gray-700 mt-10'>Invest faster with Groww Balance</p>
-                <p className='mt-5 text-gray-700'>No bank login, no OTP,no waiting -Add money now !</p>
-                <button className=' uppercase bg-[#04B488] text-white px-3 py-1 mt-10 rounded text-sm font-bold'>start investing</button>
-            </div>
+    <div className="min-h-screen bg-white font-sans" style={{ fontFamily: "'Segoe UI', sans-serif" }}>
+      <div className="max-w-5xl mx-23 px-1 py-8">
+        {/* Title */}
+        <h1 className="text-3xl font-bold mb-6 text-gray-700">
+          All orders
+        </h1>
 
+        {/* Tab bar */}
+        <div className="border-b" style={{ borderColor: "#e5e7eb" }}>
+          <div className="flex gap-8">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => {
+                    setActiveTab(tab);
+
+                    if (tab === "Stocks") navigate("/user/order/stocks");
+                    if (tab === "F&O") navigate("/user/order/futures-and-options");
+                    if (tab === "Mutual Funds") navigate("/user/order/mutual-funds");
+                }}
+
+                className="pb-3 text-sm font-medium cursor-pointer bg-transparent border-none outline-none relative"
+                style={{
+                  color: activeTab === tab ? "#1e2028" : "#6b7280",
+                  fontWeight: activeTab === tab ? 700 : 500,
+                }}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <span
+                    className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t"
+                    style={{ backgroundColor: "#1e2028" }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
-    )
-}
 
-export default Balance
+        {/* Tab content */}
+        <div className="mt-4">
+          <Outlet/>
+        </div>
+      </div>
+    </div>
+    </div>
+  );
+}
