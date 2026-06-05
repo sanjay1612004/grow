@@ -31,6 +31,7 @@ const user = {
 
 export default function BasicDetails() {
   return (
+    
     <div style={{
       background: "#fff",
       border: `1px solid ${BORDER}`,

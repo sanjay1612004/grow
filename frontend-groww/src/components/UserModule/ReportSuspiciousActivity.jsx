@@ -1,4 +1,9 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { IoIosLogOut } from "react-icons/io";
+import { MdKey } from "react-icons/md";
+import { CiMail } from "react-icons/ci";
+
 
 const TEAL = "#00b386";
 const TEAL_LIGHT = "#e6f7f3";
@@ -26,7 +31,7 @@ export default function ReportSuspiciousActivity() {
         textAlign: "center",
       }}>
         {/* Illustration */}
-        <div style={{ marginBottom: 24, fontSize: 64 }}>🔐</div>
+        <div style={{ marginBottom: 24, fontSize: 74 }}><img src="https://assets-netstorage.groww.in/web-assets/billion_groww_desktop/prod/_next/static/media/errorImage.34beb745.svg"/></div>
         <h2 style={{ fontSize: 20, fontWeight: 700, color: TEXT_PRIMARY, marginBottom: 8 }}>
           Found suspicious activity in your account?
         </h2>
@@ -37,17 +42,19 @@ export default function ReportSuspiciousActivity() {
 
       <div style={{ padding: "0 32px 32px" }}>
         {[
-          { icon: "↪", label: "Logout of all devices" },
-          { icon: "🔑", label: "Change Groww Pin" },
-          { icon: "✉️", label: "Change password" },
+          { icon: <IoIosLogOut />, label: "Logout of all devices",url:"/user/profile/active-devices" },
+          { icon: <MdKey />, label: "Change Groww Pin",url:"/user/profile/change-pin" },
+          { icon: <CiMail />, label: "Change password",url:"/user/profile/change-password" },
         ].map(item => (
+          <Link to={item.url}>
           <button
             key={item.label}
+            className="mx-auto"
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              width: "100%",
+              width: "60%",
               padding: "16px 20px",
               background: "#fff",
               border: `1px solid ${BORDER}`,
@@ -63,13 +70,14 @@ export default function ReportSuspiciousActivity() {
             onMouseLeave={e => e.currentTarget.style.background = "#fff"}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ fontSize: 18 }}>{item.icon}</span>
+              <span style={{ fontSize: 22 }} className="font-bold text-2xl">{item.icon}</span>
               <span>{item.label}</span>
             </div>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </button>
+          </Link>
         ))}
       </div>
     </div>

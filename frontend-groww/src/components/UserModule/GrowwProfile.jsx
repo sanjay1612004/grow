@@ -1,18 +1,9 @@
 
 import { useState } from "react";
-import BasicDetails from "./BasicDetails";
-import Reports from "./Reports";
-import ChangeGrowwPIN from "./ChangeGrowwPin";
-import ChangePassword from "./ChangePassword";
-import TradingAPIs from "./TradingAPIS";
-import TradingControls from "./TradingControls";
-import TradingDetails from "./TradingDetails";
-import SellAuthorisationMode from "./SellAuthorizationMode";
-import AccountRelatedForms from "./AccountRelatedForms";
-import NomineeDetails from "./NomineeDetails";
-import ActiveDevices from "./ActiveDevices";
-import ReportSuspiciousActivity from "./ReportSuspiciousActivity";
 import Sidebar from "./Sidebar";
+import ProfileDropdown from "./ProfileDropdown";
+import { Link, Outlet } from "react-router-dom";
+
 
 const TEAL = "#00b386";
 const TEAL_LIGHT = "#e6f7f3";
@@ -23,64 +14,15 @@ const TEXT_MUTED = "#9ca3af";
 const BG_HOVER = "#f7f7f7";
 const BG_ACTIVE = "#f0f0f0";
 
-const user = {
-  name: "Sanjay Balaji",
-  avatar: "https://i.pravatar.cc/80?img=12",
-  mobile: "*****89425",
-  email: "san***********s@gmail.com",
-  dob: "-",
-  maritalStatus: "-",
-  gender: "-",
-  incomeRange: "-",
-  occupation: "-",
-  pan: "ABCPS1234D",
-  ucc: "8605965652",
-  dpId: "-",
-  dematAccNumber: "-",
-  depository: "Groww Invest Tech Pvt. Ltd.",
-  depositoryName: "CDSL",
-};
-
-const menuItems = [
-  { key: "basic-details", label: "Basic Details" },
-  { key: "reports", label: "Reports" },
-  { key: "change-password", label: "Change Password" },
-  { key: "change-pin", label: "Change Groww PIN" },
-  { key: "trading-controls", label: "Trading controls" },
-  { key: "trading-apis", label: "Trading APIs" },
-  { key: "sell-authorisation", label: "Sell authorisation mode" },
-  { key: "trading-details", label: "Trading Details" },
-  { key: "account-forms", label: "Account Related Forms" },
-  { key: "nominee-details", label: "Nominee Details" },
-  { key: "active-devices", label: "Active Devices" },
-  { key: "report-suspicious", label: "Report suspicious activity" },
-];
-
-
-const componentMap = {
-  "basic-details": <BasicDetails/>,
-  "reports": <Reports />,
-  "change-password": <ChangePassword />,
-  "change-pin": <ChangeGrowwPIN />,
-  "trading-controls": <TradingControls />,
-  "trading-apis": <TradingAPIs />,
-  "sell-authorisation": <SellAuthorisationMode />,
-  "trading-details": <TradingDetails />,
-  "account-forms": <AccountRelatedForms />,
-  "nominee-details": <NomineeDetails />,
-  "active-devices": <ActiveDevices />,
-  "report-suspicious": <ReportSuspiciousActivity />,
-};
-
 export default function GrowwProfile() {
-  const [active, setActive] = useState("basic-details");
+  const [showProfile, setShowProfile] = useState(false);
 
   return (
     <div style={{
       fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       background: "#FFFF",
       minHeight: "100vh",
-    }}>
+    }} >
       {/* Navbar */}
       <nav style={{
         background: "#fff",
@@ -93,8 +35,8 @@ export default function GrowwProfile() {
         position: "sticky",
         top: 0,
         zIndex: 100,
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+      }} className="relative bg-white/60 backdrop-blur-md ">
+        <div style={{ display: "flex", alignItems: "center", gap: 32 }} >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{
               width: 32,
@@ -104,7 +46,7 @@ export default function GrowwProfile() {
               alignItems: "center",
               justifyContent: "center",
             }}>
-                <img src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp" alt="" />
+                <Link to="/user/explore"><img src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp" alt="" /></Link>
             </div>
           </div>
           {["Stocks", "F&O", "Mutual Funds"].map(item => (
@@ -131,7 +73,14 @@ export default function GrowwProfile() {
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
-          <img src="https://lh3.googleusercontent.com/a/ACg8ocIYetc0b2EDMVGG5XQi0ZYArJTTNNjd4sYXbUGGwKYi51BGgcP3=s96-c" alt="profile" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} />
+          <img src="https://lh3.googleusercontent.com/a/ACg8ocIYetc0b2EDMVGG5XQi0ZYArJTTNNjd4sYXbUGGwKYi51BGgcP3=s96-c" alt="profile" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} onClick={()=>setShowProfile(!showProfile)} />
+          <div className="relative">
+  {showProfile && (
+    <div className="absolute right-0 top-10 z-[9999]">
+      <ProfileDropdown />
+    </div>
+  )}
+</div>
         </div>
       </nav>
 
@@ -143,10 +92,10 @@ export default function GrowwProfile() {
         display: "flex",
         gap: 24,
         alignItems: "flex-start",
-      }}>
-        <Sidebar active={active} onSelect={setActive} />
+      }} onClick={() => setShowProfile(false)}>
+        <Sidebar />
         <div style={{ flex: 1, minWidth: 0 }}>
-          {componentMap[active]}
+          <Outlet />
         </div>
       </div>
     </div>

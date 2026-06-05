@@ -1,4 +1,4 @@
-
+import { NavLink } from "react-router-dom";
 const TEAL = "#00b386";
 const TEAL_LIGHT = "#e6f7f3";
 const BORDER = "#e8e8e8";
@@ -45,7 +45,7 @@ const menuItems = [
 
 
 
-export default function Sidebar({ active, onSelect }) {
+export default function Sidebar() {
   return (
     <div style={{
       width: 300,
@@ -61,7 +61,6 @@ export default function Sidebar({ active, onSelect }) {
         flexDirection: "column",
         alignItems: "center",
         padding: "28px 20px 20px",
-        borderBottom: `1px solid ${BORDER}`,
       }}>
         <img
           src={user.avatar}
@@ -78,36 +77,43 @@ export default function Sidebar({ active, onSelect }) {
       </div>
       <nav>
         {menuItems.map((item) => (
-          <button
+          <NavLink
             key={item.key}
-            onClick={() => onSelect(item.key)}
-            style={{
+            to={`/user/profile/${item.key}`}
+            style={({ isActive }) => ({
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               width: "100%",
               padding: "14px 20px",
-              background: active === item.key ? BG_ACTIVE : "transparent",
+              background: isActive ? BG_ACTIVE : "transparent",
               border: "none",
-              borderBottom: `1px solid ${BORDER}`,
               cursor: "pointer",
               textAlign: "left",
-              fontWeight: active === item.key ? 600 : 400,
+              fontWeight: isActive ? 600 : 400,
               fontSize: 14,
-              color: active === item.key ? TEXT_PRIMARY : "#374151",
+              color: isActive ? TEXT_PRIMARY : "#374151",
+              textDecoration: "none",
               transition: "background 0.15s",
+            })}
+            onMouseEnter={e => {
+              if (e.currentTarget.getAttribute("aria-current") !== "page") {
+                e.currentTarget.style.background = BG_HOVER;
+              }
             }}
-            onMouseEnter={e => { if (active !== item.key) e.currentTarget.style.background = BG_HOVER; }}
-            onMouseLeave={e => { if (active !== item.key) e.currentTarget.style.background = "transparent"; }}
+            onMouseLeave={e => {
+              if (e.currentTarget.getAttribute("aria-current") !== "page") {
+                e.currentTarget.style.background = "transparent";
+              }
+            }}
           >
             <span>{item.label}</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
               <polyline points="9 18 15 12 9 6" />
             </svg>
-          </button>
+          </NavLink>
         ))}
       </nav>
     </div>
   );
 }
-

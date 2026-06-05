@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, Navigate} from 'react-router-dom';
 import HomePage from './components/landingpage/HomePage'
 import Signup from './components/authentication/Signup'
 import VerifyMobile from './components/authentication/VerifyMobile'
@@ -27,6 +27,19 @@ import GrowwStockNews from './components/pages/GrowwStockNews'
 import KycFlowContainer from './components/KYC/KycFlow'
 import GrowwIndicesDashboard from './components/pages/GrowwIndicesDashboard'
 import GrowwProfile from './components/UserModule/GrowwProfile'
+import BasicDetails from './components/UserModule/BasicDetails'
+import Reports from './components/UserModule/Reports'
+import ChangePassword from './components/UserModule/ChangePassword'
+import ChangeGrowwPin from './components/UserModule/ChangeGrowwPin'
+import TradingControls from './components/UserModule/TradingControls'
+import TradingAPIs from './components/UserModule/TradingAPIS'
+import SellAuthorisationMode from './components/UserModule/SellAuthorizationMode'
+import TradingDetails from './components/UserModule/TradingDetails'
+import AccountRelatedForms from './components/UserModule/AccountRelatedForms'
+import NomineeDetails from './components/UserModule/NomineeDetails'
+import ActiveDevices from './components/UserModule/ActiveDevices'
+import ReportSuspiciousActivity from './components/UserModule/ReportSuspiciousActivity'
+import Balance from './components/UserModule/Balance'
 
 export const UserIdProvider=createContext()
 export const UserPicture=createContext()
@@ -64,7 +77,22 @@ function App() {
         <Route path="/market-news/stocks" element={<GrowwStockNews/>}/>
         <Route path='/kyc' element={<KycFlowContainer/>}/>
         <Route path='/indices' element={<GrowwIndicesDashboard/>}/>
-        <Route path='/user/profile' element={<GrowwProfile/>}/>
+        <Route path="/user/profile" element={<GrowwProfile />}>
+          <Route index element={<Navigate to="basic-details" replace />} />
+          <Route path="basic-details" element={<BasicDetails/>} />
+          <Route path="reports" element={<Reports/>} />
+          <Route path="change-password" element={<ChangePassword/>} />
+          <Route path="change-pin" element={<ChangeGrowwPin/>} />
+          <Route path="trading-controls" element={<TradingControls />} />
+          <Route path="trading-apis" element={<TradingAPIs />} />
+          <Route path="sell-authorisation" element={<SellAuthorisationMode />} />
+          <Route path="trading-details" element={<TradingDetails />} />
+          <Route path="account-forms" element={<AccountRelatedForms />} />
+          <Route path="nominee-details" element={<NomineeDetails />} />
+          <Route path="active-devices" element={<ActiveDevices />} />
+          <Route path="report-suspicious" element={<ReportSuspiciousActivity />} />
+        </Route>     
+        <Route path='/user/balance/inr' element={<Balance/>}/> 
       </Routes>
       </UserIdProvider.Provider>
       </UserPicture.Provider>

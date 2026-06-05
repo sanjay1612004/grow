@@ -7,10 +7,12 @@ import Positions from './Positions';
 import Watchlist from './Watchlist';
 import Footer from '../landingpage/Footer';
 import { UserPicture } from '../../App';
-
+import ProfileDropdown from "../UserModule/ProfileDropdown"
 const Common = () => {
       const [activeTab, setActiveTab] = useState("Explore");
       const {userPic,setuserPic}=useContext(UserPicture)
+        const [showProfile, setShowProfile] = useState(false);
+
       
       const tabs = ["Explore", "Holdings", "Positions", "Orders", "Watchlist"];
       const indices = [
@@ -57,10 +59,15 @@ useEffect(() => {
             {/* <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden cursor-pointer">
               <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400"/>
             </div> */}
-            {userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'/>}
-            {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}
+            {userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'onClick={()=>setShowProfile(!showProfile)}/>}
+            {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl' onClick={()=>setShowProfile(!showProfile)}/>}
           </div>
         </div>
+        {showProfile && (
+    <div className="absolute right-5 top-12 z-[9999]">
+      <ProfileDropdown/>
+    </div>
+  )}
 
         {/* ── Second nav row ──────────────────────────────────────────────── */}
         <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between border-t border-gray-200 border-b  ">
@@ -118,7 +125,7 @@ useEffect(() => {
       {/* ── Index ticker ────────────────────────────────────────────────── */}
      
 
-      <main className="max-w-[1400px] mx-auto px-6 py-6">
+      <main className="max-w-[1400px] mx-auto px-6 py-6" onClick={()=>setShowProfile(false)}>
   {activeTab === "Explore" && <Explore/>}
   {activeTab === "Holdings" && <Holdings/>}
   {activeTab === "Positions" && <Positions/>}

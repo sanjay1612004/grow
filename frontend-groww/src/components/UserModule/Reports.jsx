@@ -12,14 +12,14 @@ const BG_ACTIVE = "#f0f0f0";
 
 const reportGroups = [
   {
-    icon: "📊",
+    icon: "https://assets-netstorage.groww.in/web-assets/billion_groww_desktop/prod/_next/static/media/pnlLight.b55278a9.svg",
     color: "#e8f4fd",
     iconColor: "#3b82f6",
     title: "Profit & Loss",
     items: ["Stocks P&L", "Dividend report"],
   },
   {
-    icon: "🧾",
+    icon: "https://assets-netstorage.groww.in/web-assets/billion_groww_desktop/prod/_next/static/media/taxLight.f437979e.svg",
     color: "#f0fdf4",
     iconColor: "#22c55e",
     title: "Tax",
@@ -30,6 +30,29 @@ const reportGroups = [
       "F&O - Tax report",
       "Commodities - Tax report",
       "GST invoice",
+    ],
+  },
+  {
+    icon: "https://assets-netstorage.groww.in/web-assets/billion_groww_desktop/prod/_next/static/media/holdingsLight.3cde57f4.svg",
+    color: "#f0fdf4",
+    iconColor: "#22c55e",
+    title: "Holdings",
+    items: [
+      "Mutual Funds - Holding statement",
+      "Stocks - Holding statement",
+      "Demat report",
+    ],
+  },
+  {
+    icon: "https://assets-netstorage.groww.in/web-assets/billion_groww_desktop/prod/_next/static/media/transactionLight.4bc89403.svg",
+    color: "#f0fdf4",
+    iconColor: "#22c55e",
+    title: "Transactions",
+    items: [
+      "Mutual Funds - Order History",
+      "Stocks - Order History",
+      "Groww Balance Statement",
+      "Contract note"
     ],
   },
 ];
@@ -103,7 +126,7 @@ export default function Reports() {
                 justifyContent: "center",
                 fontSize: 16,
               }}>
-                {group.icon}
+                <img src={group.icon} alt="" className="bg-white"/>
               </div>
               <span style={{ fontWeight: 600, fontSize: 15, color: TEXT_PRIMARY }}>{group.title}</span>
             </div>
