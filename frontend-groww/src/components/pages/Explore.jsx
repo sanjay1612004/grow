@@ -222,6 +222,61 @@ export default function Explore() {
   const[ETFsbyGroww,setETFsbyGroww]=useState([])
   const[Stocksinnewstoday,setStocksinnewstoday]=useState([])
   const[Sectorstrendingtoday,setSectorstrendingtoday]=useState([])
+  const[mtfStocks,setmtfStocks]=useState([])
+
+
+  //Most bought stocks
+  useEffect(() => {
+  const fetchPopularStocksMostBought = async () => {
+    try {
+      const response = await fetch(
+        "https://groww.in/v1/api/stocks_data/v2/explore/list/top?discoveryFilterTypes=POPULAR_STOCKS_MOST_BOUGHT&page=0&size=4"
+      );
+
+      const data = await response.json();
+
+      const rawStocks =
+        data?.exploreCompanies?.POPULAR_STOCKS_MOST_BOUGHT || [];
+
+      const formattedStocks = rawStocks.map((item) => {
+        const ltp = item?.stats?.ltp ?? 0;
+        const dayChange = item?.stats?.dayChange ?? 0;
+        const dayChangePerc = item?.stats?.dayChangePerc ?? 0;
+        const isUp = dayChange >= 0;
+
+        return {
+          logo: item?.company?.imageUrl || "",
+          name:
+            item?.company?.companyShortName ||
+            item?.company?.companyName ||
+            "",
+          price: `₹${ltp.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`,
+          changeVal: `${isUp ? "+" : ""}${dayChange.toFixed(2)}`,
+          change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
+          up: isUp,
+          nse: item?.company?.nseScriptCode || "",
+          company:item?.company?.companyShortName
+
+        };
+      });
+
+      setmtfStocks(formattedStocks);
+    } catch (error) {
+      console.error(
+        "Failed to fetch Popular Stocks Most Bought:",
+        error
+      );
+    }
+  };
+
+  fetchPopularStocksMostBought();
+}, []);
+
+
+
 
   // ── Fetch most bought stocks ─────────────────────────────────────────────
   useEffect(() => {
@@ -246,7 +301,9 @@ export default function Explore() {
             changeVal: `${isUp ? "+" : ""}${dayChange.toFixed(2)}`,
             change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
             up: isUp,
-            nse:item?.company?.nseScriptCode
+            nse:item?.company?.nseScriptCode,
+            company:item?.company?.companyShortName
+
           };
         });
 
@@ -283,7 +340,8 @@ export default function Explore() {
             changeVal: `${isUp ? "+" : ""}${dayChange.toFixed(2)}`,
             change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
             up: isUp,
-            nse:item?.company?.nseScriptCode
+            nse:item?.company?.nseScriptCode,
+            company:item?.company?.companyShortName
 
           };
         });
@@ -336,7 +394,9 @@ export default function Explore() {
           changeVal: `${isUp ? "+" : ""}${dayChange.toFixed(2)}`,
           change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
           up: isUp,
-          nse:item?.company?.nseScriptCode
+          nse:item?.company?.nseScriptCode,
+          company:item?.company?.companyShortName
+
 
         };
       });
@@ -442,7 +502,9 @@ useEffect(() => {
           changeVal: `${isUp ? "+" : ""}${dayChange.toFixed(2)}`,
           change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
           up: isUp,
-          nse:item?.company?.nseScriptCode
+          nse:item?.company?.nseScriptCode,
+          company:item?.company?.companyShortName
+
 
         };
       });
@@ -515,12 +577,12 @@ useEffect(() => {
     { name: "FINNIFTY", val: "25,795.40", chg: "-1.20", pct: "0.01%", up: false },
   ];
 
-  const mtfStocks = [
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/ATGL.webp", name: "Adani Total Gas", price: "₹808.55", changeVal: "95.45", change: "13.39%", up: true },
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/HDFCBANK.webp", name: "HDFC Bank", price: "₹758.65", changeVal: "-20.25", change: "2.60%", up: false },
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/PINELABS1.png", name: "Pine Labs", price: "₹145.83", changeVal: "7.89", change: "5.72%", up: true },
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/ENRIN.webp", name: "Siemens Energy India", price: "₹3,766.10", changeVal: "303.50", change: "8.77%", up: true },
-  ];
+  // const mtfStocks = [
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/ATGL.webp", name: "Adani Total Gas", price: "₹808.55", changeVal: "95.45", change: "13.39%", up: true },
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/HDFCBANK.webp", name: "HDFC Bank", price: "₹758.65", changeVal: "-20.25", change: "2.60%", up: false },
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/PINELABS1.png", name: "Pine Labs", price: "₹145.83", changeVal: "7.89", change: "5.72%", up: true },
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/ENRIN.webp", name: "Siemens Energy India", price: "₹3,766.10", changeVal: "303.50", change: "8.77%", up: true },
+  // ];
 
   // const intradayStocks = [
   //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/AMS_BANSAL1.webp", name: "Apollo Micro Systems", price: "₹418.25", changeVal: "6.15", change: "1.49%", up: true },
@@ -529,28 +591,28 @@ useEffect(() => {
   //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/MTARTECH.webp", name: "MTAR Technologies", price: "₹7,814.00", changeVal: "-64.00", change: "0.81%", up: false, bookmark: true },
   // ];
 
-  const sectors = [
-    { icon: "🔋", name: "Batteries", gainers: 7, losers: 1, change: "+3.17%" },
-    { icon: "⛽", name: "Gas Distribution", gainers: 6, losers: 6, change: "+2.46%" },
-    { icon: "⚡", name: "Electrical Equipment", gainers: 70, losers: 37, change: "+2.36%" },
-    { icon: "🗑️", name: "Waste Management", gainers: 4, losers: 12, change: "-1.53%" },
-    { icon: "🛡️", name: "Insurance", gainers: 3, losers: 12, change: "-1.58%" },
-    { icon: "🚂", name: "Railways", gainers: 7, losers: 4, change: "-2.13%" },
-  ];
+  // const sectors = [
+  //   { icon: "🔋", name: "Batteries", gainers: 7, losers: 1, change: "+3.17%" },
+  //   { icon: "⛽", name: "Gas Distribution", gainers: 6, losers: 6, change: "+2.46%" },
+  //   { icon: "⚡", name: "Electrical Equipment", gainers: 70, losers: 37, change: "+2.36%" },
+  //   { icon: "🗑️", name: "Waste Management", gainers: 4, losers: 12, change: "-1.53%" },
+  //   { icon: "🛡️", name: "Insurance", gainers: 3, losers: 12, change: "-1.58%" },
+  //   { icon: "🚂", name: "Railways", gainers: 7, losers: 4, change: "-2.13%" },
+  // ];
 
-  const etfsBought = [
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/tata_groww.png", name: "Tata Gold Exchange", price: "₹92.20", changeVal: "-0.20", change: "0.22%", up: false },
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/nippon_groww.png", name: "Nippon India Silver", price: "₹82.52", changeVal: "-0.08", change: "0.10%", up: false },
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/motilal_groww.png", name: "Motilal Oswal", price: "₹30.75", changeVal: "-0.33", change: "1.06%", up: false },
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/nippon_groww.png", name: "Nippon india ETF", price: "₹26.77", changeVal: "-0.11", change: "0.41%", up: false },
-  ];
+  // const etfsBought = [
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/tata_groww.png", name: "Tata Gold Exchange", price: "₹92.20", changeVal: "-0.20", change: "0.22%", up: false },
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/nippon_groww.png", name: "Nippon India Silver", price: "₹82.52", changeVal: "-0.08", change: "0.10%", up: false },
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/motilal_groww.png", name: "Motilal Oswal", price: "₹30.75", changeVal: "-0.33", change: "1.06%", up: false },
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/nippon_groww.png", name: "Nippon india ETF", price: "₹26.77", changeVal: "-0.11", change: "0.41%", up: false },
+  // ];
 
-  const newsStocks = [
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/SUKHJIT.webp", name: "Sukhjit Starch", change: "-2.61%", up: false, headline: "Sukhjit Starch & Chemicals posted Q4 revenue of ₹4B, up from ₹3.6B YoY. This marks an 11% year-over-year...", time: "2 hours ago" },
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/KALLAM.webp", name: "Kallam Textiles", change: "+0.68%", up: true, headline: "Kallam Textiles Ltd seeks extension till June 15, 2026, for Q4 FY26 results due to audit delays. NCLT admitted...", time: "2 hours ago" },
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/AARTIIND.webp", name: "Aarti Industries", change: "+1.99%", up: true, headline: "Aarti Industries confirms repayment of Commercial Paper (CP) issued on Feb 25, 2026. The CP, bearing ISIN...", time: "2 hours ago" },
-    { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/SUBAM.webp", name: "Subam Papers", change: "-3.49%", up: false, headline: "Subam Papers Ltd planned to raise ₹107.04 Cr via preferential issue but received ₹74.36 Cr. Equity shares...", time: "2 hours ago" }
-  ];
+  // const newsStocks = [
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/SUKHJIT.webp", name: "Sukhjit Starch", change: "-2.61%", up: false, headline: "Sukhjit Starch & Chemicals posted Q4 revenue of ₹4B, up from ₹3.6B YoY. This marks an 11% year-over-year...", time: "2 hours ago" },
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/KALLAM.webp", name: "Kallam Textiles", change: "+0.68%", up: true, headline: "Kallam Textiles Ltd seeks extension till June 15, 2026, for Q4 FY26 results due to audit delays. NCLT admitted...", time: "2 hours ago" },
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/AARTIIND.webp", name: "Aarti Industries", change: "+1.99%", up: true, headline: "Aarti Industries confirms repayment of Commercial Paper (CP) issued on Feb 25, 2026. The CP, bearing ISIN...", time: "2 hours ago" },
+  //   { logo: "https://assets-netstorage.groww.in/stock-assets/logos2/SUBAM.webp", name: "Subam Papers", change: "-3.49%", up: false, headline: "Subam Papers Ltd planned to raise ₹107.04 Cr via preferential issue but received ₹74.36 Cr. Equity shares...", time: "2 hours ago" }
+  // ];
 
   const tradingScreens = [
     { title: "High momentum stocks", label: "Bullish", type: "Bullish",image:"https://storage.googleapis.com/groww-static-content/app-assets/stocks/stocksIcons/stocks_near_breakout_light.webp" },
@@ -588,7 +650,9 @@ useEffect(() => {
               </h2>
 
                <div className="grid grid-cols-4 gap-3">
-                {mtfStocks.map(s => <StockCard key={s.name} {...s} />)}
+                {mtfStocks.map(s => <Link to={`/stocks/${s?.nse}-${s?.company}`}>
+                    <StockCard {...s} />
+                    </Link>)}
               </div>
 
               <a className="mt-4 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/stocks/most-bought-stocks-on-groww">
