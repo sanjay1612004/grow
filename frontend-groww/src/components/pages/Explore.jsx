@@ -258,8 +258,8 @@ export default function Explore() {
           change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
           up: isUp,
           nse: item?.company?.nseScriptCode || "",
-          company:item?.company?.companyShortName
-
+          company:item?.company?.companyShortName,
+          searchId:item?.company?.searchId
         };
       });
 
@@ -302,7 +302,8 @@ export default function Explore() {
             change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
             up: isUp,
             nse:item?.company?.nseScriptCode,
-            company:item?.company?.companyShortName
+            company:item?.company?.companyShortName,
+            searchId:item?.company?.searchId
 
           };
         });
@@ -341,7 +342,8 @@ export default function Explore() {
             change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
             up: isUp,
             nse:item?.company?.nseScriptCode,
-            company:item?.company?.companyShortName
+            company:item?.company?.companyShortName,
+            searchId:item?.company?.searchId
 
           };
         });
@@ -395,7 +397,8 @@ export default function Explore() {
           change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
           up: isUp,
           nse:item?.company?.nseScriptCode,
-          company:item?.company?.companyShortName
+          company:item?.company?.companyShortName,
+          searchId:item?.company?.searchId
 
 
         };
@@ -503,7 +506,8 @@ useEffect(() => {
           change: `${Math.abs(dayChangePerc).toFixed(2)}%`,
           up: isUp,
           nse:item?.company?.nseScriptCode,
-          company:item?.company?.companyShortName
+          company:item?.company?.companyShortName,
+          searchId:item?.company?.searchId
 
 
         };
@@ -650,7 +654,7 @@ useEffect(() => {
               </h2>
 
                <div className="grid grid-cols-4 gap-3">
-                {mtfStocks.map(s => <Link to={`/stocks/${s?.nse}-${s?.company}`}>
+                {mtfStocks.map(s => <Link to={`/stocks/${s?.searchId}`} state={s}>
                     <StockCard {...s} />
                     </Link>)}
               </div>
@@ -721,7 +725,7 @@ useEffect(() => {
               <div className="flex overflow-x-auto scrollbar-hide gap-1.5">
                 {mostBought.map((s) => (
                   <div key={s.name} className="flex-shrink-0 px-0.5">
-                    <Link to={`/stocks/${s?.nse}`}>
+                    <Link to={`/stocks/${s?.searchId}`} state={s}>
                     <StockCard {...s} />
                     </Link>
                   </div>
@@ -739,7 +743,7 @@ useEffect(() => {
             <section>
               <h2 className="text-base font-semibold text-gray-900 mb-4">Top intraday stocks</h2>
               <div className="grid grid-cols-4 gap-3">
-                {Topintradaystocks.map(s =>                     <Link to={`/stocks/${s?.nse}`}>
+                {Topintradaystocks.map(s =><Link to={`/stocks/${s?.searchId}`} state={s}>
 <StockCard key={s.name} {...s} /></Link>)}
               </div>
               <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/stocks/intraday">
@@ -767,7 +771,7 @@ useEffect(() => {
             <section>
               <h2 className="text-base font-semibold text-gray-900 mb-4">Most bought ETFs</h2>
               <div className="grid grid-cols-4 gap-3">
-                {MostboughtETFs.map(s =>                     <Link to={`/stocks/${s?.nse}`}>
+                {MostboughtETFs.map(s =><Link to={`/stocks/${s?.searchId}`} state={s}>
 <StockCard key={s.name} {...s} /></Link>)}
               </div>
               <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/etfs">
@@ -779,7 +783,7 @@ useEffect(() => {
             <section>
               <h2 className="text-base font-semibold text-gray-900 mb-4">ETFs by Groww</h2>
               <div className="grid grid-cols-4 gap-3">
-                {ETFsbyGroww.map(s =>                     <Link to={`/stocks/${s?.nse}`}>
+                {ETFsbyGroww.map(s =><Link to={`/stocks/${s?.searchId}`} state={s}>
 <StockCard key={s.name + "-groww"} {...s} /></Link>)}
               </div>
               <a className="mt-3 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/etf-nfo">

@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import Footer from "../landingpage/Footer";
 import { UserPicture } from "../../App";
+import ProfileDropdown from "../UserModule/ProfileDropdown";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -128,6 +129,8 @@ function StockRow({ item, isLast }) {
   const { company, stats } = item;
   const isPositive = stats.dayChange >= 0;
   const trendPoints = generateTrendPoints(stats);
+  const [showProfile, setShowProfile] = useState(false);
+  
 
   return (
     <div
@@ -185,6 +188,8 @@ export default function GrowwMostBought() {
   const [loading, setLoading] = useState(true);
   const [error, setError]   = useState(null);
   const {userPic,setuserPic}=useContext(UserPicture)
+    const [showProfile, setShowProfile] = useState(false);
+  
 
   useEffect(() => {
     let cancelled = false;
@@ -267,11 +272,16 @@ export default function GrowwMostBought() {
               />
             </svg>
           </button>
-          <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden cursor-pointer">
+          <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden cursor-pointer" onClick={() => setShowProfile(!showProfile)}>
             {userPic && <img src={userPic} alt="" width={30} height={30} className='rounded-2xl'/>}
             {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}             
 
           </div>
+          {showProfile && (
+                        <div className="absolute right-5 top-12 z-[9999]">
+                          <ProfileDropdown/>
+                        </div>
+                      )}
         </div>
       </div>
 
@@ -350,9 +360,10 @@ export default function GrowwMostBought() {
           </div>
 
           {/* Footer */}
-          <Footer />
         </div>
       </div>
+                <Footer />
+
     </div>
   );
 }

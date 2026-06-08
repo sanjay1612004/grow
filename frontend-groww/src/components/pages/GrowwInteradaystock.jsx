@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect, useCallback, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { UserPicture } from "../../App";
+import ProfileDropdown from "../UserModule/ProfileDropdown";
 
 // ── Spark-line mini chart ─────────────────────────────────────────────────────
 function SparkLine({ points, color }) {
@@ -590,6 +591,7 @@ export default function GrowwInteradaystock() {
   const [filterState, setFilterState] = useState(DEFAULT_FILTERS);
   const [showClearTooltip, setShowClearTooltip] = useState(false);
   const { userPic } = useContext(UserPicture);
+  const [showProfile, setShowProfile] = useState(false);
 
   const fetchStocks = useCallback(async () => {
     setLoading(true);
@@ -675,9 +677,16 @@ export default function GrowwInteradaystock() {
           <button className="text-gray-500 hover:text-gray-700">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
           </button>
-          {userPic
-            ? <img src={userPic} alt="" width={28} height={28} className="rounded-full"/>
-            : <img src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" width={28} height={28} className="rounded-full"/>}
+          <div className="cursor-pointer" onClick={() => setShowProfile(!showProfile)}>
+            {userPic
+              ? <img src={userPic} alt="" width={28} height={28} className="rounded-full"/>
+              : <img src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" width={28} height={28} className="rounded-full"/>}
+          </div>
+          {showProfile && (
+            <div className="absolute right-5 top-12 z-[9999]">
+              <ProfileDropdown/>
+            </div>
+          )}
         </div>
       </div>
 

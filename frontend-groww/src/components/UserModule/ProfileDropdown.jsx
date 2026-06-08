@@ -23,7 +23,7 @@ const menuItems = [
     ),
     label: "All Orders",
     sublabel: null,
-    url:"/"
+    url:"/user/order/stocks"
   },
   {
     id: 3,
@@ -68,7 +68,7 @@ const SunIcon = () => (
   </svg>
 );
 
-export default function ProfilePanel() {
+export default function ProfileDropdown() {
   const [loggedOut, setLoggedOut] = useState(false);
 
   if (loggedOut) {

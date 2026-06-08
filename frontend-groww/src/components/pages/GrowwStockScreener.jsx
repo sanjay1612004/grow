@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import Footer from "../landingpage/Footer"
 import { UserPicture } from "../../App";
 import { NavLink } from "react-router-dom";
+import ProfileDropdown from "../UserModule/ProfileDropdown";
 
 
 const API_URL = "http://localhost:8000/api/etf-stocks";
@@ -199,6 +200,7 @@ export default function GrowwStockScreener() {
   const [sortDir, setSortDir] = useState("desc");
   const [filterCount, setFilterCount] = useState(0);
   const { userPic } = useContext(UserPicture);
+  const [showProfile, setShowProfile] = useState(false);
 
 
   const fetchData = useCallback(async () => {
@@ -286,9 +288,16 @@ export default function GrowwStockScreener() {
           <button className="text-gray-500 hover:text-gray-700">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
           </button>
-          {userPic
-            ? <img src={userPic} alt="" width={28} height={28} className="rounded-full"/>
-            : <img src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" width={28} height={28} className="rounded-full"/>}
+          <div className="cursor-pointer" onClick={() => setShowProfile(!showProfile)}>
+            {userPic
+              ? <img src={userPic} alt="" width={28} height={28} className="rounded-full"/>
+              : <img src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" width={28} height={28} className="rounded-full"/>}
+          </div>
+          {showProfile && (
+            <div className="absolute right-5 top-12 z-[9999]">
+              <ProfileDropdown/>
+            </div>
+          )}
         </div>
       </div>
     <div style={{ minHeight: "100vh", background: "#fff", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>

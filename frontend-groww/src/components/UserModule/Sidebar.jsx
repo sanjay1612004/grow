@@ -11,7 +11,7 @@ const BG_ACTIVE = "#f0f0f0";
 
 const user = {
   name: "Sanjay Balaji",
-  avatar: "https://lh3.googleusercontent.com/a/ACg8ocIYetc0b2EDMVGG5XQi0ZYArJTTNNjd4sYXbUGGwKYi51BGgcP3=s96-c",
+  avatar: "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg",
   mobile: "*****89425",
   email: "san***********s@gmail.com",
   dob: "-",

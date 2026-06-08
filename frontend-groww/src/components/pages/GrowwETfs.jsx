@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import Footer from "../landingpage/Footer";
 import { UserPicture } from "../../App";
+import ProfileDropdown from "../UserModule/ProfileDropdown";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -218,6 +219,7 @@ function InvestCard() {
 
 function Navbar() {
         const {userPic,setuserPic}=useContext(UserPicture)
+  const [showProfile, setShowProfile] = useState(false);
   
   return (
     <div className="border-b border-gray-100 bg-white">
@@ -259,8 +261,16 @@ function Navbar() {
                 stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
           </button>
-{userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'/>}
-            {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}        </div>
+          <div className="cursor-pointer" onClick={() => setShowProfile(!showProfile)}>
+            {userPic && <img src={userPic} alt="" width={28} height={28} className='rounded-2xl'/>}
+            {!userPic && <img src='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'  width={28} height={28} className='rounded-2xl'/>}
+          </div>
+          {showProfile && (
+            <div className="absolute right-5 top-12 z-[9999]">
+              <ProfileDropdown/>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

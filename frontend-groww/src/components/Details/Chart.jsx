@@ -26,7 +26,7 @@ function formatTooltipDate(ts, period) {
   return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
 
-export default function StockDashboard({sname,lname}) {
+export default function StockDashboard({sname,lname,logo}) {
   const [activeTab, setActiveTab] = useState("1D");
   const [exchange, setExchange] = useState("NSE");
   const [chartData, setChartData] = useState([]);
@@ -39,15 +39,15 @@ export default function StockDashboard({sname,lname}) {
 
 
   const PERIOD_API = {
-  "1D":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/daily?intervalInMinutes=5&minimal=true`,
+  "1D":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/daily?intervalInMinutes=1&minimal=true`,
   "1W":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/weekly?intervalInMinutes=5&minimal=true`,
   "1M":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/monthly?/v2?months=1&minimal=true`,
   "3M":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/monthly?/v2?months=3&minimal=true`,
   "6M":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/monthly?/v2?months=6&minimal=true`,
-  "1Y":  "https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/BSE/1y?intervalInDays=1&minimal=true",
-  "3Y":  "https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/BSE/3y?intervalInDays=1&minimal=true",
-  "5Y":  "https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/BSE/5y?intervalInDays=1&minimal=true",
-  "All": "https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/BSE/all?noOfCandles=300",
+  "1Y":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/1y?intervalInDays=1&minimal=true`,
+  "3Y":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/3y?intervalInDays=1&minimal=true`,
+  "5Y":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/5y?intervalInDays=1&minimal=true`,
+  "All": `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/all?noOfCandles=300`,
 };
 
   // Hover state for crosshair tooltip
@@ -242,7 +242,7 @@ fill: {
                   {/* Logo */}
                   <div className="mb-5 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-white">
                     <img
-                      src={`https://assets-netstorage.groww.in/stock-assets/logos2/${sname}.webp`}
+                      src={logo}
                       alt="BSE"
                       className="h-full w-full object-cover"
                       onError={e => {
@@ -317,7 +317,7 @@ fill: {
             </div>
 
             {/* Chart */}
-            <div className="relative mt-24 ">
+            <div className="relative mt-24">
               {loading ? (
                 <div className="flex h-[340px] items-center justify-center">
                   <div className="flex flex-col items-center gap-3">
@@ -399,13 +399,22 @@ fill: {
             </div>
 
             {/* Create Stock SIP row */}
-            <div className="mb-5 border-t border-gray-100">
+            <div className="mb-5 border border-gray-300 px-2 rounded-md">
               <button className="w-full flex items-center justify-between py-4 group">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center shrink-0">
-                    <Calendar size={16} className="text-[#00b386]" />
+                  <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center shrink-0 border border-gray-300">
+                    <Calendar size={24} className="text-[#00b386]" />
                   </div>
-                  <span className="text-[14px] font-semibold text-gray-800">Create Stock SIP</span>
+                  <div className="flex flex-col items-start">
+                    <h3 className="text-[16px] font-semibold text-gray-800 leading-none">
+                      Create Stock SIP
+                    </h3>
+
+                    <p className="text-[14px] text-gray-500 mt-2">
+                      Automate your investments in this Stock
+                    </p>
+                  </div>
+
                 </div>
                 <ChevronRight size={18} className="text-gray-400 group-hover:text-gray-600 transition-colors" />
               </button>

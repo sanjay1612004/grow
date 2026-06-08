@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
-// import ProfileDropdown from './ProfileDropdown'
+import ProfileDropdown from './ProfileDropdown'
 // import StocksEmptyState from "./StocksEmptyState";
 // import FOEmptyState from "./FOEmptyState";
 const tabs = ["Stocks", "F&O", "Mutual Funds"];

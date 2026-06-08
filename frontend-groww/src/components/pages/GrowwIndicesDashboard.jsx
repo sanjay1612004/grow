@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import Footer from "../landingpage/Footer";
 import { UserPicture } from "../../App";
 import { NavLink } from "react-router-dom";
+import ProfileDropdown from "../UserModule/ProfileDropdown";
 
 // ─── Groww Design Tokens ──────────────────────────────────────────────────────
 const GROWW_ACCENT   = "#04b488";
@@ -489,6 +490,7 @@ function ErrorBanner({ message, onRetry }) {
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 function Navbar() {
   const { userPic } = useContext(UserPicture);
+  const [showProfile, setShowProfile] = useState(false);
 
   return (
     <div className="border-b border-gray-100 bg-white sticky top-0 z-1000 bg-white/60 backdrop-blur-md">
@@ -534,10 +536,17 @@ function Navbar() {
               />
             </svg>
           </button>
-          {userPic
-            ? <img src={userPic} alt="" width={28} height={28} className="rounded-2xl" />
-            : <img src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" width={28} height={28} className="rounded-2xl" />
-          }
+          <div className="cursor-pointer" onClick={() => setShowProfile(!showProfile)}>
+            {userPic
+              ? <img src={userPic} alt="" width={28} height={28} className="rounded-2xl" />
+              : <img src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" width={28} height={28} className="rounded-2xl" />
+            }
+          </div>
+          {showProfile && (
+            <div className="absolute right-5 top-12 z-[9999]">
+              <ProfileDropdown/>
+            </div>
+          )}
         </div>
       </div>
     </div>
