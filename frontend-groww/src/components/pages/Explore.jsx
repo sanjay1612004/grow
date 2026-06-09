@@ -149,7 +149,7 @@ function NewsCard({ logo, name, change, up, headline, time }) {
         </div>
 
         <div className="border-l-2 border-gray-200 pl-3">
-          <p className="text-sm text-gray-500 leading-relaxed text-left">
+          <p className="text-sm text-gray-500 leading-relaxed text-left line-clamp-3">
             {headline}
           </p>
         </div>
@@ -426,14 +426,28 @@ useEffect(() => {
 
       const rawNews = data?.feed || [];
 
-      const formattedNews = rawNews.map((item) => ({
-        logo: item?.data?.cta?.[0]?.logoUrl || "",
-        name: item?.data?.cta?.[0]?.ctaText || "",
-        change: "+0.00%",
-        up: true,
-        headline: item?.data?.body || item?.data?.title || "",
-        time: "2 hours ago",
-      }));
+      const formattedNews = rawNews.map((item) => {
+        const cta = item?.data?.cta?.[0] || {};
+
+        return {
+          logo: cta.logoUrl || "",
+          name: cta.ctaText || "",
+          change: "+0.00%",
+          up: true,
+          headline: item?.data?.body || item?.data?.title || "",
+          time: "2 hours ago",
+
+          nse: cta?.meta?.nseScriptCode || "",
+
+          company: cta?.ctaText || "",
+
+          searchId: cta?.ctaUrl
+            ? cta.ctaUrl.split("/stocks/")[1]
+            : "",
+        };
+      });
+
+      console.log(formattedNews);
 
       setStocksinnewstoday(formattedNews);
     } catch (error) {
@@ -557,6 +571,9 @@ useEffect(() => {
             change: `${Math.abs(dayChangePct).toFixed(2)}%`,
             up: isUp,
             volume: "-",
+             nse:item?.nseScriptCode,
+          company:item?.companyShortName,
+          searchId:item?.searchId
           };
         });
 
@@ -707,7 +724,7 @@ useEffect(() => {
                     No data available
                   </div>
                 ) : (
-                  topMovers.map(s => <StockRow key={s.name} {...s} />)
+                  topMovers.map(s => <Link to={`/stocks/${s?.searchId}`} state={s}><StockRow key={s.name} {...s} /></Link>)
                 )}
               </div>
 
@@ -795,7 +812,7 @@ useEffect(() => {
             <section>
               <h2 className="text-base font-semibold text-gray-900 mb-4">Stocks in news today</h2>
               <div className="grid grid-cols-2 gap-4">
-                {Stocksinnewstoday.map(s => <NewsCard key={s.name} {...s} />)}
+                {Stocksinnewstoday.map(s => <Link to={`/stocks/${s?.searchId}`} state={s}><NewsCard key={s.name} {...s} /></Link>)}
               </div>
               <a className="mt-4 text-sm text-[#00b386] font-medium hover:underline flex items-center gap-1" href="/market-news/stocks">
                 See more news

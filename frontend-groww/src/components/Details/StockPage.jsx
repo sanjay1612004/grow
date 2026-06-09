@@ -6,6 +6,11 @@ import FinancialPerformanceSection from './FinancialPerformanceSection'
 import AboutSection from "./AboutSection";
 import ShareholdingSection from "./ShareholdingSection";
 import SimilarStocksSection from "./SimilarStocksSection";
+import News from "./News";
+import Events from "./Events";
+import Technicals from "./Technicals";
+import RecentlyViewed from "./RecentlyViewed";
+import Footer from "../landingpage/Footer";
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function fmt(n) {
   return Number(n).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
@@ -77,9 +82,9 @@ function Skeleton({ className }) {
 }
 
 // ─── MAIN PAGE ───────────────────────────────────────────────────────────────
-export default function WiproStockPage({ searchId }) {
+export default function StockPage({ searchId,sname }) {
     console.log(searchId)
-  const TABS_LIST = ["Overview", "Technicals", "News", "Events", "F&O"];
+  const TABS_LIST = ["Overview", "Technicals", "News", "Events"];
   const [activeTab, setActiveTab] = useState("Overview");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const containerRef = useRef(null);
@@ -88,7 +93,7 @@ export default function WiproStockPage({ searchId }) {
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(false);
-
+  const[growwCompanyId,setgrowwCompanyId]=useState(null)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -99,6 +104,7 @@ export default function WiproStockPage({ searchId }) {
         );
         if (!res.ok) throw new Error("Failed to fetch");
         const json = await res.json();
+        setgrowwCompanyId(json?.header?.growwCompanyId)
         setData(json);
       } catch (e) {
         console.error("Stock page data error:", e);
@@ -139,6 +145,7 @@ export default function WiproStockPage({ searchId }) {
       className="min-h-screen bg-white overflow-y-auto"
       style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}
     >
+      {console.log(growwCompanyId)}
       <div className="max-w-[860px] mx-12 px-4">
         {/* ── Tab Nav ── */}
         <div className="sticky top-0 bg-white z-10 border-b border-gray-200">
@@ -184,14 +191,35 @@ export default function WiproStockPage({ searchId }) {
                 <ShareholdingSection shareHoldingPattern={data.shareHoldingPattern} />
                 <MutualFundsSection fundsInvested={data.fundsInvested} />
                 <SimilarStocksSection similarAssets={data.similarAssets} />
+                <RecentlyViewed sname={sname}/>
+
               </>
             )}
           </div>
         )}
 
-        {activeTab !== "Overview" && (
-          <div className="pt-20 text-center text-gray-400 text-sm">{activeTab} section</div>
+        {activeTab === "News" && (
+            <div className="pt-6">
+              <News growwCompanyId={growwCompanyId}/>
+              <RecentlyViewed sname={sname}/>
+            </div>
         )}
+
+        {activeTab === "Events" && (
+            <div className="pt-6">
+              <Events growwCompanyId={growwCompanyId}/>
+              <RecentlyViewed sname={sname}/>
+
+            </div>
+        )}
+        {activeTab === "Technicals" && (
+            <div className="pt-6">
+              <Technicals searchId={searchId}/>
+              <RecentlyViewed sname={sname}/>
+
+            </div>
+        )}
+
       </div>
 
       {showScrollTop && (
@@ -204,6 +232,8 @@ export default function WiproStockPage({ searchId }) {
           </svg>
         </button>
       )}
+              <Footer/>
+
     </div>
   );
 }

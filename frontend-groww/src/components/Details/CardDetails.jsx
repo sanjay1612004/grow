@@ -5,7 +5,7 @@ import { NavLink, useLocation, useParams } from "react-router-dom";
 import { UserPicture } from "../../App";
 import ProfilePanel from "../UserModule/ProfileDropdown";
 import ProfileDropdown from "../UserModule/ProfileDropdown";
-import WiproStockPage from "./WiproStockPage";
+import StockPage from "./StockPage";
 
 const CardDetails = () => {
   
@@ -110,7 +110,7 @@ const CardDetails = () => {
       </div>
 
       <Chart sname={sname} lname={lname} logo={logo}/>
-      <WiproStockPage searchId={searchId}/>
+      <StockPage searchId={searchId} sname={sname}/>
     </div>
     </div>
   );

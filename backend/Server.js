@@ -156,6 +156,102 @@ app.get("/api/indices", async (req, res) => {
 });
 
 
+app.get("/api/volume/:searchId", async (req, res) => {
+  try {
+    const { searchId } = req.params;
+    const { periodType = "DAILY", size = 5 } = req.query;
+ 
+    const url = `https://groww.in/v1/api/equity/data/v1/client/stocks/volume/summary/search_id/${searchId}?periodType=${periodType}&size=${size}`;
+ 
+    const response = await fetch(url, {
+      headers: {
+        "Accept":           "application/json, text/plain, */*",
+        "X-APP-ID":         "growwWeb",
+        "X-DEVICE-ID":      "9b50bca8-8381-5ed0-84b2-e663e094e99e",
+        "X-DEVICE-ID-V2":   "9b50bca8-8381-5ed0-84b2-e663e094e99e",
+        "X-REQUEST-ID":     crypto.randomUUID(),
+        "x-platform":       "web",
+        "x-device-type":    "desktop",
+      },
+    });
+ 
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+app.get("/api/recently_viewed", async (req, res) => {
+  try {
+    const symbols = req.query.symbols
+      ? req.query.symbols.split(",")
+      : [
+          "JAINREC",
+          "THOMASCOOK",
+          "HSCL",
+          "RELIANCE",
+          "WIPRO",
+          "VEDL",
+          "SILVERBEES",
+          "MTARTECH",
+        ];
+
+    const response = await fetch(
+      "https://groww.in/v1/api/stocks_data/v1/tr_live_delayed/segment/CASH/latest_aggregated",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+
+          "X-APP-ID": "growwWeb",
+          "X-DEVICE-ID": "9b50bca8-8381-5ed0-84b2-e663e094e99e",
+          "X-DEVICE-ID-V2": "9b50bca8-8381-5ed0-84b2-e663e094e99e",
+          "X-REQUEST-ID": crypto.randomUUID(),
+
+          "x-platform": "web",
+          "x-device-type": "desktop",
+
+          Referer:
+            "https://groww.in/stocks/ola-electric-mobility-ltd/technicals",
+
+          Origin: "https://groww.in",
+
+          Authorization: `Bearer ${process.env.GROWW_TOKEN}`,
+
+          "X-REQUEST-CHECKSUM": process.env.GROWW_CHECKSUM,
+        },
+
+        body: JSON.stringify({
+          exchangeAggReqMap: {
+            NSE: {
+              priceSymbolList: symbols,
+              indexSymbolList: [],
+            },
+            BSE: {
+              priceSymbolList: [],
+              indexSymbolList: [],
+            },
+          },
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+});
+
+
 app.listen(8000, () => {
   console.log("Server running on port 8000");
 });
