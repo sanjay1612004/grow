@@ -259,7 +259,8 @@ export default function Explore() {
           up: isUp,
           nse: item?.company?.nseScriptCode || "",
           company:item?.company?.companyShortName,
-          searchId:item?.company?.searchId
+          searchId:item?.company?.searchId,
+          bse:item?.company?.bseScriptCode|| ""
         };
       });
 
@@ -303,7 +304,9 @@ export default function Explore() {
             up: isUp,
             nse:item?.company?.nseScriptCode,
             company:item?.company?.companyShortName,
-            searchId:item?.company?.searchId
+            searchId:item?.company?.searchId,
+            bse:item?.company?.bseScriptCode|| ""
+
 
           };
         });
@@ -343,7 +346,8 @@ export default function Explore() {
             up: isUp,
             nse:item?.company?.nseScriptCode,
             company:item?.company?.companyShortName,
-            searchId:item?.company?.searchId
+            searchId:item?.company?.searchId,
+            bse:item?.company?.bseScriptCode|| ""
 
           };
         });
@@ -398,7 +402,8 @@ export default function Explore() {
           up: isUp,
           nse:item?.company?.nseScriptCode,
           company:item?.company?.companyShortName,
-          searchId:item?.company?.searchId
+          searchId:item?.company?.searchId,
+          bse:item?.company?.bseScriptCode|| ""
 
 
         };
@@ -438,6 +443,8 @@ useEffect(() => {
           time: "2 hours ago",
 
           nse: cta?.meta?.nseScriptCode || "",
+          bse:item?.company?.bseScriptCode|| "",
+
 
           company: cta?.ctaText || "",
 
@@ -521,7 +528,8 @@ useEffect(() => {
           up: isUp,
           nse:item?.company?.nseScriptCode,
           company:item?.company?.companyShortName,
-          searchId:item?.company?.searchId
+          searchId:item?.company?.searchId,
+          bse:item?.company?.bseScriptCode|| ""
 
 
         };
@@ -573,7 +581,9 @@ useEffect(() => {
             volume: "-",
              nse:item?.nseScriptCode,
           company:item?.companyShortName,
-          searchId:item?.searchId
+          searchId:item?.searchId,
+          bse:item?.bseScriptCode|| ""
+
           };
         });
 

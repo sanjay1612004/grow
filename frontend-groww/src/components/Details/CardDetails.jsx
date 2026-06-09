@@ -18,7 +18,9 @@ const CardDetails = () => {
   
   console.log(stock)
   const sname=stock?.nse
+  const bname=stock?.bse
   const lname=stock?.name
+  console.log(bname)
   
   return (
     <div>
@@ -109,7 +111,7 @@ const CardDetails = () => {
         </div>
       </div>
 
-      <Chart sname={sname} lname={lname} logo={logo}/>
+      <Chart sname={sname} lname={lname} logo={logo} bname={bname}/>
       <StockPage searchId={searchId} sname={sname}/>
     </div>
     </div>

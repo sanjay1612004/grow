@@ -26,7 +26,7 @@ function formatTooltipDate(ts, period) {
   return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
 
-export default function StockDashboard({sname,lname,logo}) {
+export default function StockDashboard({sname,lname,logo,bname}) {
   const [activeTab, setActiveTab] = useState("1D");
   const [exchange, setExchange] = useState("NSE");
   const [chartData, setChartData] = useState([]);
@@ -36,18 +36,21 @@ export default function StockDashboard({sname,lname,logo}) {
   const [basePrice, setBasePrice] = useState(null);   // first candle price for % calc
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const[SE,setSE]=useState("NSE")
 
+  console.log(SE)
 
+  const symbol = exchange === "NSE" ? sname : bname;
   const PERIOD_API = {
-  "1D":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/daily?intervalInMinutes=1&minimal=true`,
-  "1W":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/weekly?intervalInMinutes=5&minimal=true`,
-  "1M":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/monthly?/v2?months=1&minimal=true`,
-  "3M":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/monthly?/v2?months=3&minimal=true`,
-  "6M":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/monthly?/v2?months=6&minimal=true`,
-  "1Y":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/1y?intervalInDays=1&minimal=true`,
-  "3Y":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/3y?intervalInDays=1&minimal=true`,
-  "5Y":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/5y?intervalInDays=1&minimal=true`,
-  "All": `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/${sname}/all?noOfCandles=300`,
+  "1D":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/${exchange}/segment/CASH/${symbol}/daily?intervalInMinutes=1&minimal=true`,
+  "1W":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/${exchange}/segment/CASH/${symbol}/weekly?intervalInMinutes=5&minimal=true`,
+  "1M":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/${exchange}/segment/CASH/${symbol}/monthly?/v2?months=1&minimal=true`,
+  "3M":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/${exchange}/segment/CASH/${symbol}/monthly?/v2?months=3&minimal=true`,
+  "6M":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/${exchange}/segment/CASH/${symbol}/monthly?/v2?months=6&minimal=true`,
+  "1Y":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/${exchange}/segment/CASH/${symbol}/1y?intervalInDays=1&minimal=true`,
+  "3Y":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/${exchange}/segment/CASH/${symbol}/3y?intervalInDays=1&minimal=true`,
+  "5Y":  `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/${exchange}/segment/CASH/${symbol}/5y?intervalInDays=1&minimal=true`,
+  "All": `https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/${exchange}/segment/CASH/${symbol}/all?noOfCandles=300`,
 };
 
   // Hover state for crosshair tooltip
@@ -84,11 +87,11 @@ export default function StockDashboard({sname,lname,logo}) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [exchange,sname]);
 
   useEffect(() => {
     fetchData(activeTab);
-  }, [activeTab, fetchData]);
+  }, [activeTab, fetchData,exchange]);
 
   // ─── Derived values ─────────────────────────────────────────────────────────
   const latestPrice = chartData.length > 0 ? chartData[chartData.length - 1][1] : 0;
@@ -269,8 +272,8 @@ fill: {
                           {exchange}
                         </span>
                         <svg width="10" height="14" viewBox="0 0 10 14" fill="none" className="text-gray-400 group-hover:text-gray-600 transition-colors mt-px">
-                          <path d="M5 1L2 4h6L5 1z" fill="currentColor"/>
-                          <path d="M5 13L8 10H2l3 3z" fill="currentColor"/>
+                          <path d="M5 1L2 4h6L5 1z" fill="currentColor" />
+                          <path d="M5 13L8 10H2l3 3z" fill="currentColor" />
                         </svg>
                       </button>
                     </div>
