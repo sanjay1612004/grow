@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const menuItems = [
   {
@@ -69,14 +69,16 @@ const SunIcon = () => (
 );
 
 export default function ProfileDropdown() {
+  const navigate = useNavigate();
+
   const [loggedOut, setLoggedOut] = useState(false);
 
   if (loggedOut) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <p className="text-gray-500 text-sm">You have been logged out.</p>
-      </div>
-    );
+        localStorage.removeItem("userId");
+    localStorage.removeItem("userPic");
+
+    navigate("/");
+
   }
 
   return (

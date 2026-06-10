@@ -1,8 +1,9 @@
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Sidebar from "./Sidebar";
 import ProfileDropdown from "./ProfileDropdown";
 import { Link, Outlet } from "react-router-dom";
+import { UserPicture } from "../../App";
 
 
 const TEAL = "#00b386";
@@ -16,6 +17,10 @@ const BG_ACTIVE = "#f0f0f0";
 
 export default function GrowwProfile() {
   const [showProfile, setShowProfile] = useState(false);
+  const {userPic,setuserPic}=useContext(UserPicture)
+
+
+
 
   return (
     <div style={{
@@ -73,7 +78,7 @@ export default function GrowwProfile() {
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
-          <img src="https://lh3.googleusercontent.com/a/ACg8ocIYetc0b2EDMVGG5XQi0ZYArJTTNNjd4sYXbUGGwKYi51BGgcP3=s96-c" alt="profile" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} onClick={()=>setShowProfile(!showProfile)} />
+          <img src={!userPic?user.avatar:userPic} alt="profile" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} onClick={()=>setShowProfile(!showProfile)} />
           <div className="relative">
   {showProfile && (
     <div className="absolute right-0 top-10 z-[9999]">

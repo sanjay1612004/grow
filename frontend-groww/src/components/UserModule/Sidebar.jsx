@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { UserPicture } from "../../App";
 const TEAL = "#00b386";
 const TEAL_LIGHT = "#e6f7f3";
 const BORDER = "#e8e8e8";
@@ -7,6 +9,7 @@ const TEXT_SECONDARY = "#6b7280";
 const TEXT_MUTED = "#9ca3af";
 const BG_HOVER = "#f7f7f7";
 const BG_ACTIVE = "#f0f0f0";
+
 
 
 const user = {
@@ -46,6 +49,9 @@ const menuItems = [
 
 
 export default function Sidebar() {
+  const {userPic,setuserPic}=useContext(UserPicture)
+  console.log(userPic)
+
   return (
     <div style={{
       width: 300,
@@ -63,7 +69,7 @@ export default function Sidebar() {
         padding: "28px 20px 20px",
       }}>
         <img
-          src={user.avatar}
+          src={!userPic?user.avatar:userPic}
           alt={user.name}
           style={{
             width: 72,
