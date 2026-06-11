@@ -1,7 +1,7 @@
 import React, { useContext,useState } from "react";
 import Chart from "./Chart";
 import { Info } from "lucide-react";
-import { NavLink, useLocation, useParams } from "react-router-dom";
+import { NavLink, useLocation, useParams,useNavigate } from "react-router-dom";
 import { UserPicture } from "../../App";
 import ProfilePanel from "../UserModule/ProfileDropdown";
 import ProfileDropdown from "../UserModule/ProfileDropdown";
@@ -15,6 +15,7 @@ const CardDetails = () => {
   const logo=stock?.logo
   const searchId=stock?.searchId
   const [showProfile, setShowProfile] = useState(false);
+  const navigate=useNavigate()
   
   console.log(stock)
   const sname=stock?.nse
@@ -104,7 +105,7 @@ const CardDetails = () => {
               </span>
             </div>
 
-            <button className="shrink-0 text-xs font-bold text-[#00b386] transition-colors hover:text-[#009973]">
+            <button className="shrink-0 text-xs font-bold text-[#00b386] transition-colors hover:text-[#009973]" onClick={()=>navigate('/kyc')}>
               ACTIVATE STOCKS
             </button>
           </div>

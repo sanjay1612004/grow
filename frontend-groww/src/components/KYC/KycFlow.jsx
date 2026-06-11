@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // --- CONFIGURATION ---
 const BASE_URL = "https://j9cw5kv2-5000.inc1.devtunnels.ms/api/kyc";
@@ -222,6 +222,7 @@ const DetailRow = ({ label, children }) => (
   </div>
 );
 
+
 // ─────────────────────────────────────────────
 // STEP 1 — PAN
 // ─────────────────────────────────────────────
@@ -233,11 +234,10 @@ const PanForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
-    
-    // --- Verification Logic ---
+
     const cleanedPan = panNumber.trim().toUpperCase();
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    
+
     if (!panRegex.test(cleanedPan)) {
       setError('Invalid PAN Card format. Pattern must match standard layout (e.g., ABCDE1234F).');
       setLoading(false);
@@ -292,8 +292,7 @@ const AadhaarForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
-    
-    // --- Verification Logic ---
+
     const cleanedAadhaar = aadhaarNumber.replace(/\s+/g, '');
     const aadhaarRegex = /^\d{12}$/;
 
@@ -364,8 +363,7 @@ const BankForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
-    
-    // --- Verification Logic ---
+
     if (!bankData.bankName.trim()) {
       setError('Bank Name cannot be blank.');
       setLoading(false);
@@ -402,14 +400,11 @@ const BankForm = ({ onNext, userId }) => {
     try {
       const formData = new FormData();
       const activeUserId = appendUserId(formData, userId);
-      
-      // Use clean verified strings for the payload submission
       formData.append('bankName', bankData.bankName.trim());
       formData.append('accountNumber', cleanAccNo);
       formData.append('ifscCode', cleanIfsc);
       formData.append('accountHolderName', bankData.accountHolderName.trim());
       formData.append('cancelledChequeImage', chequeImage);
-
       await axios.post(`${BASE_URL}/bank`, formData, getAuthConfig(activeUserId));
       onNext();
     } catch (err) {
@@ -449,8 +444,7 @@ const SelfieForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
-    
-    // --- Verification Logic ---
+
     if (!selfie) {
       setError('Please take or upload a live selfie photograph to continue.');
       setLoading(false);
@@ -489,8 +483,7 @@ const SignatureForm = ({ onNext, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError('');
-    
-    // --- Verification Logic ---
+
     if (!signature) {
       setError('Please upload a clear image of your signature.');
       setLoading(false);
@@ -582,9 +575,9 @@ const SubmitKyc = ({ onNext, userId }) => {
 };
 
 // ─────────────────────────────────────────────
-// STEP 7 — KYC STATUS / SUCCESS
+// STEP 7 — KYC STATUS SCREEN (renamed from KycStatus to avoid collision)
 // ─────────────────────────────────────────────
-const KycStatus = ({ userId }) => {
+const KycStatusScreen = ({ userId }) => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -604,20 +597,19 @@ const KycStatus = ({ userId }) => {
   }, [userId]);
 
   const msg = status?.message || status?.data || status;
-  const panNumber      = msg?.panNumber;
-  const aadhaarNumber  = msg?.aadhaarNumber;
-  const panStatus      = msg?.panStatus;
-  const aadhaarStatus  = msg?.aadhaarStatus;
-  const bankStatus     = msg?.bankStatus;
-  const selfieStatus   = msg?.selfieStatus;
+  const panNumber       = msg?.panNumber;
+  const aadhaarNumber   = msg?.aadhaarNumber;
+  const panStatus       = msg?.panStatus;
+  const aadhaarStatus   = msg?.aadhaarStatus;
+  const bankStatus      = msg?.bankStatus;
+  const selfieStatus    = msg?.selfieStatus;
   const signatureStatus = msg?.signatureStatus;
-  const overallStatus  = msg?.status || msg?.kycStatus || panStatus || 'Submitted';
-  const refId          = msg?._id;
+  const overallStatus   = msg?.status || msg?.kycStatus || panStatus || 'Submitted';
+  const refId           = msg?._id;
 
   return (
     <div className="w-full max-w-[480px] bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
       {loading ? (
-        /* Skeleton loader */
         <div className="px-8 py-10 space-y-3">
           {[40, 70, 55, 80].map((w, i) => (
             <div
@@ -629,7 +621,6 @@ const KycStatus = ({ userId }) => {
         </div>
       ) : (
         <div className="px-8 py-10 text-center">
-          {/* Success ring + check */}
           <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6 animate-[scaleIn_0.5s_cubic-bezier(0.22,1,0.36,1)]">
             <style>{`
               @keyframes scaleIn {
@@ -647,11 +638,8 @@ const KycStatus = ({ userId }) => {
             Your documents have been received and are under review. We'll notify you once verification is complete.
           </p>
 
-          {/* Details card */}
           <div className="bg-gray-50 border border-gray-100 rounded-xl overflow-hidden text-left mb-3">
-            {panNumber && (
-              <DetailRow label="PAN">{panNumber}</DetailRow>
-            )}
+            {panNumber && <DetailRow label="PAN">{panNumber}</DetailRow>}
             {aadhaarNumber && (
               <DetailRow label="Aadhaar">
                 {'•'.repeat(8)}{String(aadhaarNumber).slice(-4)}
@@ -710,8 +698,29 @@ const KycStatus = ({ userId }) => {
 export default function KycFlowContainer() {
   const [currentStep, setCurrentStep] = useState(1);
   const location = useLocation();
+  // FIX: renamed state variable from KycStatus → kycStatusValue
+  // to avoid collision with the KycStatusScreen component above
+  const [kycStatusValue, setKycStatusValue] = useState('');
+  const navigate = useNavigate();
 
   const userId = cleanUserId(location.state?.userId) || getStoredUserId();
+
+  useEffect(() => {
+    const fetchKycStatus = async () => {
+      try {
+        const storedUserId = localStorage.getItem("userId");
+        const res = await axios.get(
+          `https://j9cw5kv2-5000.inc1.devtunnels.ms/api/kyc/me?userId=${storedUserId}`
+        );
+        const { status } = res.data.message;
+        console.log("KYC Status from API:", status);
+        setKycStatusValue(status);
+      } catch (err) {
+        console.error("KYC status fetch error:", err);
+      }
+    };
+    fetchKycStatus();
+  }, []);
 
   useEffect(() => {
     if (userId) localStorage.setItem("userId", userId);
@@ -723,6 +732,7 @@ export default function KycFlowContainer() {
 
   const nextStep = () => setCurrentStep(prev => prev + 1);
 
+  // Guard: no valid userId
   if (!cleanUserId(userId)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-50 to-emerald-50 flex items-center justify-center px-4">
@@ -737,8 +747,87 @@ export default function KycFlowContainer() {
     );
   }
 
+  // ── KYC already has a backend status → show status card only, no stepper ──
+  if (kycStatusValue) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-50 to-emerald-50 flex items-center justify-center px-4 py-16">
+
+        {/* APPROVED */}
+        {kycStatusValue === "APPROVED" && (
+          <div className="flex flex-col items-center justify-center w-80 rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#00b386]/10 text-[#00b386]">
+              <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold tracking-tight text-gray-900">KYC Verified</h3>
+            <p className="mt-3 text-sm leading-relaxed text-gray-500">
+              Your account is fully verified. You can now start investing in stocks and mutual funds seamlessly.
+            </p>
+            <button
+              className="mt-6 w-full rounded-xl bg-[#00b386] py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#009a74]"
+              onClick={() => navigate('/user/explore')}
+            >
+              Explore Investments
+            </button>
+          </div>
+        )}
+
+        {/* PENDING */}
+        {kycStatusValue === "PENDING" && (
+          <div className="flex flex-col items-center justify-center w-80 rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
+              {/* inline spin — avoids relying on undefined animate-spin-slow */}
+              <svg
+                className="h-7 w-7"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+                style={{ animation: 'spin 2s linear infinite' }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold tracking-tight text-gray-900">Verification Pending</h3>
+            <p className="mt-3 text-sm leading-relaxed text-gray-500">
+              Our team is reviewing your documents. This usually takes less than 24 hours to complete.
+            </p>
+            <div className="mt-6 text-xs font-medium text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg">
+              Under Review
+            </div>
+          </div>
+        )}
+
+        {/* REJECTED */}
+        {kycStatusValue === "REJECTED" && (
+          <div className="flex flex-col items-center justify-center w-80 rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 text-red-500">
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold tracking-tight text-gray-900">Verification Failed</h3>
+            <p className="mt-3 text-sm leading-relaxed text-gray-500">
+              Your verification documents were rejected due to mismatching information. Please re-upload.
+            </p>
+            <button
+              className="mt-6 w-full rounded-xl bg-red-500 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-600"
+              onClick={() => setKycStatusValue('')}
+            >
+              Resubmit Documents
+            </button>
+          </div>
+        )}
+
+      </div>
+    );
+  }
+
+  // ── No prior KYC status → show the step-by-step flow ──
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-50 to-emerald-50 flex flex-col items-center px-4 pt-10 pb-16">
+
       {/* Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2.5 mb-1">
@@ -764,7 +853,9 @@ export default function KycFlowContainer() {
       {currentStep === 4 && <SelfieForm    onNext={nextStep} userId={userId} />}
       {currentStep === 5 && <SignatureForm onNext={nextStep} userId={userId} />}
       {currentStep === 6 && <SubmitKyc     onNext={nextStep} userId={userId} />}
-      {currentStep === 7 && <KycStatus     userId={userId} />}
+      {/* FIX: was <KycStatus> (state variable, not a component) — now correctly <KycStatusScreen> */}
+      {currentStep === 7 && <KycStatusScreen userId={userId} />}
+
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Link, useNavigate } from "react-router-dom";
@@ -165,6 +166,14 @@ function StockCard({ logo, name, price, change, changeVal, up, searchId, nse, bs
             e.stopPropagation();
             e.preventDefault();
             setShowModal(true);
+            onsave({watchlistId : 1,watchlistName : "Sanjay's Watchlist",userId : "default_user",nseScriptCode:nse,
+    searchId,
+    logo,
+    name,
+    price,
+    change,
+    changeVal
+  })
           }}
         >
           <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
@@ -355,6 +364,22 @@ function TradingCard({ title, label, type, image }) {
       </div>
     </div>
   );
+}
+
+async function onsave(data) {
+    try{
+      const res=await axios.post('http://localhost:5000/api/watchlist/add',data)
+      console.log(res)
+    }
+    catch(e){
+      console.log("err is",e)
+      console.log("MESSAGE:", e.message);
+    console.log("CODE:", e.code);
+    console.log("RESPONSE:", e.response);
+    console.log("REQUEST:", e.request);
+
+    }
+  
 }
 
 // ── Main Component ───────────────────────────────────────────────────────────
@@ -728,7 +753,7 @@ export default function Explore() {
             {/* Most traded stocks in MTF */}
             <section>
               <h2 className="text-base font-semibold text-gray-900 mb-4">Most traded stocks in MTF</h2>
-              <div className="flex overflow-x-auto scrollbar-hide gap-1.5">
+              <div className="flex overflow-x-auto scrollbar-hide gap-8">
                 {mostBought.map((s) => (
                   <div key={s.searchId} className="flex-shrink-0 px-0.5">
                     <StockCard {...s} />

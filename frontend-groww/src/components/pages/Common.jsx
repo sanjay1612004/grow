@@ -35,7 +35,7 @@ useEffect(() => {
           <img src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp" alt="" height={30} width={30}/>
           <nav className="flex items-center gap-6">
             {["Stocks", "F&O", "Mutual Funds"].map(item => (
-              <a key={item} href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">{item}</a>
+              <a key={item} href="#" className="text-sm font-bold text-gray-700 hover:text-gray-900">{item}</a>
             ))}
           </nav>
           <div className="flex-1 max-w-xs ml-auto">
@@ -86,10 +86,10 @@ useEffect(() => {
     }[tab]
   )
 }}
-                className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+                className={`px-4 py-3 text-sm font-bold transition-colors border-b-2 ${
                   activeTab === tab
                     ? "text-gray-900 border-gray-900"
-                    : "text-gray-500 border-transparent hover:text-gray-700"
+                    : "text-gray-700 border-transparent hover:text-gray-700"
                 }`}
               >
                 {tab}
@@ -126,12 +126,12 @@ useEffect(() => {
      
 
       <main className="max-w-[1400px] mx-auto px-6 py-6" onClick={()=>setShowProfile(false)}>
-  {activeTab === "Explore" && <Explore/>}
-  {activeTab === "Holdings" && <Holdings/>}
-  {activeTab === "Positions" && <Positions/>}
-  {activeTab === "Orders" && <Orders/>}
-  {activeTab === "Watchlist" && <Watchlist/>}
-</main>
+        {activeTab === "Explore" && <Explore/>}
+        {activeTab === "Holdings" && <Holdings/>}
+        {activeTab === "Positions" && <Positions/>}
+        {activeTab === "Orders" && <Orders/>}
+        {activeTab === "Watchlist" && <Watchlist/>}
+      </main>
     <Footer/>
     </div>
   )

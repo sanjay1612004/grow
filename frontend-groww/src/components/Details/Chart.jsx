@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import ReactApexChart from "react-apexcharts";
 import { Link2, Bell, Bookmark, SlidersHorizontal, ChevronRight, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // ─── Backend proxy API map (routes through localhost:8000 to avoid CORS) ──────
 // Express proxy must spoof Groww headers: x-app-id, x-device-type, x-platform, Origin, Referer
@@ -37,6 +38,7 @@ export default function StockDashboard({sname,lname,logo,bname}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const[SE,setSE]=useState("NSE")
+  const navigate=useNavigate()
 
   console.log(SE)
 
@@ -438,7 +440,7 @@ fill: {
               <p className="mt-6 text-sm text-[#6d7487]">
                 Create your demat account on Groww in 2 minutes
               </p>
-              <button className="mt-6 h-10 w-full rounded-md bg-[#00b386] text-xs font-bold text-white transition-colors hover:bg-[#009973]">
+              <button className="mt-6 h-10 w-full rounded-md bg-[#00b386] text-xs font-bold text-white transition-colors hover:bg-[#009973]" onClick={()=>{navigate('/kyc')}}>
                 UNLOCK STOCKS
               </button>
             </div>
