@@ -143,6 +143,7 @@ function StockCard({ logo, name, price, change, changeVal, up, searchId, nse, bs
   const [bookmarked, setBookmarked] = useState(false);
   const navigate = useNavigate();
   const color = up ? "text-[#00b386]" : "text-[#eb5757]";
+  const userId=localStorage.getItem("userId")
 
   return (
     <>
@@ -166,14 +167,14 @@ function StockCard({ logo, name, price, change, changeVal, up, searchId, nse, bs
             e.stopPropagation();
             e.preventDefault();
             setShowModal(true);
-            onsave({watchlistId : 1,watchlistName : "Sanjay's Watchlist",userId : "default_user",nseScriptCode:nse,
-    searchId,
-    logo,
-    name,
-    price,
-    change,
-    changeVal
-  })
+            onsave({watchlistId : 1,watchlistName : "Sanjay's Watchlist",userId,nseScriptCode:nse,
+              searchId,
+              logo,
+              name,
+              price,
+              change,
+              changeVal
+            })
           }}
         >
           <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
@@ -201,7 +202,7 @@ function StockCard({ logo, name, price, change, changeVal, up, searchId, nse, bs
               }}
             />
           </div>
-          <div className="text-sm text-gray-800 font-normal leading-tight w-full line-clamp-2 min-h-[2.5rem]">
+          <div className="text-sm text-gray-800 font-normal leading-tight w-full line-clamp-2 min-h-[3.5rem]">
             {name}
           </div>
         </div>

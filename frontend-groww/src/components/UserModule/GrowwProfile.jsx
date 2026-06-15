@@ -78,7 +78,7 @@ export default function GrowwProfile() {
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
-          <img src={!userPic?user.avatar:userPic} alt="profile" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} onClick={()=>setShowProfile(!showProfile)} />
+          <img src={!userPic?"https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg":userPic} alt="profile" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} onClick={()=>setShowProfile(!showProfile)} />
           <div className="relative">
   {showProfile && (
     <div className="absolute right-0 top-10 z-[9999]">

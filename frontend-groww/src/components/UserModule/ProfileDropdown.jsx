@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { UserBalance } from "../../App";
 
 const menuItems = [
   {
@@ -70,6 +71,8 @@ const SunIcon = () => (
 
 export default function ProfileDropdown() {
   const navigate = useNavigate();
+  const{balance, setBalance}=useContext(UserBalance)
+  
 
   const [loggedOut, setLoggedOut] = useState(false);
 
@@ -109,7 +112,7 @@ export default function ProfileDropdown() {
                   {item.icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-sm font-medium text-gray-800 block">{item.label}</span>
+                  <span className="text-sm font-medium text-gray-800 block">  {item.label === "₹0.00" ? `₹${balance}` : item.label}</span>
                   {item.sublabel && (
                     <span className="text-xs text-gray-400">{item.sublabel}</span>
                   )}

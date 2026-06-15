@@ -701,26 +701,38 @@ export default function KycFlowContainer() {
   // FIX: renamed state variable from KycStatus → kycStatusValue
   // to avoid collision with the KycStatusScreen component above
   const [kycStatusValue, setKycStatusValue] = useState('');
+  const [loadingKyc, setLoadingKyc] = useState(true);
   const navigate = useNavigate();
 
   const userId = cleanUserId(location.state?.userId) || getStoredUserId();
 
   useEffect(() => {
     const fetchKycStatus = async () => {
-      try {
-        const storedUserId = localStorage.getItem("userId");
-        const res = await axios.get(
-          `https://j9cw5kv2-5000.inc1.devtunnels.ms/api/kyc/me?userId=${storedUserId}`
-        );
-        const { status } = res.data.message;
-        console.log("KYC Status from API:", status);
-        setKycStatusValue(status);
-      } catch (err) {
-        console.error("KYC status fetch error:", err);
-      }
-    };
+  try {
+    const storedUserId = localStorage.getItem("userId");
+    if (!storedUserId) return;
+
+    const res = await axios.get(
+      `https://j9cw5kv2-5000.inc1.devtunnels.ms/api/kyc/me?userId=${storedUserId}`
+    );
+    
+    const kycDetails = res.data?.message || res.data?.data;
+    
+    // FIX: Fallback checks to catch both user collection keys and KYC collection keys
+    const finalStatus = kycDetails?.kycStatus || kycDetails?.status;
+
+    console.log("Matched Application Status Value:", finalStatus);
+    
+    // Safely sets "APPROVED"
+    setKycStatusValue(finalStatus); 
+  } catch (err) {
+    console.error("KYC verification tracking sync error:", err);
+  } finally {
+    setLoadingKyc(false);
+  }
+};
     fetchKycStatus();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (userId) localStorage.setItem("userId", userId);
@@ -731,6 +743,13 @@ export default function KycFlowContainer() {
   }, [userId, location]);
 
   const nextStep = () => setCurrentStep(prev => prev + 1);
+  if (loadingKyc) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-gray-200 border-t-[#00b386] rounded-full animate-spin" />
+    </div>
+  );
+}
 
   // Guard: no valid userId
   if (!cleanUserId(userId)) {
@@ -749,6 +768,7 @@ export default function KycFlowContainer() {
 
   // ── KYC already has a backend status → show status card only, no stepper ──
   if (kycStatusValue) {
+    console.log(kycStatusValue)
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-50 to-emerald-50 flex items-center justify-center px-4 py-16">
 

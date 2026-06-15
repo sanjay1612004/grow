@@ -134,12 +134,13 @@ export default function StockWatchlist() {
 
   // Hovered row tracking (normal mode)
   const [hoveredRow, setHoveredRow] = useState(null);
+  const userId=localStorage.getItem("userId")
 
   useEffect(() => {
     const fetchWatchlist = async () => {
       try {
         const listRes = await axios.get(
-          "http://localhost:5000/api/watchlist/all/lists?userId=default_user"
+          `http://localhost:5000/api/watchlist/all/lists?userId=${userId}`
         );
         if (!listRes.data.watchlists || listRes.data.watchlists.length === 0) {
           setLoading(false);
@@ -168,7 +169,7 @@ export default function StockWatchlist() {
     try {
       const res = await axios.delete("http://localhost:5000/api/watchlist/remove", {
         data: {
-          userId: "default_user",
+          userId,
           watchlistId: 1,
           searchId: searchId
         }
