@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserBalance } from "../../App";
+import { UserBalance, UserEmail } from "../../App";
 
 const menuItems = [
   {
@@ -72,13 +72,16 @@ const SunIcon = () => (
 export default function ProfileDropdown() {
   const navigate = useNavigate();
   const{balance, setBalance}=useContext(UserBalance)
-  
+const [email, setemail] = useState(
+  () => localStorage.getItem("email") || ""
+);  
 
   const [loggedOut, setLoggedOut] = useState(false);
 
   if (loggedOut) {
         localStorage.removeItem("userId");
     localStorage.removeItem("userPic");
+    localStorage.removeItem("email")
 
     navigate("/");
 
@@ -90,9 +93,10 @@ export default function ProfileDropdown() {
         {/* Header */}
         <div className="flex items-start justify-between px-4 pt-5 pb-4">
           <Link to="/user/profile">
+          {console.log(email)}
           <div>
             <h2 className="text-base font-semibold text-gray-900">Sanjay Balaji</h2>
-            <p className="text-sm text-gray-500 mt-0.5">sanjaybalaji.ks@gmail.com</p>
+            <p className="text-sm text-gray-500 mt-0.5">{email && email.trim() !== "" ? email : "sanjaybalaji.ks@gmail.com"}</p>
           </div>
           </Link>
           <button className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-100">
@@ -112,7 +116,7 @@ export default function ProfileDropdown() {
                   {item.icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-sm font-medium text-gray-800 block">  {item.label === "₹0.00" ? `₹${balance}` : item.label}</span>
+                  <span className="text-sm font-medium text-gray-800 block">  {item.label === "₹0.00" ? `₹${Number(balance).toFixed(2)}` : item.label}</span>
                   {item.sublabel && (
                     <span className="text-xs text-gray-400">{item.sublabel}</span>
                   )}

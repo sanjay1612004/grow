@@ -1,6 +1,6 @@
 import React, { useState,useEffect, useContext } from 'react'
 import Explore from './Explore';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Holdings from './Holdings';
 import Orders from './Orders';
 import Positions from './Positions';
@@ -23,10 +23,21 @@ const Common = () => {
     { name: "FINNIFTY", val: "25,795.40", chg: "-1.20", pct: "0.01%", up: false },
   ];
   const navigate = useNavigate();
+  const location = useLocation();
 
 useEffect(() => {
-  navigate("/user/explore", { replace: true });
-}, []);
+  const routeTab = {
+    "/user/explore": "Explore",
+    "/user/holdings": "Holdings",
+    "/user/positions": "Positions",
+    "/user/orders": "Orders",
+    "/user/watchlist": "Watchlist",
+  }[location.pathname];
+
+  if (routeTab) {
+    setActiveTab(routeTab);
+  }
+}, [location.pathname]);
 
   return (
     <div>

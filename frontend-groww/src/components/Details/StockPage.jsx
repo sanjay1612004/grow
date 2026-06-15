@@ -82,7 +82,7 @@ function Skeleton({ className }) {
 }
 
 // ─── MAIN PAGE ───────────────────────────────────────────────────────────────
-export default function StockPage({ searchId,sname }) {
+export default function StockPage({ searchId,sname, stock }) {
     console.log(searchId)
   const TABS_LIST = ["Overview", "Technicals", "News", "Events"];
   const [activeTab, setActiveTab] = useState("Overview");

@@ -157,7 +157,7 @@ function StockCard({ logo, name, price, change, changeVal, up, searchId, nse, bs
           flexShrink: 0,
         }}
         onClick={() =>
-          navigate(`/stocks/${searchId}`, { state: { nse, bse, company, searchId,logo } })
+          navigate(`/stocks/${searchId}`, { state: { nse, bse, company, searchId, logo, name, price } })
         }
       >
         {/* Bookmark button */}
@@ -240,7 +240,7 @@ function StockRow({ logo, name, price, change, changeVal, up, volume, searchId, 
       className="flex items-center px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => navigate(`/stocks/${searchId}`, { state: { nse, bse, company, searchId,logo } })}
+      onClick={() => navigate(`/stocks/${searchId}`, { state: { nse, bse, company, searchId, logo, name, price } })}
     >
       <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 flex items-center justify-center bg-white flex-shrink-0">
         <img
@@ -297,7 +297,7 @@ function NewsCard({ logo, name, change, up, headline, time, searchId, nse, bse, 
   return (
     <div
       className="flex-1 border border-gray-300 rounded-xl p-5 bg-white cursor-pointer hover:shadow-sm transition-shadow flex flex-col justify-between min-w-0"
-      onClick={() => navigate(`/stocks/${searchId}`, { state: { nse, bse, company, searchId,logo } })}
+      onClick={() => navigate(`/stocks/${searchId}`, { state: { nse, bse, company, searchId, logo, name } })}
     >
       <div>
         <div className="w-9 h-9 rounded-lg overflow-hidden border border-gray-100 flex items-center justify-center bg-white mb-3">

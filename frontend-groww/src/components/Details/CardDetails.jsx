@@ -113,7 +113,7 @@ const CardDetails = () => {
       </div>
 
       <Chart sname={sname} lname={lname} logo={logo} bname={bname}/>
-      <StockPage searchId={searchId} sname={sname}/>
+      <StockPage searchId={searchId} sname={sname} stock={stock}/>
     </div>
     </div>
   );

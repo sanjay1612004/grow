@@ -49,10 +49,12 @@ import CardDetails from './components/Details/CardDetails'
 export const UserIdProvider=createContext()
 export const UserPicture=createContext()
 export const UserBalance=createContext()
+export const UserEmail=createContext()
 function App() {
-  const [userId,setuserId]=useState('')
+  const [userId,setuserId]=useState(() => localStorage.getItem("userId") || "")
   const [userPic,setuserPic]=useState(() => localStorage.getItem("userPic") || "")
   const [balance, setBalance] = useState(0);
+  const [email,setemail]=useState('')
 
   const clientid=import.meta.env.VITE_GOOGLE_CLIENT_ID
   return (
@@ -61,6 +63,7 @@ function App() {
       <UserPicture.Provider value={{userPic,setuserPic}}>
       <UserIdProvider.Provider value={{userId,setuserId}}>
       <UserBalance.Provider value={{balance, setBalance}}>
+      <UserEmail.Provider value={{email,setemail}}>
       <Routes>
         <Route path="/" element={<HomePage/>} />
         <Route path="/signup" element={<Signup/>}/>
@@ -110,6 +113,7 @@ function App() {
         </Route>
         <Route path="/stocks/:name" element={<CardDetails/>}/>
       </Routes>
+      </UserEmail.Provider>
       </UserBalance.Provider>
       </UserIdProvider.Provider>
       </UserPicture.Provider>

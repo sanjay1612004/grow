@@ -1,6 +1,7 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect, useContext } from "react";
 import FieldRow from "./FieldRow";
 import axios from "axios";
+import { UserEmail } from "../../App";
 
 
 const TEAL = "#00b386";
@@ -33,6 +34,7 @@ const user = {
 
 export default function BasicDetails() {
   const[User,setUser]=useState([])
+  const {email,setemail}=useContext(UserEmail)
   useEffect(() => {
   const fetchUser = async () => {
     try {
@@ -48,6 +50,13 @@ export default function BasicDetails() {
 
       console.log(res.data);
       setUser(res.data.data);
+      if (res.data?.data?.email) {
+          setemail(res.data.data.email);
+          localStorage.setItem("email", res.data.data.email);
+
+        }
+     
+
     } catch (error) {
       console.error("Failed to fetch user:", error);
     }
@@ -70,7 +79,7 @@ export default function BasicDetails() {
       <FieldRow label="Name" value={User?.name || user.name} />
       <FieldRow label="Date of Birth" value={user.dob} />
       <FieldRow label="Mobile Number" value={User?.phoneNumber || user.mobile} editable />
-      <FieldRow label="Email Address" value={User?.email || user.mobile} editable />
+      <FieldRow label="Email Address" value={User?.email || user.email} editable />
       <FieldRow label="Marital Status" value={user.maritalStatus} />
       <FieldRow label="Gender" value={user.gender} />
       <FieldRow label="Income Range" value={user.incomeRange} />

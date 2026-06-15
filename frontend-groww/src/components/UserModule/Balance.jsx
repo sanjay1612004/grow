@@ -16,6 +16,11 @@ const Balance = () => {
   const [loading, setLoading] = useState(false);
   const{balance, setBalance}=useContext(UserBalance)
 
+const getKycStatusFromResponse = (data) => {
+  const kycDetails = data?.message || data?.data || data;
+  return (kycDetails?.kycStatus || kycDetails?.status || "").toString().toUpperCase();
+};
+
 
 useEffect(() => {
   fetchBalance();
@@ -73,7 +78,7 @@ const fetchBalance = async () => {
                 const res = await axios.get(
                     `https://j9cw5kv2-5000.inc1.devtunnels.ms/api/kyc/me?userId=${storedUserId}`
                 );
-                const { status } = res.data.message;
+                const status = getKycStatusFromResponse(res.data);
                 console.log("KYC Status from API:", status);
                 setKycStatus(status);
             } catch (err) {
@@ -150,7 +155,7 @@ const fetchBalance = async () => {
                         <div className="p-6 text-center border-b border-dashed border-gray-200">
                             <p className="text-sm font-semibold text-gray-500">Stocks, F&O balance</p>
                             <p className="text-3xl font-bold text-gray-800 mt-2">
-                                ₹{balance}<span className="text-base align-bottom">.00</span>
+                                ₹{Number(balance).toFixed(2)}<span className="text-base align-bottom">.00</span>
                             </p>
                         </div>
                         <div className="p-6 space-y-4 border-b border-gray-200">
