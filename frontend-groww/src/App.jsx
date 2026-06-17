@@ -46,6 +46,7 @@ import StocksEmptyState from './components/UserModule/StocksEmptyState'
 import FOEmptyState from './components/UserModule/FOEmptyState'
 import MutualFundsEmptyState from './components/UserModule/MutualFundsEmptyState'
 import CardDetails from './components/Details/CardDetails'
+import GrowwAssistant from './components/common/GrowwAssistant'
 
 export const UserIdProvider=createContext()
 export const UserPicture=createContext()
@@ -120,6 +121,7 @@ function App() {
       </UserIdProvider.Provider>
       </UserPicture.Provider>
       
+      <GrowwAssistant />
       </GoogleOAuthProvider>
     </ThemeProvider>
     </>
