@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import ProfileDropdown from './ProfileDropdown'
+import { UserPicture } from "../../App";
 // import StocksEmptyState from "./StocksEmptyState";
 // import FOEmptyState from "./FOEmptyState";
 const tabs = ["Stocks", "F&O", "Mutual Funds"];
@@ -19,6 +20,8 @@ export default function Orders() {
   const [activeTab, setActiveTab] = useState("Stocks");
     const [showProfile, setShowProfile] = useState(false);
     const navigate=useNavigate()
+    const {userPic,setuserPic}=useContext(UserPicture)
+    
 
 
   return (
@@ -72,7 +75,7 @@ export default function Orders() {
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                         <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                     </svg>
-                    <img src="https://lh3.googleusercontent.com/a/ACg8ocIYetc0b2EDMVGG5XQi0ZYArJTTNNjd4sYXbUGGwKYi51BGgcP3=s96-c" alt="profile" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} onClick={() => setShowProfile(!showProfile)} />
+                    <img src={!userPic?"https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg":userPic} alt="profile" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} onClick={() => setShowProfile(!showProfile)} />
                     <div className="relative">
                         {showProfile && (
                             <div className="absolute right-0 top-10 z-[9999]">

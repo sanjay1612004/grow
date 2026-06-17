@@ -1,4 +1,6 @@
 @import "tailwindcss";
+
+/* ─── Existing animations ──────────────────────────────────────────────────── */
 @keyframes scroll {
   0% {
     transform: translateX(0);
@@ -37,3 +39,339 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;             /* Chrome/Safari */
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   DARK MODE  —  Groww-style overrides
+   Activated by adding class="dark" on <html>
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Smooth transition on theme change ──────────────────────────────────────── */
+html.dark *,
+html.dark *::before,
+html.dark *::after {
+  transition: background-color 0.2s ease, color 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ── Base body ──────────────────────────────────────────────────────────────── */
+html.dark body {
+  background-color: #121518 !important;
+  color: white !important;
+}
+
+html.dark #root {
+  background-color: #121518;
+}
+
+/* ── Backgrounds ────────────────────────────────────────────────────────────── */
+html.dark .bg-white          { background-color: #121518 !important; }
+html.dark .bg-gray-50        { background-color: #1a1d23 !important; }
+html.dark .bg-gray-100       { background-color: #1e2229 !important; }
+html.dark .bg-gray-200       { background-color: #2a303a !important; }
+
+/* Slash variants (Tailwind v4 generates bg-white/60 etc.) */
+html.dark [class*="bg-white\\/"]  { background-color: rgba(18,21,24,0.85) !important; }
+html.dark .bg-white\/60      { background-color: rgba(18,21,24,0.85) !important; }
+html.dark .bg-white\/80      { background-color: rgba(18,21,24,0.92) !important; }
+
+/* Gray-50 variants used for hover/selected states */
+html.dark .hover\:bg-gray-50:hover { background-color: #1e2229 !important; }
+html.dark .hover\:bg-gray-100:hover { background-color: #252a32 !important; }
+html.dark .hover\:bg-\[\#f4f4f4\]:hover { background-color: #1e2229 !important; }
+
+/* Specific hex backgrounds used in components */
+html.dark .bg-\[\#f9fafb\]   { background-color: #1a1d23 !important; }
+html.dark .bg-\[\#f3f4f6\]   { background-color: #1a1d23 !important; }
+html.dark .bg-\[\#f0f0f0\]   { background-color: #1e2229 !important; }
+html.dark .bg-\[\#fff8f0\]   { background-color: #1e1a15 !important; }
+
+/* ── Text colors ────────────────────────────────────────────────────────────── */
+html.dark .text-gray-900     { color: white !important; }
+html.dark .text-gray-800     { color: white !important; }
+html.dark .text-gray-700     { color: white !important; }
+html.dark .text-gray-600     { color: white !important; }
+html.dark .text-gray-500     { color: white !important; }
+html.dark .text-gray-400     { color: white !important; }
+
+/* Specific text hex colors */
+html.dark .text-\[\#111\]    { color: white !important; }
+html.dark .text-\[\#222\]    { color: white !important; }
+html.dark .text-\[\#333\]    { color: white !important; }
+html.dark .text-\[\#444\]    { color: white !important; }
+html.dark .text-\[\#555\]    { color: white !important; }
+html.dark .text-\[\#666\]    { color: white !important; }
+html.dark .text-\[\#888\]    { color: white !important; }
+html.dark .text-\[\#2f3447\] { color: white !important; }
+html.dark .text-\[\#444b64\] { color: white !important; }
+html.dark .text-\[\#6d7487\] { color: white !important; }
+html.dark .text-\[\#1a1a1a\] { color: white !important; }
+
+/* ── Border colors ──────────────────────────────────────────────────────────── */
+html.dark .border-gray-50    { border-color: #2d3340 !important; }
+html.dark .border-gray-100   { border-color: #2d3340 !important; }
+html.dark .border-gray-200   { border-color: #374151 !important; }
+html.dark .border-gray-300   { border-color: #4b5563 !important; }
+
+/* ── Border-b / border-t specifics ──────────────────────────────────────────── */
+html.dark [class*="border-b"][class*="border-gray"] { border-color: #2d3340 !important; }
+html.dark [class*="border-t"][class*="border-gray"] { border-color: #2d3340 !important; }
+
+/* ── Shadows ────────────────────────────────────────────────────────────────── */
+html.dark .shadow-md         { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.3) !important; }
+html.dark .shadow-sm         { box-shadow: 0 1px 2px rgba(0,0,0,0.3) !important; }
+html.dark .shadow-lg         { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -4px rgba(0,0,0,0.3) !important; }
+
+/* ── Input / form elements ──────────────────────────────────────────────────── */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #262b33 !important;
+  color: #e5e7eb !important;
+  border-color: #374151 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* ── Cards & panels (common rounded white containers) ───────────────────────── */
+html.dark .rounded-2xl.border.border-gray-200,
+html.dark .rounded-xl.border.border-gray-200,
+html.dark .rounded-xl.border.border-gray-300,
+html.dark .rounded-lg.border.border-gray-200,
+html.dark .rounded-lg.border.border-gray-300,
+html.dark .rounded-2xl.border.border-gray-300 {
+  background-color: #262b33 !important;
+  border-color: #374151 !important;
+}
+
+/* ── Backdrop blur nav ──────────────────────────────────────────────────────── */
+html.dark .backdrop-blur-md {
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* ── Skeleton loading ───────────────────────────────────────────────────────── */
+html.dark .animate-pulse {
+  background-color: #2a303a !important;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────────── */
+/* Keep green/brand buttons intact, only override neutral buttons */
+html.dark button.bg-white,
+html.dark .bg-white.rounded-lg,
+html.dark .bg-white.rounded-full {
+  background-color: #262b33 !important;
+  color: #e5e7eb !important;
+}
+html.dark button.border-gray-200 {
+  border-color: #374151 !important;
+}
+html.dark button.border-gray-300 {
+  border-color: #4b5563 !important;
+}
+
+html.dark button.hover\:bg-gray-50:hover {
+  background-color: #2d3340 !important;
+}
+
+/* ── SVG icons (strokes with currentColor adapt automatically) ──────────────── */
+/* Static gray strokes */
+html.dark svg [stroke="#aaa"],
+html.dark svg [stroke="#bbb"],
+html.dark svg [stroke="#ccc"] {
+  stroke: #6b7280;
+}
+
+/* ── Table elements ─────────────────────────────────────────────────────────── */
+html.dark table {
+  background-color: #121518 !important;
+}
+html.dark thead tr {
+  background-color: #1a1d23 !important;
+}
+html.dark tbody tr {
+  background-color: #121518 !important;
+}
+html.dark tbody tr:hover {
+  background-color: #1e2229 !important;
+}
+html.dark th {
+  color: #9ca3af !important;
+  border-color: #2d3340 !important;
+}
+html.dark td {
+  border-color: #2d3340 !important;
+}
+
+/* ── Scrollbar (for browsers that show custom scrollbars) ───────────────────── */
+html.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+html.dark ::-webkit-scrollbar-track {
+  background: #121518;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 4px;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* ── Profile dropdown ───────────────────────────────────────────────────────── */
+html.dark .bg-white.rounded-xl.shadow-lg,
+html.dark .bg-white.rounded-2xl.shadow-lg,
+html.dark .bg-white.rounded-xl.shadow-md,
+html.dark .bg-white.rounded-2xl.shadow-md {
+  background-color: #262b33 !important;
+  border-color: #374151 !important;
+}
+
+/* ── Charts (ApexCharts) ────────────────────────────────────────────────────── */
+html.dark .apexcharts-canvas {
+  background: #121518 !important;
+}
+html.dark .apexcharts-tooltip {
+  background: #1a1d23 !important;
+  color: #e5e7eb !important;
+  border-color: #374151 !important;
+}
+html.dark .apexcharts-xaxistooltip,
+html.dark .apexcharts-yaxistooltip {
+  background: #1a1d23 !important;
+  color: #e5e7eb !important;
+  border-color: #374151 !important;
+}
+
+/* ── Footer (uses inline styles — override with high-specificity selectors) ── */
+html.dark footer {
+  background-color: #1a1d24 !important;
+  color: #d1d5db !important;
+  border-color: #2d3340 !important;
+}
+
+html.dark footer * {
+  color: inherit !important;
+  border-color: #2d3340 !important;
+}
+
+html.dark footer a {
+  color: #9ca3af !important;
+}
+html.dark footer a:hover {
+  color: #00b386 !important;
+}
+
+html.dark footer h3 {
+  color: #e5e7eb !important;
+}
+
+html.dark footer hr {
+  border-color: #2d3340 !important;
+}
+
+html.dark footer button {
+  background-color: #262b33 !important;
+  border-color: #374151 !important;
+  color: #d1d5db !important;
+}
+
+html.dark footer [style*="background: #f9f9f9"],
+html.dark footer [style*="background:#f9f9f9"] {
+  background-color: #1a1d24 !important;
+}
+
+html.dark footer [style*="background: #fff8f0"],
+html.dark footer [style*="background:#fff8f0"] {
+  background-color: #2a2520 !important;
+  border-color: #4a3520 !important;
+}
+
+html.dark footer [style*="background: #fff"],
+html.dark footer [style*="background:#fff"] {
+  background-color: #262b33 !important;
+}
+
+/* ── Modals & overlays ──────────────────────────────────────────────────────── */
+html.dark .fixed.inset-0 .bg-white {
+  background-color: #262b33 !important;
+}
+
+/* ── Pill filters (e.g. "Gainers" / "Losers" buttons) ───────────────────────── */
+html.dark .rounded-full.border-gray-800,
+html.dark .rounded-full.border-gray-900 {
+  border-color: #9ca3af !important;
+  color: #f3f4f6 !important;
+}
+
+/* ── Green accent colors remain the same ────────────────────────────────────── */
+/* .text-[#00b386], .bg-[#00b386], .text-[#44c38a] — intentionally NOT overridden */
+
+/* ── Red accent colors remain the same ──────────────────────────────────────── */
+/* .text-red-500, .text-[#eb5b3c], .text-[#d63c1a] — intentionally NOT overridden */
+
+/* ── GenericOrderTicket / Order panel ───────────────────────────────────────── */
+html.dark .sticky.top-6 {
+  background-color: #262b33 !important;
+  border-color: #374151 !important;
+}
+
+/* ── Ring/focus states ──────────────────────────────────────────────────────── */
+html.dark .ring-1,
+html.dark .ring-gray-200 {
+  --tw-ring-color: #374151 !important;
+}
+
+/* ── Dividers ───────────────────────────────────────────────────────────────── */
+html.dark .divide-gray-100 > * + *,
+html.dark .divide-gray-200 > * + * {
+  border-color: #2d3340 !important;
+}
+
+/* ── Min-height screens ─────────────────────────────────────────────────────── */
+html.dark .min-h-screen {
+  background-color: #121518 !important;
+}
+
+/* ── Auth pages ─────────────────────────────────────────────────────────────── */
+html.dark .bg-gradient-to-br {
+  background: linear-gradient(to bottom right, #121518, #1a1d23) !important;
+}
+
+/* ── Placeholder images fallback backgrounds ────────────────────────────────── */
+html.dark .bg-gray-100.text-gray-500 {
+  background-color: #2a303a !important;
+  color: white !important;
+}
+
+/* ── Selected stock row indicator — keep green visible ──────────────────────── */
+html.dark .border-l-\[\#00b386\] {
+  border-left-color: #00b386 !important;
+}
+html.dark .border-l-transparent {
+  border-left-color: transparent !important;
+}
+
+/* ── Emerald (watchlist buttons etc.) ───────────────────────────────────────── */
+html.dark .bg-emerald-500 { background-color: #00b386 !important; }
+html.dark .hover\:bg-emerald-600:hover { background-color: #009970 !important; }
+html.dark .text-emerald-500 { color: white !important; }
+html.dark .text-emerald-600 { color: white !important; }
+
+/* ── KYC pages / special backgrounds ────────────────────────────────────────── */
+html.dark .bg-blue-50 { background-color: #1e2535 !important; }
+html.dark .bg-green-50 { background-color: #1e2920 !important; }
+html.dark .bg-yellow-50 { background-color: #2a2520 !important; }
+html.dark .bg-red-50 { background-color: #2a2020 !important; }
+
+/* ── Img borders in dark (logo containers) ──────────────────────────────────── */
+html.dark img.border-gray-100,
+html.dark img.border-gray-200 {
+  border-color: #374151 !important;
+}
+
+/* ── Landing/home page gradient overrides ───────────────────────────────────── */
+html.dark .bg-\[\#e8f5e9\] { background-color: #1e2920 !important; }
+html.dark .bg-\[\#f5f5f5\] { background-color: #262b33 !important; }

@@ -167,7 +167,7 @@ function StockCard({ logo, name, price, change, changeVal, up, searchId, nse, bs
             e.stopPropagation();
             e.preventDefault();
             setShowModal(true);
-            onsave({watchlistId : 1,watchlistName : "Sanjay's Watchlist",userId,nseScriptCode:nse,
+            onsave({watchlistId : 1,watchlistName : "Sanjay's Watchlist",userId,nseScriptCode:nse,bse,
               searchId,
               logo,
               name,

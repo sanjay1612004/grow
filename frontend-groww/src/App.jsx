@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react'
+import { ThemeProvider } from './contexts/ThemeContext'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -54,11 +55,12 @@ function App() {
   const [userId,setuserId]=useState(() => localStorage.getItem("userId") || "")
   const [userPic,setuserPic]=useState(() => localStorage.getItem("userPic") || "")
   const [balance, setBalance] = useState(0);
-  const [email,setemail]=useState('')
+  const [email,setemail]=useState(() => localStorage.getItem("email") || "")
 
   const clientid=import.meta.env.VITE_GOOGLE_CLIENT_ID
   return (
     <>
+    <ThemeProvider>
     <GoogleOAuthProvider clientId={clientid}>
       <UserPicture.Provider value={{userPic,setuserPic}}>
       <UserIdProvider.Provider value={{userId,setuserId}}>
@@ -119,6 +121,7 @@ function App() {
       </UserPicture.Provider>
       
       </GoogleOAuthProvider>
+    </ThemeProvider>
     </>
   )
 }

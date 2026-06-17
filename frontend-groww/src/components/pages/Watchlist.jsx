@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // Helper utility to scale raw flat API pricing arrays onto your UI Sparkline layout
@@ -134,7 +135,8 @@ export default function StockWatchlist() {
 
   // Hovered row tracking (normal mode)
   const [hoveredRow, setHoveredRow] = useState(null);
-  const userId=localStorage.getItem("userId")
+  const userId=localStorage.getItem("userId");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchWatchlist = async () => {
@@ -370,7 +372,8 @@ export default function StockWatchlist() {
                 yearHigh,
                 sparklinePrices,
                 up,
-                searchId
+                searchId,
+                bse
               } = stock;
 
               const isPositive = up || changeVal?.startsWith("+");
@@ -379,11 +382,27 @@ export default function StockWatchlist() {
               return (
                 <tr
                   key={_id || nseScriptCode}
-                  className={`transition-colors duration-150 hover:bg-gray-50 ${
+                  className={`transition-colors duration-150 hover:bg-gray-50 ${isEditMode ? "" : "cursor-pointer"} ${
                     idx < filtered.length - 1 ? "border-b border-gray-50" : ""
                   }`}
                   onMouseEnter={() => !isEditMode && setHoveredRow(_id || nseScriptCode)}
                   onMouseLeave={() => !isEditMode && setHoveredRow(null)}
+                  onClick={(e) => {
+                    // Prevent navigation if clicking on an action button (like remove) or in edit mode
+                    if (!isEditMode && !e.target.closest('button')) {
+                      navigate(`/stocks/${searchId}`, { 
+                        state: { 
+                          nse: nseScriptCode, 
+                          bse: bse || "", 
+                          company: name, 
+                          searchId, 
+                          logo, 
+                          name, 
+                          price 
+                        } 
+                      });
+                    }
+                  }}
                 >
                   {/* Company */}
                   <td className="px-4 py-[18px]">
@@ -463,7 +482,7 @@ export default function StockWatchlist() {
                           className="flex items-center justify-center w-7 h-7 rounded-md bg-emerald-500 hover:bg-emerald-600 transition-colors cursor-pointer"
                           title="View on Groww"
                         >
-                          <span className="text-white text-[11px] font-bold leading-none">G</span>
+                          <span className="text-white text-[11px] font-bold leading-none">B</span>
                         </button>
 
                         {/* Smallcase button — red/orange */}

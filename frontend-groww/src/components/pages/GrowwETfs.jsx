@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from "react";
-import { NavLink } from "react-router-dom";
+import axios from "axios";
+import { NavLink, useNavigate } from "react-router-dom";
 import Footer from "../landingpage/Footer";
 import { UserPicture } from "../../App";
 import ProfileDropdown from "../UserModule/ProfileDropdown";
+import GenericOrderTicket from "../UserModule/GenericOrderTicket";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -154,21 +156,38 @@ function NfoRow({ item, isLast }) {
 
 // ─── ETF Row ──────────────────────────────────────────────────────────────────
 
-function EtfRow({ item, isLast }) {
+function EtfRow({ item, isLast, onClick, isSelected }) {
   const { company, stats } = item;
   if (!stats) return null;
 
   const isPositive = stats.dayChange >= 0;
+  const navigate = useNavigate();
 
   return (
     <div
+      onClick={() => onClick(item)}
       className={`flex items-center px-6 py-4 hover:bg-gray-50 transition-colors cursor-pointer ${
         !isLast ? "border-b border-gray-100" : ""
-      }`}
+      } ${isSelected ? "bg-gray-50 border-l-4 border-l-[#00b386]" : "border-l-4 border-l-transparent"}`}
     >
       {/* ETF name */}
       <div className="flex-1 min-w-0 pr-4">
-        <span className="text-[13.5px] font-medium text-gray-800 leading-snug">
+        <span
+          className="text-[13.5px] font-medium text-gray-800 leading-snug hover:text-[#00b386] hover:underline"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/stocks/${company.searchId}`, {
+              state: {
+                nse: company.nseScriptCode || "",
+                bse: company.bseScriptCode || "",
+                company: company.companyShortName || company.companyName,
+                searchId: company.searchId,
+                logo: company.imageUrl,
+                name: company.companyName,
+              },
+            });
+          }}
+        >
           {company.companyName}
         </span>
       </div>
@@ -193,7 +212,25 @@ function EtfRow({ item, isLast }) {
 
 // ─── Invest Sidebar ───────────────────────────────────────────────────────────
 
-function InvestCard() {
+function InvestCard({ selectedStock }) {
+  const [kycStatus, setKycStatus] = useState(null);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      axios
+        .get(`https://j9cw5kv2-5000.inc1.devtunnels.ms/api/kyc/me?userId=${userId}`)
+        .then((res) => {
+          const kycDetails = res.data?.message || res.data?.data || res.data;
+          const status = (kycDetails?.kycStatus || kycDetails?.status || "").toString().toUpperCase();
+          setKycStatus(status);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, []);
+
+  if (kycStatus === "APPROVED" && selectedStock) return <GenericOrderTicket stock={selectedStock} />;
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col items-center text-center gap-4 sticky top-6">
       <div className="w-48 h-32">
@@ -280,6 +317,7 @@ function Navbar() {
 
 export default function GrowwETfs() {
   const [etfs,    setEtfs   ] = useState([]);
+  const [selectedStock, setSelectedStock] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error,   setError  ] = useState(null);
 
@@ -293,7 +331,13 @@ export default function GrowwETfs() {
       { headers: { Accept: "application/json" } }
     )
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(data => { if (!cancelled) setEtfs(data?.exploreCompanies?.ETF_NFO ?? []); })
+      .then(data => { 
+        if (!cancelled) {
+          const list = data?.exploreCompanies?.ETF_NFO ?? [];
+          setEtfs(list); 
+          if (list.length > 0) setSelectedStock(list[0]);
+        }
+      })
       .catch(err => { if (!cancelled) setError(err.message || "Failed to fetch"); })
       .finally(() => { if (!cancelled) setLoading(false); });
 
@@ -309,7 +353,7 @@ export default function GrowwETfs() {
     <div className="min-h-screen bg-white font-sans">
       <Navbar />
 
-      <div className="max-w-6xl mx-6 py-8">
+      <div className="max-w-6xl mx-12 py-8">
         {/* Page title */}
         <h1 className="text-[26px] font-bold text-gray-700 mb-6">
           ETFs By Groww
@@ -363,15 +407,16 @@ export default function GrowwETfs() {
             {!loading && !error && allRows.map((item, idx) => {
               const isNfo  = !item.stats;
               const isLast = idx === allRows.length - 1;
+              const isSelected = selectedStock?.company?.isin === item.company.isin;
               return isNfo
-                ? <NfoRow  key={item.company.growwContractId} item={item} isLast={isLast} />
-                : <EtfRow  key={item.company.growwContractId} item={item} isLast={isLast} />;
+                ? <NfoRow  key={item.company.growwContractId} item={item} isLast={isLast} onClick={setSelectedStock} isSelected={isSelected} />
+                : <EtfRow  key={item.company.growwContractId} item={item} isLast={isLast} onClick={setSelectedStock} isSelected={isSelected} />;
             })}
           </div>
 
           {/* ── Sidebar ── */}
-          <div className="w-64 flex-shrink-0">
-            <InvestCard />
+          <div className="w-104 flex-shrink-0">
+            <InvestCard selectedStock={selectedStock} />
           </div>
         </div>
       </div>

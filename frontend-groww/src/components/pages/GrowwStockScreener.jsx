@@ -267,7 +267,7 @@ export default function GrowwStockScreener() {
 
   return (
     <div>
-       <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6 sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-gray-100 w-full">
+       <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center gap-6 sticky top-0 z-10 bg-white backdrop-blur-md border-b border-gray-100 w-full">
         <img src="https://resources.groww.in/web-assets/img/website-logo/groww-logo-270.webp" alt="Groww" height={30} width={30} />
         <nav className="flex items-center gap-6">
           {["Stocks","Explore","Holdings","Positions","WatchList"].map(item => (
@@ -300,14 +300,14 @@ export default function GrowwStockScreener() {
           )}
         </div>
       </div>
-    <div style={{ minHeight: "100vh", background: "#fff", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <div className="min-h-screen bg-white font-sans">      
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
 
         {/* Title */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#1a1a1a", margin: 0 }}>ETF Stocks Screener</h1>
+          <h1 className="text-[22px] font-bold text-[#1a1a1a] m-0">ETF Stocks Screener</h1>
           <button
             onClick={fetchData}
             style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#888", display: "flex", alignItems: "center" }}

@@ -1,6 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { UserBalance, UserEmail } from "../../App";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const menuItems = [
   {
@@ -69,12 +71,41 @@ const SunIcon = () => (
   </svg>
 );
 
+const MoonIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+  </svg>
+);
+
 export default function ProfileDropdown() {
   const navigate = useNavigate();
   const{balance, setBalance}=useContext(UserBalance)
-const [email, setemail] = useState(
-  () => localStorage.getItem("email") || ""
-);  
+  const{email, setemail}=useContext(UserEmail)
+  const { isDark, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      // Fetch wallet balance
+      axios
+        .get(`http://localhost:5000/api/wallet/balance/${userId}`)
+        .then((res) => setBalance(res.data.balance))
+        .catch((err) => console.log(err));
+
+      // Fetch user email if not already loaded
+      if (!email) {
+        axios
+          .get(`https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/users/${userId}`)
+          .then((res) => {
+            if (res.data?.data?.email) {
+              setemail(res.data.data.email);
+              localStorage.setItem("email", res.data.data.email);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+  }, []);  
 
   const [loggedOut, setLoggedOut] = useState(false);
 
@@ -135,8 +166,12 @@ const [email, setemail] = useState(
 
         {/* Footer */}
         <div className="flex items-center justify-between px-4 py-3">
-          <button className="text-gray-400 hover:text-gray-700 transition-colors p-1 rounded-md hover:bg-gray-100">
-            <SunIcon />
+          <button
+            onClick={toggleTheme}
+            className="text-gray-400 hover:text-gray-700 transition-colors p-1 rounded-md hover:bg-gray-100"
+            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {isDark ? <SunIcon /> : <MoonIcon />}
           </button>
           <button
             onClick={() => setLoggedOut(true)}

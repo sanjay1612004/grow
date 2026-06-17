@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
+import axios from 'axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Footer from '../landingpage/Footer';
-import { UserPicture } from '../../App';
+import { UserPicture } from "../../App";
 import ProfileDropdown from "../UserModule/ProfileDropdown";
+import GenericOrderTicket from "../UserModule/GenericOrderTicket";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -102,7 +104,7 @@ function SkeletonRow() {
 
 // ─── Stock Row ────────────────────────────────────────────────────────────────
 
-function StockRow({ stock, activeFilter, isLast }) {
+function StockRow({ stock, activeFilter, isLast, onClick, isSelected }) {
   const ltp   = stock.ltp   || 0;
   const close = stock.close || 0;
   const dayChange = ltp - close;
@@ -112,9 +114,12 @@ function StockRow({ stock, activeFilter, isLast }) {
   const tag = stock.tag || '';
   const showVolumeWeekly = activeFilter === 'Volume shockers';
   const show52W          = activeFilter === '52W high' || activeFilter === '52W low';
+  const navigate = useNavigate();
 
   return (
-    <div className={`flex items-center px-5 py-3.5 hover:bg-gray-50 transition-colors cursor-pointer ${!isLast ? 'border-b border-gray-100' : ''}`}>
+    <div 
+      onClick={() => onClick(stock)}
+      className={`flex items-center px-5 py-3.5 hover:bg-gray-50 transition-colors cursor-pointer ${!isLast ? 'border-b border-gray-100' : ''} ${isSelected ? 'bg-gray-50' : ''}`}>
       {/* Logo */}
       <div className="flex-shrink-0 w-10 h-10">
         <img
@@ -130,7 +135,22 @@ function StockRow({ stock, activeFilter, isLast }) {
 
       {/* Company name + tag */}
       <div className="ml-3 flex-1 min-w-0">
-        <div className="text-[13.5px] font-medium text-gray-800 truncate">
+        <div
+          className="text-[13.5px] font-medium text-gray-800 truncate hover:text-[#00b386] hover:underline"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/stocks/${stock.searchId}`, {
+              state: {
+                nse: stock.nseScriptCode || "",
+                bse: stock.bseScriptCode || "",
+                company: stock.companyShortName || stock.companyName,
+                searchId: stock.searchId,
+                logo: stock.logoUrl,
+                name: stock.companyName,
+              },
+            });
+          }}
+        >
           {stock.companyName}
         </div>
         {tag && (
@@ -170,7 +190,25 @@ function StockRow({ stock, activeFilter, isLast }) {
 
 // ─── Sidebar InvestCard ───────────────────────────────────────────────────────
 
-function InvestCard() {
+function InvestCard({ selectedStock }) {
+  const [kycStatus, setKycStatus] = useState(null);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      axios
+        .get(`https://j9cw5kv2-5000.inc1.devtunnels.ms/api/kyc/me?userId=${userId}`)
+        .then((res) => {
+          const kycDetails = res.data?.message || res.data?.data || res.data;
+          const status = (kycDetails?.kycStatus || kycDetails?.status || "").toString().toUpperCase();
+          setKycStatus(status);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, []);
+
+  if (kycStatus === "APPROVED" && selectedStock) return <GenericOrderTicket stock={selectedStock} />;
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col items-center text-center gap-4 sticky top-6">
       {/* Illustration — people at a store */}
@@ -269,6 +307,7 @@ export default function GrowwTopMover() {
   const [activeFilter, setActiveFilter] = useState('Top gainers');
   const [selectedIndex, setSelectedIndex] = useState('NIFTY 100');
   const [stocks, setStocks]   = useState([]);
+  const [selectedStock, setSelectedStock] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
  const {userPic,setuserPic}=useContext(UserPicture)
@@ -291,7 +330,13 @@ export default function GrowwTopMover() {
       { headers: { Accept: 'application/json' } }
     )
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(data => { if (!cancelled) setStocks(data?.data?.stocks || []); })
+      .then(data => { 
+        if (!cancelled) {
+            const list = data?.data?.stocks || [];
+            setStocks(list);
+            if (list.length > 0) setSelectedStock(list[0]);
+        }
+      })
       .catch(err => { if (!cancelled) setError(err.message || 'Failed to fetch'); })
       .finally(() => { if (!cancelled) setLoading(false); });
 
@@ -370,17 +415,16 @@ export default function GrowwTopMover() {
             {FILTERS.map(f => (
               <button
                 key={f.label}
-onClick={() => {
-  const slug = ROUTE_MAP[f.label];
-
-  setActiveFilter(f.label);
-
-  navigate(
-    slug
-      ? `/markets/${slug}?index=${INDEX_API_MAP[selectedIndex]}`
-      : ""
-  );
-}}                className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                onClick={() => {
+                  const slug = ROUTE_MAP[f.label];
+                  setActiveFilter(f.label);
+                  navigate(
+                    slug
+                      ? `/markets/${slug}?index=${INDEX_API_MAP[selectedIndex]}`
+                      : ""
+                  );
+                }}                
+                className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   activeFilter === f.label
                     ? 'border-gray-800 text-gray-900 bg-white font-semibold'
                     : 'border-gray-200 text-gray-600 bg-white hover:border-gray-300'
@@ -389,23 +433,22 @@ onClick={() => {
                 {f.label}
               </button>
             ))}
-<IndexDropdown
-  value={selectedIndex}
-  onChange={(value) => {
-    setSelectedIndex(value);
-
-    const slug = ROUTE_MAP[activeFilter];
-
-    navigate(
-      slug
-        ? `/markets/${slug}?index=${INDEX_API_MAP[value]}`
-        : `/markets?index=${INDEX_API_MAP[value]}`
-    );
-  }}
-/>          </div>
+            <IndexDropdown
+              value={selectedIndex}
+              onChange={(value) => {
+                setSelectedIndex(value);
+                const slug = ROUTE_MAP[activeFilter];
+                navigate(
+                  slug
+                    ? `/markets/${slug}?index=${INDEX_API_MAP[value]}`
+                    : `/markets?index=${INDEX_API_MAP[value]}`
+                );
+              }}
+            />          
+          </div>
 
           {/* Two-column layout */}
-          <div className="flex gap-6 items-start">
+          <div className="flex gap-2 items-start">
 
             {/* ── Main table ── */}
             <div className="flex-1 bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -456,13 +499,15 @@ onClick={() => {
                   stock={stock}
                   activeFilter={activeFilter}
                   isLast={idx === stocks.length - 1}
+                  onClick={setSelectedStock}
+                  isSelected={selectedStock?.isin === stock.isin}
                 />
               ))}
             </div>
 
             {/* ── Sidebar ── */}
-            <div className="w-64 flex-shrink-0">
-              <InvestCard />
+            <div className="w-74 my-10 flex-shrink-0">
+              <InvestCard selectedStock={selectedStock} />
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useCallback, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { UserPicture } from "../../App";
 import ProfileDropdown from "../UserModule/ProfileDropdown";
+import Footer from "../landingpage/Footer";
 
 // ── Spark-line mini chart ─────────────────────────────────────────────────────
 function SparkLine({ points, color }) {
@@ -918,6 +919,7 @@ export default function GrowwInteradaystock() {
           setFilterState={setFilterState}
         />
       )}
+      <Footer/>
     </div>
   );
 }

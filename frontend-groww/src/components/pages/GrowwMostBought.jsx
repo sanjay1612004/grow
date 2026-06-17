@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from "react";
-import { NavLink } from "react-router-dom";
+import axios from "axios";
+import { NavLink, useNavigate } from "react-router-dom";
 import Footer from "../landingpage/Footer";
 import { UserPicture } from "../../App";
 import ProfileDropdown from "../UserModule/ProfileDropdown";
+import GenericOrderTicket from "../UserModule/GenericOrderTicket";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -102,7 +104,25 @@ function SkeletonRow() {
 
 // ─── Invest CTA sidebar ───────────────────────────────────────────────────────
 
-function InvestCard() {
+function InvestCard({ selectedStock }) {
+  const [kycStatus, setKycStatus] = useState(null);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      axios
+        .get(`https://j9cw5kv2-5000.inc1.devtunnels.ms/api/kyc/me?userId=${userId}`)
+        .then((res) => {
+          const kycDetails = res.data?.message || res.data?.data || res.data;
+          const status = (kycDetails?.kycStatus || kycDetails?.status || "").toString().toUpperCase();
+          setKycStatus(status);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, []);
+
+  if (kycStatus === "APPROVED") return <GenericOrderTicket stock={selectedStock} />;
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col items-center text-center gap-4 sticky top-6">
       <div className="w-44 h-28 relative">
@@ -125,18 +145,20 @@ function InvestCard() {
 
 // ─── Stock row ────────────────────────────────────────────────────────────────
 
-function StockRow({ item, isLast }) {
+function StockRow({ item, isLast, onClick, isSelected }) {
   const { company, stats } = item;
   const isPositive = stats.dayChange >= 0;
   const trendPoints = generateTrendPoints(stats);
   const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate();
   
 
   return (
     <div
+      onClick={() => onClick(item)}
       className={`grid grid-cols-[1fr_140px_160px_100px] items-center transition-colors duration-100 hover:bg-gray-50 cursor-pointer ${
         !isLast ? "border-b border-gray-100" : ""
-      }`}
+      } ${isSelected ? "bg-gray-50 border-l-4 border-l-[#00b386]" : "border-l-4 border-l-transparent"}`}
     >
       {/* Company */}
       <div className="flex items-center gap-3 px-5 py-4 min-w-0">
@@ -153,7 +175,22 @@ function StockRow({ item, isLast }) {
         <div className="w-10 h-10 rounded-lg bg-gray-100 text-gray-500 text-[10px] font-bold items-center justify-center flex-shrink-0 hidden">
           {company.companyShortName?.slice(0, 2).toUpperCase()}
         </div>
-        <span className="text-[13.5px] font-medium text-gray-800 leading-snug truncate">
+        <span
+          className="text-[13.5px] font-medium text-gray-800 leading-snug truncate hover:text-[#00b386] hover:underline"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/stocks/${company.searchId}`, {
+              state: {
+                nse: company.nseScriptCode || "",
+                bse: company.bseScriptCode || "",
+                company: company.companyShortName || company.companyName,
+                searchId: company.searchId,
+                logo: company.imageUrl,
+                name: company.companyName,
+              },
+            });
+          }}
+        >
           {company.companyName}
         </span>
       </div>
@@ -185,6 +222,7 @@ function StockRow({ item, isLast }) {
 
 export default function GrowwMostBought() {
   const [stocks, setStocks] = useState([]);
+  const [selectedStock, setSelectedStock] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]   = useState(null);
   const {userPic,setuserPic}=useContext(UserPicture)
@@ -205,7 +243,9 @@ export default function GrowwMostBought() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!cancelled) {
-          setStocks(data?.exploreCompanies?.POPULAR_STOCKS_MOST_BOUGHT ?? []);
+          const fetchedStocks = data?.exploreCompanies?.POPULAR_STOCKS_MOST_BOUGHT ?? [];
+          setStocks(fetchedStocks);
+          if (fetchedStocks.length > 0) setSelectedStock(fetchedStocks[0]);
         }
       } catch (err) {
         if (!cancelled) setError(err.message || "Failed to fetch stocks");
@@ -349,13 +389,15 @@ export default function GrowwMostBought() {
                   key={item.company.isin}
                   item={item}
                   isLast={idx === stocks.length - 1}
+                  onClick={setSelectedStock}
+                  isSelected={selectedStock?.company?.isin === item.company.isin}
                 />
               ))}
             </div>
 
             {/* ── Sidebar ── */}
             <div className="w-102 flex-shrink-0">
-              <InvestCard />
+              <InvestCard selectedStock={selectedStock} />
             </div>
           </div>
 

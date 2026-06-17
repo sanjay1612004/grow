@@ -155,7 +155,7 @@ export default function StockDashboard({sname,lname,logo,bname}) {
     chart: {
       id: "groww-chart-" + activeTab,
       type: "area",
-      background: "#fff",
+      background: "transparent",
       toolbar: { show: false },
       zoom: { enabled: false },
       animations: {
@@ -231,19 +231,18 @@ fill: {
         const ts = chartData[dataPointIndex]?.[0];
         const dateStr = ts ? formatTooltipDate(ts, activeTab) : "";
         return `
-          <div style="
-            background:#fff;
+          <div class="groww-custom-tooltip" style="
+            background:transparent;
             border:none;
             padding:0;
             font-family:inherit;
             font-size:12px;
-            color:#444;
             white-space:nowrap;
             box-shadow:none;
             pointer-events:none;
           ">
-            <span style="font-weight:600;color:#111">₹${Number(val).toFixed(2)}</span>
-            <span style="color:#888;margin-left:6px">| ${dateStr}</span>
+            <span class="text-[#111] font-semibold">₹${Number(val).toFixed(2)}</span>
+            <span class="text-[#888] ml-1.5">| ${dateStr}</span>
           </div>`;
       },
       x: { show: false },
@@ -466,7 +465,7 @@ fill: {
                       className={`
                         px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all duration-150
                         ${isActive
-                          ? "bg-white border-gray-400 text-gray-900 shadow-sm"
+                          ? "bg-transparent border-gray-400 text-gray-900 shadow-sm"
                           : "bg-transparent border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700 hover:bg-gray-50"
                         }
                       `}
