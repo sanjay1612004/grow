@@ -4,6 +4,7 @@ import Sidebar from "./Sidebar";
 import ProfileDropdown from "./ProfileDropdown";
 import { Link, Outlet } from "react-router-dom";
 import { UserPicture } from "../../App";
+import StockSearch from "../common/StockSearch";
 
 
 const TEAL = "#00b386";
@@ -58,23 +59,7 @@ export default function GrowwProfile() {
             <span key={item} style={{ fontSize: 18, fontWeight: 600, cursor: "pointer" }} className="text-gray-500">{item}</span>
           ))}
         </div>
-        <div className="flex-1 max-w-xs ml-auto mr-3">
-            <div className="flex items-center bg-gray-200 border border-gray-200 rounded-lg px-3 h-9 gap-2 focus-within:border-gray-400 focus-within:bg-white transition-colors">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
-                <circle cx="11" cy="11" r="7" stroke="#9ca3af" strokeWidth="2" />
-                <path d="M20 20l-3-3" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-              <input
-                type="text"
-                name="groww-site-search"
-                role="searchbox"
-                placeholder="Search Groww...."
-                className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none border-none"
-                autoComplete="off"
-              />
-              <span className="text-xs text-gray-400 bg-gray-200 rounded px-1.5 py-0.5 flex-shrink-0">Ctrl+K</span>
-            </div>
-          </div>
+        <StockSearch />
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={TEXT_SECONDARY} strokeWidth="2">

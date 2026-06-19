@@ -52,7 +52,6 @@ export default function ChangeGrowwPin() {
 
     setMessage("Password updated successfully!");
     setMessageType("success");
-
     setNewPin("");
     setConfirmPin("");
 
