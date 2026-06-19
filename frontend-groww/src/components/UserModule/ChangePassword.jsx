@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 
 const TEAL = "#00b386";
@@ -15,15 +16,67 @@ export default function ChangePassword() {
   const [confirmPass, setConfirmPass] = useState("");
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = () => {
-    if (newPass && newPass === confirmPass) {
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-      setNewPass(""); setConfirmPass("");
-    }
-  };
+  const [messageType, setMessageType] = useState("");
+  const userId=localStorage.getItem('userId')
+  
+  const handleSubmit = async () => {
+  setMessage("");
+  setMessageType("");
+
+  if (!newPass || !confirmPass) {
+    setMessage("Please fill all fields");
+    setMessageType("error");
+    return;
+  }
+
+  if (newPass !== confirmPass) {
+    setMessage("Passwords do not match");
+    setMessageType("error");
+    return;
+  }
+
+  try {
+    const res = await axios.post(
+      "https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/reset-password",
+      {
+        userId,
+        password: newPass,
+        confirmPassword: confirmPass,
+      }
+    );
+
+    console.log(res);
+
+    setMessage("Password updated successfully!");
+    setMessageType("success");
+
+    setNewPass("");
+    setConfirmPass("");
+
+    setTimeout(() => {
+      setMessage("");
+      setMessageType("");
+    }, 3000);
+  } catch (err) {
+    console.error(err);
+
+    const errorMsg =
+      err?.response?.data?.message ||
+      err?.response?.data?.error ||
+      "Something went wrong. Please try again.";
+
+    setMessage(errorMsg);
+    setMessageType("error");
+
+    setTimeout(() => {
+      setMessage("");
+      setMessageType("");
+    }, 3000);
+  }
+};
 
   const inputStyle = {
     width: "100%",
@@ -71,36 +124,50 @@ export default function ChangePassword() {
       }} />
 
       <div style={{ padding: "32px 32px", position: "relative", maxWidth: 500 }}>
-        {success && (
-          <div style={{
-            marginBottom: 20,
-            padding: "12px 16px",
-            background: "#f0fdf4",
-            border: `1px solid #bbf7d0`,
-            borderRadius: 6,
-            color: "#15803d",
-            fontSize: 14,
-          }}>
-            Password updated successfully!
+        {message && (
+          <div
+            style={{
+              marginBottom: 20,
+              padding: "12px 16px",
+              borderRadius: 6,
+              fontSize: 14,
+              background:
+                messageType === "success"
+                  ? "#f0fdf4"
+                  : "#fef2f2",
+              border:
+                messageType === "success"
+                  ? "1px solid #bbf7d0"
+                  : "1px solid #fecaca",
+              color:
+                messageType === "success"
+                  ? "#15803d"
+                  : "#dc2626",
+            }}
+          >
+            {message}
           </div>
         )}
 
         {/* New Password */}
-        <div style={{ marginBottom: 20 }}>
+        <div style={{ marginBottom: 20 }} >
           <label style={{ fontSize: 11, fontWeight: 600, color: TEXT_MUTED, letterSpacing: "0.08em", display: "block", marginBottom: 8 }}>
             NEW PASSWORD
           </label>
           <div style={{ position: "relative" }}>
             <input
               type={showNew ? "text" : "password"}
+              name="new-password"
               placeholder="Password"
               value={newPass}
               onChange={e => setNewPass(e.target.value)}
               style={inputStyle}
               onFocus={e => e.target.style.borderColor = TEAL}
               onBlur={e => e.target.style.borderColor = BORDER}
+              autoComplete="new-password"
             />
             <button
+              type="button"
               onClick={() => setShowNew(v => !v)}
               style={{
                 position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
@@ -133,14 +200,17 @@ export default function ChangePassword() {
           <div style={{ position: "relative" }}>
             <input
               type={showConfirm ? "text" : "password"}
+              name="confirm-new-password"
               placeholder="Password"
               value={confirmPass}
               onChange={e => setConfirmPass(e.target.value)}
               style={inputStyle}
               onFocus={e => e.target.style.borderColor = TEAL}
               onBlur={e => e.target.style.borderColor = BORDER}
+              autoComplete="new-password"
             />
             <button
+              type="button"
               onClick={() => setShowConfirm(v => !v)}
               style={{
                 position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
@@ -187,4 +257,3 @@ export default function ChangePassword() {
     </div>
   );
 }
-

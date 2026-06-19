@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 
 const TEAL = "#00b386";
@@ -16,14 +17,66 @@ export default function ChangeGrowwPin() {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState("");
+  
+    const [messageType, setMessageType] = useState("");
+    const userId=localStorage.getItem('userId')
 
-  const handleSubmit = () => {
-    if (newPin && newPin === confirmPin) {
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-      setNewPin(""); setConfirmPin("");
-    }
-  };
+   const handleSubmit = async () => {
+  setMessage("");
+  setMessageType("");
+
+  if (!newPin || !confirmPin) {
+    setMessage("Please fill all fields");
+    setMessageType("error");
+    return;
+  }
+
+  if (newPin !== confirmPin) {
+    setMessage("Passwords do not match");
+    setMessageType("error");
+    return;
+  }
+
+  try {
+    const res = await axios.post(
+      "https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/reset-pin",
+      {
+        userId,
+        pin: newPin,
+        confirmPin: confirmPin,
+      }
+    );
+
+    console.log(res);
+
+    setMessage("Password updated successfully!");
+    setMessageType("success");
+
+    setNewPin("");
+    setConfirmPin("");
+
+    setTimeout(() => {
+      setMessage("");
+      setMessageType("");
+    }, 3000);
+  } catch (err) {
+    console.error(err);
+
+    const errorMsg =
+      err?.response?.data?.message ||
+      err?.response?.data?.error ||
+      "Something went wrong. Please try again.";
+
+    setMessage(errorMsg);
+    setMessageType("error");
+
+    setTimeout(() => {
+      setMessage("");
+      setMessageType("");
+    }, 3000);
+  }
+};
 
   const inputStyle = {
     width: "100%",
@@ -71,17 +124,28 @@ export default function ChangeGrowwPin() {
       }} />
 
       <div style={{ padding: "32px 32px", position: "relative", maxWidth: 500 }}>
-        {success && (
-          <div style={{
-            marginBottom: 20,
-            padding: "12px 16px",
-            background: "#f0fdf4",
-            border: `1px solid #bbf7d0`,
-            borderRadius: 6,
-            color: "#15803d",
-            fontSize: 14,
-          }}>
-            Password updated successfully!
+        {message && (
+          <div
+            style={{
+              marginBottom: 20,
+              padding: "12px 16px",
+              borderRadius: 6,
+              fontSize: 14,
+              background:
+                messageType === "success"
+                  ? "#f0fdf4"
+                  : "#fef2f2",
+              border:
+                messageType === "success"
+                  ? "1px solid #bbf7d0"
+                  : "1px solid #fecaca",
+              color:
+                messageType === "success"
+                  ? "#15803d"
+                  : "#dc2626",
+            }}
+          >
+            {message}
           </div>
         )}
 
@@ -93,14 +157,17 @@ export default function ChangeGrowwPin() {
           <div style={{ position: "relative" }}>
             <input
               type={showNew ? "text" : "password"}
+              name="new-groww-pin"
               placeholder="Enter PIN"
               value={newPin}
               onChange={e => setNewPin(e.target.value)}
               style={inputStyle}
               onFocus={e => e.target.style.borderColor = TEAL}
               onBlur={e => e.target.style.borderColor = BORDER}
+              autoComplete="new-password"
             />
             <button
+              type="button"
               onClick={() => setShowNew(v => !v)}
               style={{
                 position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
@@ -133,14 +200,17 @@ export default function ChangeGrowwPin() {
           <div style={{ position: "relative" }}>
             <input
               type={showConfirm ? "text" : "password"}
+              name="confirm-new-groww-pin"
               placeholder="Enter PIN"
               value={confirmPin}
               onChange={e => setConfirmPin(e.target.value)}
               style={inputStyle}
               onFocus={e => e.target.style.borderColor = TEAL}
               onBlur={e => e.target.style.borderColor = BORDER}
+              autoComplete="new-password"
             />
             <button
+              type="button"
               onClick={() => setShowConfirm(v => !v)}
               style={{
                 position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
@@ -187,4 +257,3 @@ export default function ChangeGrowwPin() {
     </div>
   );
 }
-

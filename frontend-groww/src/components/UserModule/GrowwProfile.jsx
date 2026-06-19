@@ -66,8 +66,11 @@ export default function GrowwProfile() {
               </svg>
               <input
                 type="text"
+                name="groww-site-search"
+                role="searchbox"
                 placeholder="Search Groww...."
                 className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none border-none"
+                autoComplete="off"
               />
               <span className="text-xs text-gray-400 bg-gray-200 rounded px-1.5 py-0.5 flex-shrink-0">Ctrl+K</span>
             </div>
