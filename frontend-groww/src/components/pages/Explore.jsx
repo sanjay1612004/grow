@@ -234,6 +234,9 @@ function StockRow({ logo, name, price, change, changeVal, up, volume, searchId, 
   const color = up ? "text-[#00b386]" : "text-[#eb5757]";
   const [hovered, setHovered] = useState(false);
   const navigate = useNavigate();
+  const userId=localStorage.getItem("userId")
+  const [showModal, setShowModal] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
 
   return (
     <div
@@ -274,7 +277,15 @@ function StockRow({ logo, name, price, change, changeVal, up, volume, searchId, 
             </button>
             <button
               className="flex items-center justify-center w-8 h-8 rounded border border-gray-200 hover:border-gray-400 transition-colors"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {e.stopPropagation();onsave({watchlistId : 1,watchlistName : "Sanjay's Watchlist",userId,nseScriptCode:nse,bse,
+              searchId,
+              logo,
+              name,
+              price,
+              change,
+              changeVal})
+              setShowModal(true);
+}}
             >
               <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
                 <path d="M1 1h12v14l-6-3-6 3V1z" stroke="#6b7280" strokeWidth="1.3" fill="none" />
@@ -285,6 +296,16 @@ function StockRow({ logo, name, price, change, changeVal, up, volume, searchId, 
           <span className="text-sm text-gray-500">{volume === "—" ? "" : volume}</span>
         )}
       </div>
+      {showModal && (
+        <AddToWatchlistModal
+          stockName={name}
+          onClose={() => setShowModal(false)}
+          onSave={() => {
+            setBookmarked(true);
+            setShowModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }
