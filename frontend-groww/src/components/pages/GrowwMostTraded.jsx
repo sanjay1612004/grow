@@ -210,6 +210,7 @@ function StockRow({ item, isLast, onClick, isSelected }) {
       {/* Haircut */}
       <div className="px-4 py-4 text-right text-[13px] text-gray-700">
         {formatHaircut(company.mtfHaircut)}
+        
       </div>
 
       {/* 1 Day Low */}

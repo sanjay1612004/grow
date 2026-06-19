@@ -218,7 +218,7 @@ const Holdings = () => {
     );
   }
   
-      return (
+  return (
     <section className="w-full bg-white py-20">
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between gap-0">
 

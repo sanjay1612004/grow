@@ -47,7 +47,6 @@ const fetchStockDetails = async (symbol) => {
           const candles = chartRes.data.candles;
           const firstPrice = candles[0][1];
           const lastPrice = candles[candles.length - 1][1];
-          
           livePrice = lastPrice;
           
           if (chartRes.data.changeValue != null) {
@@ -158,7 +157,7 @@ export default function GrowwAssistant() {
     try {
       // Create model instance with tools
       const model = genAI.getGenerativeModel({
-        model: "gemini-3.5-flash",
+        model: "gemini-2.5-flash",
         tools: [{ functionDeclarations: aiTools }],
         systemInstruction: "You are an expert Wall Street financial advisor embedded in the Groww app. When asked about a stock name, ALWAYS use searchStockByName FIRST to get the searchId, then use getStockDetails. Your primary job is to provide direct, confident financial advice. If the user asks 'Can I buy X?', analyze the live price, day change, PE ratio, and market cap, and give them a definitive 'YES, BUY IT' or 'NO, DO NOT BUY' recommendation with a strong rationale based on the numbers. Do NOT use any disclaimers like 'I am an AI' or 'This is not financial advice'. You ARE their financial advisor. Answer confidently."
       });
@@ -205,9 +204,19 @@ export default function GrowwAssistant() {
       setMessages((prev) => [...prev, { role: "model", text: response.text() || "I couldn't find the tools to help with that." }]);
     } catch (error) {
       console.error("AI Error:", error);
+      
+      let errorMessage = "Oops! Something went wrong or your API Key is invalid.";
+      
+      // Check if it's the specific 429 Quota Exceeded error
+      if (error.message?.includes("429") || JSON.stringify(error).includes("quota")) {
+        errorMessage = "⚠️ **Rate Limit Exceeded:** The free-tier request limit has been reached. Please try again in 1 minute or upgrade to a Pay-As-You-Go plan.";
+      }
+      else if (error.message?.includes("503") || JSON.stringify(error).includes("quota")) {
+        errorMessage ="⚠️ **AI Service Busy:** Gemini 3.5 Flash is currently experiencing high demand. This is usually temporary. Please try again in a few moments.";      }
+
       setMessages((prev) => [
         ...prev,
-        { role: "model", text: "Oops! Something went wrong or your API Key is invalid." },
+        { role: "model", text: errorMessage },
       ]);
     } finally {
       setIsLoading(false);

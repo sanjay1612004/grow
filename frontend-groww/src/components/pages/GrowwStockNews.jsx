@@ -232,7 +232,7 @@ export default function GrowwStockNews() {
   const [loadingGainers, setLoadingGainers] = useState(true);
   const [loadingLosers,  setLoadingLosers]  = useState(true);
   const [isRefreshing,   setIsRefreshing]   = useState(false);
-  const [usingFallback,               setUsingFallback]  = useState(false);
+  const [usingFallback,  setUsingFallback]  = useState(false);
  const {userPic,setuserPic}=useContext(UserPicture)
   const [showProfile, setShowProfile] = useState(false);
   
