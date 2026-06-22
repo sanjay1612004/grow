@@ -6,6 +6,7 @@ import { UserPicture } from "../../App";
 import ProfilePanel from "../UserModule/ProfileDropdown";
 import ProfileDropdown from "../UserModule/ProfileDropdown";
 import StockPage from "./StockPage";
+import StockSearch from "../common/StockSearch";
 
 const CardDetails = () => {
   
@@ -49,23 +50,7 @@ const CardDetails = () => {
             </NavLink>
           ))}
         </nav>
-        <div className="flex-1 max-w-xs ml-auto">
-          <div className="flex items-center bg-gray-200 border border-gray-200 rounded-lg px-3 h-9 gap-2 focus-within:border-gray-400 focus-within:bg-white transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0" >
-              <circle cx="11" cy="11" r="7" stroke="#9ca3af" strokeWidth="2" />
-              <path d="M20 20l-3-3" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search Groww...."
-              className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none border-none"
-            />
-            <span className="text-xs text-gray-400 bg-gray-200 rounded px-1.5 py-0.5 flex-shrink-0">
-              Ctrl+K
-            </span>
-          </div>
-          
-        </div>
+        <StockSearch/>
         <div className="flex items-center gap-4">
           <button className="text-gray-500 hover:text-gray-700">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">

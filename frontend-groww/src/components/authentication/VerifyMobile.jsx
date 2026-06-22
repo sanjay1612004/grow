@@ -95,8 +95,7 @@ const userId = location.state?.userId || localStorage.getItem("userId");
               "
               maxLength={10}
               value={phoneNumber}
-              onChange={(e)=>setphoneNumber(e.target.value)}
-              
+              onChange={(e)=>setphoneNumber(e.target.value)} 
             />
           </div>
 

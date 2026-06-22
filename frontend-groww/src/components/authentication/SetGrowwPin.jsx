@@ -47,7 +47,6 @@ const SetGrowwPin = () => {
       });
 
     } else {
-
       setError(
         res.data.message
       );
