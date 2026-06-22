@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserName } from "../../App";
 
 // Helper utility to scale raw flat API pricing arrays onto your UI Sparkline layout
 function transformSparkline(prices) {
@@ -127,6 +128,7 @@ export default function StockWatchlist() {
   const [loading, setLoading] = useState(true);
   const [watchlistName, setWatchlistName] = useState("");
   const [stocks, setStocks] = useState([]);
+  const {name,setname}=useContext(UserName)
 
   // Edit mode state
   const [isEditMode, setIsEditMode] = useState(false);
@@ -229,7 +231,7 @@ export default function StockWatchlist() {
       {/* ── Tab bar ── */}
       <div className="flex items-center gap-0 border border-gray-300 px-6">
         <div className="py-[18px] pb-[14px] font-bold text-[15px] text-gray-900 border-b-[2.5px] border-gray-900 mr-6 cursor-pointer">
-          {watchlistName || "Loading..."}
+            {name ? `${name.split(" ")[0]}'s watchlist` : "Loading..."}
         </div>
         {/* Hide + Watchlist in edit mode */}
         {!isEditMode && (

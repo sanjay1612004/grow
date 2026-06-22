@@ -1,7 +1,7 @@
 import { useState,useEffect, useContext } from "react";
 import FieldRow from "./FieldRow";
 import axios from "axios";
-import { UserEmail } from "../../App";
+import { UserEmail, UserName } from "../../App";
 
 
 const TEAL = "#00b386";
@@ -35,6 +35,7 @@ const user = {
 export default function BasicDetails() {
   const[User,setUser]=useState([])
   const {email,setemail}=useContext(UserEmail)
+  const {name,setname}=useContext(UserName)
   useEffect(() => {
   const fetchUser = async () => {
     try {

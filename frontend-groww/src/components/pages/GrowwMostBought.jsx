@@ -226,7 +226,7 @@ export default function GrowwMostBought() {
   const [loading, setLoading] = useState(true);
   const [error, setError]   = useState(null);
   const {userPic,setuserPic}=useContext(UserPicture)
-    const [showProfile, setShowProfile] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   
 
   useEffect(() => {
@@ -404,7 +404,7 @@ export default function GrowwMostBought() {
           {/* Footer */}
         </div>
       </div>
-                <Footer />
+      <Footer />
 
     </div>
   );

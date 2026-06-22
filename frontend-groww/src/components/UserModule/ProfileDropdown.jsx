@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UserBalance, UserEmail } from "../../App";
+import { UserBalance, UserEmail, UserIdProvider, UserName, UserPicture } from "../../App";
 import { useTheme } from "../../contexts/ThemeContext";
 
 const menuItems = [
@@ -82,6 +82,9 @@ export default function ProfileDropdown() {
   const{balance, setBalance}=useContext(UserBalance)
   const{email, setemail}=useContext(UserEmail)
   const { isDark, toggleTheme } = useTheme();
+  const {name,setname}=useContext(UserName)
+  const {setuserId}=useContext(UserIdProvider)
+  const {setuserPic}=useContext(UserPicture)
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -92,30 +95,21 @@ export default function ProfileDropdown() {
         .then((res) => setBalance(res.data.balance))
         .catch((err) => console.log(err));
 
-      // Fetch user email if not already loaded
-      if (!email) {
-        axios
-          .get(`https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/users/${userId}`)
-          .then((res) => {
-            if (res.data?.data?.email) {
-              setemail(res.data.data.email);
-              localStorage.setItem("email", res.data.data.email);
-            }
-          })
-          .catch((err) => console.log(err));
-      }
     }
-  }, []);  
+  }, [setBalance]);  
 
-  const [loggedOut, setLoggedOut] = useState(false);
-
-  if (loggedOut) {
-        localStorage.removeItem("userId");
-    localStorage.removeItem("userPic");
+  const handleLogout = () => {
+    localStorage.removeItem("userId")
+    localStorage.removeItem("userPic")
     localStorage.removeItem("email")
+    localStorage.removeItem("name")
 
-    navigate("/");
-
+    setuserId("")
+    setuserPic("")
+    setemail("")
+    setname("")
+    setBalance(0)
+    navigate("/")
   }
 
   return (
@@ -124,14 +118,15 @@ export default function ProfileDropdown() {
         {/* Header */}
         <div className="flex items-start justify-between px-4 pt-5 pb-4">
           <Link to="/user/profile">
-          {console.log(email)}
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Sanjay Balaji</h2>
+            <h2 className="text-base font-semibold text-gray-900">{name}</h2>
             <p className="text-sm text-gray-500 mt-0.5">{email && email.trim() !== "" ? email : "sanjaybalaji.ks@gmail.com"}</p>
           </div>
           </Link>
           <button className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-100">
-            <SettingsIcon />
+            <Link to="/user/profile">
+              <SettingsIcon />
+            </Link>
           </button>
         </div>
 
@@ -174,7 +169,7 @@ export default function ProfileDropdown() {
             {isDark ? <SunIcon /> : <MoonIcon />}
           </button>
           <button
-            onClick={() => setLoggedOut(true)}
+            onClick={handleLogout}
             className="text-sm font-medium text-gray-700 border-b border-dashed border-gray-400 hover:text-red-500 hover:border-red-400 transition-colors pb-px"
           >
             Log out

@@ -12,17 +12,15 @@ import StockSearch from "../common/StockSearch";
 const Common = () => {
       const [activeTab, setActiveTab] = useState("Explore");
       const {userPic,setuserPic}=useContext(UserPicture)
-        const [showProfile, setShowProfile] = useState(false);
-
-      
+      const [showProfile, setShowProfile] = useState(false);
       const tabs = ["Explore", "Holdings", "Positions", "Orders", "Watchlist"];
       const indices = [
-    { name: "NIFTY", val: "23,910.80", chg: "-2.90", pct: "0.01%", up: false },
-    { name: "SENSEX", val: "75,965.80", chg: "-43.90", pct: "0.06%", up: false },
-    { name: "BANKNIFTY", val: "54,904.70", chg: "-188.20", pct: "0.34%", up: false },
-    { name: "MIDCPNIFTY", val: "14,706.10", chg: "+30.50", pct: "0.21%", up: true },
-    { name: "FINNIFTY", val: "25,795.40", chg: "-1.20", pct: "0.01%", up: false },
-  ];
+                { name: "NIFTY", val: "23,910.80", chg: "-2.90", pct: "0.01%", up: false },
+                { name: "SENSEX", val: "75,965.80", chg: "-43.90", pct: "0.06%", up: false },
+                { name: "BANKNIFTY", val: "54,904.70", chg: "-188.20", pct: "0.34%", up: false },
+                { name: "MIDCPNIFTY", val: "14,706.10", chg: "+30.50", pct: "0.21%", up: true },
+                { name: "FINNIFTY", val: "25,795.40", chg: "-1.20", pct: "0.01%", up: false },
+              ];
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -122,7 +120,6 @@ useEffect(() => {
       </header>
 
       {/* ── Index ticker ────────────────────────────────────────────────── */}
-     
 
       <main className="max-w-[1400px] mx-auto px-6 py-6" onClick={()=>setShowProfile(false)}>
         {activeTab === "Explore" && <Explore/>}

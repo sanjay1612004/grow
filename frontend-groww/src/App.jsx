@@ -1,8 +1,6 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
+import axios from 'axios'
 import { ThemeProvider } from './contexts/ThemeContext'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 import {Routes, Route, Navigate} from 'react-router-dom';
 import HomePage from './components/landingpage/HomePage'
@@ -15,7 +13,6 @@ import PinVerification from './components/authentication/PinVerification'
 import Login from './components/authentication/Login'
 import VerifyPinOtp from './components/authentication/VerifyPinOtp'
 import { GoogleOAuthProvider } from "@react-oauth/google"
-import Explore from "./components/pages/Explore"
 import Common from './components/pages/Common'
 import GrowwMostBought from './components/pages/GrowwMostBought'
 import GrowwMostTraded from './components/pages/GrowwMostTraded'
@@ -52,11 +49,42 @@ export const UserIdProvider=createContext()
 export const UserPicture=createContext()
 export const UserBalance=createContext()
 export const UserEmail=createContext()
+export const UserName=createContext()
 function App() {
   const [userId,setuserId]=useState(() => localStorage.getItem("userId") || "")
   const [userPic,setuserPic]=useState(() => localStorage.getItem("userPic") || "")
   const [balance, setBalance] = useState(0);
   const [email,setemail]=useState(() => localStorage.getItem("email") || "")
+  const[name,setname]=useState(() => localStorage.getItem("name") || "")
+
+  useEffect(() => {
+    if (!userId) return
+
+    let cancelled = false
+
+    axios
+      .get(`https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/users/${userId}`)
+      .then((res) => {
+        if (cancelled) return
+
+        const user = res.data?.data
+
+        if (user?.email) {
+          setemail(user.email)
+          localStorage.setItem("email", user.email)
+        }
+
+        if (user?.name) {
+          setname(user.name)
+          localStorage.setItem("name", user.name)
+        }
+      })
+      .catch((err) => console.log("Unable to load user profile:", err))
+
+    return () => {
+      cancelled = true
+    }
+  }, [userId])
 
   const clientid=import.meta.env.VITE_GOOGLE_CLIENT_ID
   return (
@@ -67,6 +95,7 @@ function App() {
       <UserIdProvider.Provider value={{userId,setuserId}}>
       <UserBalance.Provider value={{balance, setBalance}}>
       <UserEmail.Provider value={{email,setemail}}>
+      <UserName.Provider value={{name,setname}}>
       <Routes>
         <Route path="/" element={<HomePage/>} />
         <Route path="/signup" element={<Signup/>}/>
@@ -116,6 +145,7 @@ function App() {
         </Route>
         <Route path="/stocks/:name" element={<CardDetails/>}/>
       </Routes>
+      </UserName.Provider>
       </UserEmail.Provider>
       </UserBalance.Provider>
       </UserIdProvider.Provider>

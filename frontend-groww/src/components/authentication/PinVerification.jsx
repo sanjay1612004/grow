@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import { Lock } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserIdProvider } from "../../App";
 
 const PinVerification = () => {
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
+  const { setuserId } = useContext(UserIdProvider);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,6 +41,7 @@ const PinVerification = () => {
       console.log(res.data);
 
       if (res.data.success) {
+        setuserId(userId);
         navigate("/user/explore", {
           state: {
             userId,
