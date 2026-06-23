@@ -109,7 +109,7 @@ export default function ProfileDropdown() {
     setemail("")
     setname("")
     setBalance(0)
-    navigate("/")
+    navigate("/signup")
   }
 
   return (

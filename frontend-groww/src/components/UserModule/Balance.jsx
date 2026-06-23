@@ -68,6 +68,51 @@ const fetchBalance = async () => {
     }
   };
 
+  const handleWithdrawMoney = async () => {
+    const withdrawAmount = Number(amount);
+
+    if (!withdrawAmount || withdrawAmount <= 0) {
+      alert("Enter valid amount");
+      return;
+    }
+
+    if (withdrawAmount > Number(balance || 0)) {
+      alert("Insufficient balance");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await axios.post(
+        "http://localhost:5000/api/wallet/withdraw-money",
+        {
+          userId,
+          amount: withdrawAmount,
+        }
+      );
+
+      alert("Money withdrawn successfully");
+      console.log(res.data);
+      setBalance(res.data.balance);
+      setAmount("");
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to withdraw money");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMoneyAction = () => {
+    if (activeTab === "withdraw") {
+      handleWithdrawMoney();
+      return;
+    }
+
+    handleAddMoney();
+  };
+
 
     
 
@@ -174,7 +219,7 @@ const fetchBalance = async () => {
                             </div>
                         </div>
 
-                        <Link to="/transactions" className="flex justify-between items-center p-6 border-b border-gray-200 hover:bg-gray-50">
+                        <Link to="/user/order/stocks" className="flex justify-between items-center p-6 border-b border-gray-200 hover:bg-gray-50">
                             <span className="font-semibold text-gray-800">All transactions</span>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
                                 <path d="M9 18l6-6-6-6" />
@@ -227,10 +272,10 @@ const fetchBalance = async () => {
                                 {[1000, 5000, 10000].map(val => (
                                     <button
                                         key={val}
-                                        onClick={() => setAmount(prev => prev + val)}
+                                        onClick={() => setAmount(prev => Number(prev || 0) + val)}
                                         className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-full"
                                     >
-                                        +₹{val.toLocaleString('en-IN')}
+                                        {activeTab === 'withdraw' ? '-' : '+'}₹{val.toLocaleString('en-IN')}
                                     </button>
                                 ))}
                             </div>
@@ -253,8 +298,12 @@ const fetchBalance = async () => {
                             </svg>
                         </div>
 
-                        <button className="bg-[#04B488] text-white font-bold py-4 hover:bg-[#039a76] transition-colors" onClick={handleAddMoney}>
-                            Add money
+                        <button
+                            className="bg-[#04B488] text-white font-bold py-4 hover:bg-[#039a76] transition-colors disabled:bg-gray-300"
+                            onClick={handleMoneyAction}
+                            disabled={loading}
+                        >
+                            {loading ? "Processing..." : activeTab === "withdraw" ? "Withdraw money" : "Add money"}
                         </button>
                     </div>
                 </div>
