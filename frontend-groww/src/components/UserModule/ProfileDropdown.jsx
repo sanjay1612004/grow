@@ -103,6 +103,7 @@ export default function ProfileDropdown() {
     localStorage.removeItem("userPic")
     localStorage.removeItem("email")
     localStorage.removeItem("name")
+    localStorage.removeItem("isLoggedIn")
 
     setuserId("")
     setuserPic("")

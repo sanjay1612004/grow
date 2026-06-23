@@ -10,7 +10,8 @@ const VerifyMobile = () => {
  const [phoneNumber,setphoneNumber]=useState('')
  const navigate=useNavigate()
  const location = useLocation();
-const userId = location.state?.userId || localStorage.getItem("userId");
+ const userId = location.state?.userId || localStorage.getItem("userId");
+ const [error, setError] = useState("");
 
  function validatePhone(phone) {
   const regex = /^[6-9]\d{9}$/;
@@ -26,8 +27,12 @@ const userId = location.state?.userId || localStorage.getItem("userId");
     }
     localStorage.setItem("userId", userId);
 
+    if (!phoneNumber.trim()) {
+      throw new Error("Please enter your mobile number");
+    }
+
     if (!validatePhone(phoneNumber)) {
-      throw new Error("Enter valid phoneNo");
+      throw new Error("Please enter a valid mobile number");
     }
 
     console.log({
@@ -55,6 +60,11 @@ const userId = location.state?.userId || localStorage.getItem("userId");
 });
 
   } catch (err) {
+    setError(
+    err.response?.data?.message ||
+    err.message ||
+    "Something went wrong"
+  );
 
     console.log(
       err.response?.data ||
@@ -98,6 +108,12 @@ const userId = location.state?.userId || localStorage.getItem("userId");
               onChange={(e)=>setphoneNumber(e.target.value)} 
             />
           </div>
+          {error && (
+              <p className="mt-2 text-sm text-red-500">
+                {error}
+              </p>
+            )}
+
 
           {/* Button */}
           <button

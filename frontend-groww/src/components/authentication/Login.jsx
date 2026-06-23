@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
 
 
 const CATEGORIES = ["Stocks", "F&O", "IPO", "MTF", "MF"];
@@ -49,6 +50,7 @@ const Login = () => {
   const userId = location.state?.userId;
   const [email,setemail]=useState('')
   const [password,setpassword]=useState('')
+  const [showPassword, setShowPassword] = useState(false);
   
 
   function validateEmail(email) {
@@ -57,47 +59,109 @@ const Login = () => {
   return regex.test(email);
 }
 
-  async function login(){
-    try{
-      if ((validateEmail(email)!=true)){
-        throw new Error("not validate email")
-      }
-      else{
-        const res=await axios.post("https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/login",{email,password},{withCredentials:true})
-        console.log("res is",res)
-        if (
-      res.status === 200 &&
-      res.data.statusCode === 200 &&
-      res.data.data.nextStep === "PIN_REQUIRED"
-    ){
-      const loginUserId = getResponseUserId(res.data.data) || userId;
-      if (!loginUserId) {
-        throw new Error("UserId missing from login response");
-      }
-      localStorage.setItem("userId", loginUserId);
-              navigate("/pin-verify", {
-            state: {
-              userId: loginUserId,
-            },
-          })
-        }else{
-          setError("something went wrong")
-        }
+  // async function login(){
+  //   try{
+  //     if ((validateEmail(email)!=true)){
+  //       throw new Error("not validate email")
+  //     }
+  //     else{
+  //       const res=await axios.post("https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/login",{email,password},{withCredentials:true})
+  //       console.log("res is",res)
+  //       if (
+  //     res.status === 200 &&
+  //     res.data.statusCode === 200 &&
+  //     res.data.data.nextStep === "PIN_REQUIRED"
+  //   ){
+  //     const loginUserId = getResponseUserId(res.data.data) || userId;
+  //     if (!loginUserId) {
+  //       throw new Error("UserId missing from login response");
+  //     }
+  //     localStorage.setItem("userId", loginUserId);
+  //             navigate("/pin-verify", {
+  //           state: {
+  //             userId: loginUserId,
+  //           },
+  //         })
+  //       }else{
+  //         setError("something went wrong")
+  //       }
 
       
         
-          // console.log(userId)
+  //         // console.log(userId)
         
-      }
-    }catch(err){
-      setError(err.message)
-      console.log(err.message)
-        console.log("FULL ERROR:", err);
-  console.log("RESPONSE:", err.response);
-  console.log("REQUEST:", err.request);
-    }
+  //     }
+  //   }catch(err){
+  //     setError(err.message)
+  //     console.log(err.message)
+  //       console.log("FULL ERROR:", err);
+  // console.log("RESPONSE:", err.response);
+  // console.log("REQUEST:", err.request);
+  //   }
     
+  // }
+  async function login() {
+  try {
+    setError("");
+
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail) {
+      throw new Error("Email is required");
+    }
+
+    if (!validateEmail(trimmedEmail)) {
+      throw new Error("Please enter a valid email address");
+    }
+
+    if (!trimmedPassword) {
+      throw new Error("Password is required");
+    }
+
+    if (trimmedPassword.length < 8) {
+      throw new Error("Password must be at least 8 characters");
+    }
+
+    const res = await axios.post(
+      "https://j9cw5kv2-5000.inc1.devtunnels.ms/api/auth/login",
+      {
+        email: trimmedEmail,
+        password: trimmedPassword,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log("res is", res);
+
+    if (
+      res.status === 200 &&
+      res.data.statusCode === 200 &&
+      res.data.data.nextStep === "PIN_REQUIRED"
+    ) {
+      const loginUserId = getResponseUserId(res.data.data) || userId;
+
+      if (!loginUserId) {
+        throw new Error("UserId missing from login response");
+      }
+
+      localStorage.setItem("userId", loginUserId);
+
+      navigate("/pin-verify", {
+        state: {
+          userId: loginUserId,
+        },
+      });
+    } else {
+      setError("Something went wrong");
+    }
+  } catch (err) {
+    setError(err.response?.data?.message || err.message);
+    console.log(err);
   }
+}
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -243,9 +307,11 @@ const Login = () => {
             type="email"
             placeholder="Your Email Address"
             className="
+            
               h-[44px]
               border
               border-[#d6d6d6]
+    
               rounded
               px-4
               mb-5
@@ -257,22 +323,32 @@ const Login = () => {
             onChange={(e)=>setemail(e.target.value)}
           />
 
-          <input
-            type="password"
-            placeholder="Your Password"
-            className="
-              h-[44px]
-              border
-              border-[#d6d6d6]
-              rounded
-              px-4
-              mb-12
-              outline-none
-              focus:border-[#00c896]
-            "
-            value={password}
-            onChange={(e)=>setpassword(e.target.value)}
-          />
+          <div className="relative w-full mb-12">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Your Password"
+              className="
+                w-full
+                h-[44px]
+                border
+                border-[#d6d6d6]
+                rounded
+                pl-4
+                pr-10
+                outline-none
+                focus:border-[#00c896]
+              "
+              value={password}
+              onChange={(e)=>setpassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
           {error && (
             <p
               className="

@@ -8,6 +8,7 @@ const PinVerification = () => {
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
   const { setuserId } = useContext(UserIdProvider);
+  const [showHint, setShowHint] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,6 +24,10 @@ const PinVerification = () => {
       }
       localStorage.setItem("userId", userId);
 
+
+      if (!pinValue) {
+        throw new Error("Please enter your 4-digit PIN");
+      }
       if (pinValue.length !== 4) {
         throw new Error("PIN must be exactly 4 digits");
       }
@@ -41,6 +46,7 @@ const PinVerification = () => {
       console.log(res.data);
 
       if (res.data.success) {
+        localStorage.setItem("isLoggedIn", "true");
         setuserId(userId);
         navigate("/user/explore", {
           state: {
@@ -166,15 +172,23 @@ const PinVerification = () => {
                   .slice(0, 4);
 
               setPin(value);
+              setShowHint(value.length > 0 && value.length < 4);
 
               setError("");
 
               if (value.length === 4) {
+                setShowHint(false);
+
                 pinverify(value);
               }
 
             }}
           />
+          {showHint && (
+            <p className="mt-2 text-[12px] text-orange-500">
+              PIN should be 4 digits
+            </p>
+          )}
 
           {error && (
             <p
@@ -211,6 +225,8 @@ const PinVerification = () => {
           >
             Logout
           </button>
+          
+          
 
         </div>
 

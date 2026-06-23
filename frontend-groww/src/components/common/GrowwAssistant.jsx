@@ -250,7 +250,7 @@ export default function GrowwAssistant() {
       {/* Chat Window */}
       {isOpen && (
         <div 
-          className={`fixed right-6 bottom-6 bg-[#1e222d] border border-gray-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col z-50 transition-all duration-300 ease-in-out ${
+          className={`fixed right-6 bottom-6 bg-[#1e222d] border border-gray-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col z-1550 transition-all duration-300 ease-in-out ${
             isExpanded ? 'w-[600px] h-[80vh]' : 'w-[380px] h-[600px]'
           }`}
         >

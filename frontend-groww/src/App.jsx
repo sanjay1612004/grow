@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { ThemeProvider } from './contexts/ThemeContext'
 import './App.css'
-import {Routes, Route, Navigate} from 'react-router-dom';
+import {Routes, Route, Navigate, useLocation, useNavigate} from 'react-router-dom';
 import HomePage from './components/landingpage/HomePage'
 import Signup from './components/authentication/Signup'
 import VerifyMobile from './components/authentication/VerifyMobile'
@@ -50,12 +50,52 @@ export const UserPicture=createContext()
 export const UserBalance=createContext()
 export const UserEmail=createContext()
 export const UserName=createContext()
+
+const ProtectedRoute = ({ children }) => {
+  const location = useLocation();
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true" && localStorage.getItem("userId");
+
+  if (!isLoggedIn) {
+    return <Navigate to="/signup" replace state={{ from: location }} />;
+  }
+
+  return children;
+};
+
 function App() {
   const [userId,setuserId]=useState(() => localStorage.getItem("userId") || "")
   const [userPic,setuserPic]=useState(() => localStorage.getItem("userPic") || "")
   const [balance, setBalance] = useState(0);
   const [email,setemail]=useState(() => localStorage.getItem("email") || "")
   const[name,setname]=useState(() => localStorage.getItem("name") || "")
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const handleAuthStorageChange = (event) => {
+      if (!["isLoggedIn", "userId"].includes(event.key)) return;
+
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      const storedUserId = localStorage.getItem("userId") || "";
+
+      if (!isLoggedIn || !storedUserId) {
+        setuserId("");
+        setuserPic("");
+        setemail("");
+        setname("");
+        setBalance(0);
+        navigate("/signup", { replace: true });
+        return;
+      }
+
+      setuserId(storedUserId);
+    };
+
+    window.addEventListener("storage", handleAuthStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleAuthStorageChange);
+    };
+  }, [navigate]);
 
   useEffect(() => {
     if (!userId) return
@@ -106,22 +146,22 @@ function App() {
         <Route path="/password-set" element={<SetPassword/>}/>
         <Route path="login" element={<Login/>}/>
         <Route path="/pin-verify" element={<PinVerification/>}/>
-        <Route path="/user/explore" element={<Common/>}/>
-        <Route path="/user/holdings" element={<Common />} />
-        <Route path="/user/positions" element={<Common />} />
-        <Route path="/user/orders" element={<Common />} />
-        <Route path="/user/watchlist" element={<Common />} />
-        <Route path="/stocks/most-bought-stocks-on-groww" element={<GrowwMostBought/>}/>
-        <Route path='/stocks/mtf/most-traded' element={<GrowwMostTraded/>}/>
-        <Route path='/markets/:type?' element={<GrowwTopMover/>}/>
-        <Route path="/stocks/sectors-trending" element={<GrowwSectorTrending/>}/>
-        <Route path='/etf-nfo' element={<GrowwETfs/>}/>
-        <Route path="/stocks/intraday" element={<GrowwInteradaystock/>}/>
-        <Route path='/etfs' element={<GrowwStockScreener/>}/>
-        <Route path="/market-news/stocks" element={<GrowwStockNews/>}/>
-        <Route path='/kyc' element={<KycFlowContainer/>}/>
-        <Route path='/indices' element={<GrowwIndicesDashboard/>}/>
-        <Route path="/user/profile" element={<GrowwProfile />}>
+        <Route path="/user/explore" element={<ProtectedRoute><Common/></ProtectedRoute>}/>
+        <Route path="/user/holdings" element={<ProtectedRoute><Common /></ProtectedRoute>} />
+        <Route path="/user/positions" element={<ProtectedRoute><Common /></ProtectedRoute>} />
+        <Route path="/user/orders" element={<ProtectedRoute><Common /></ProtectedRoute>} />
+        <Route path="/user/watchlist" element={<ProtectedRoute><Common /></ProtectedRoute>} />
+        <Route path="/stocks/most-bought-stocks-on-groww" element={<ProtectedRoute><GrowwMostBought/></ProtectedRoute>}/>
+        <Route path='/stocks/mtf/most-traded' element={<ProtectedRoute><GrowwMostTraded/></ProtectedRoute>}/>
+        <Route path='/markets/:type?' element={<ProtectedRoute><GrowwTopMover/></ProtectedRoute>}/>
+        <Route path="/stocks/sectors-trending" element={<ProtectedRoute><GrowwSectorTrending/></ProtectedRoute>}/>
+        <Route path='/etf-nfo' element={<ProtectedRoute><GrowwETfs/></ProtectedRoute>}/>
+        <Route path="/stocks/intraday" element={<ProtectedRoute><GrowwInteradaystock/></ProtectedRoute>}/>
+        <Route path='/etfs' element={<ProtectedRoute><GrowwStockScreener/></ProtectedRoute>}/>
+        <Route path="/market-news/stocks" element={<ProtectedRoute><GrowwStockNews/></ProtectedRoute>}/>
+        <Route path='/kyc' element={<ProtectedRoute><KycFlowContainer/></ProtectedRoute>}/>
+        <Route path='/indices' element={<ProtectedRoute><GrowwIndicesDashboard/></ProtectedRoute>}/>
+        <Route path="/user/profile" element={<ProtectedRoute><GrowwProfile /></ProtectedRoute>}>
           <Route index element={<Navigate to="basic-details" replace />} />
           <Route path="basic-details" element={<BasicDetails/>} />
           <Route path="reports" element={<Reports/>} />
@@ -136,22 +176,21 @@ function App() {
           <Route path="active-devices" element={<ActiveDevices />} />
           <Route path="report-suspicious" element={<ReportSuspiciousActivity />} />
         </Route>     
-        <Route path='/user/balance/inr' element={<Balance/>}/> 
-        <Route path='/user/order' element={<Orders/>}>
+        <Route path='/user/balance/inr' element={<ProtectedRoute><Balance/></ProtectedRoute>}/> 
+        <Route path='/user/order' element={<ProtectedRoute><Orders/></ProtectedRoute>}>
           <Route index element={<Navigate to="stocks" replace/>}/>
           <Route path='stocks' element={<StocksEmptyState/>}/>
           <Route path='futures-and-options' element={<FOEmptyState/>}/>
           <Route path='mutual-funds' element={<MutualFundsEmptyState/>}/>
         </Route>
-        <Route path="/stocks/:name" element={<CardDetails/>}/>
+        <Route path="/stocks/:name" element={<ProtectedRoute><CardDetails/></ProtectedRoute>}/>
       </Routes>
       </UserName.Provider>
       </UserEmail.Provider>
       </UserBalance.Provider>
       </UserIdProvider.Provider>
       </UserPicture.Provider>
-      
-      <GrowwAssistant />
+      {userId && localStorage.getItem("isLoggedIn") === "true" && <GrowwAssistant />}
       </GoogleOAuthProvider>
     </ThemeProvider>
     </>

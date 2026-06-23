@@ -55,10 +55,9 @@ export default function Signup() {
   const {setname}=useContext(UserName)
 
   function validateEmail(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  return regex.test(email);
-}
+    const regex = /^(?=[^@]*[a-zA-Z])[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+  }
 
   async function signup(){
     try{
@@ -66,8 +65,12 @@ export default function Signup() {
       const trimmedName = name.trim()
       const trimmedEmail = email.trim().toLowerCase()
 
+
       if (trimmedName.length < 2) {
         throw new Error("Please enter your full name")
+      }
+      if (!/^[A-Za-z\s]+$/.test(trimmedName)) {
+        throw new Error("Name can contain only letters and spaces");
       }
       if (!validateEmail(trimmedEmail)){
         throw new Error("Please enter a valid email address")
