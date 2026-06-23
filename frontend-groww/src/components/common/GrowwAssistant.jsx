@@ -212,7 +212,7 @@ export default function GrowwAssistant() {
         errorMessage = "⚠️ **Rate Limit Exceeded:** The free-tier request limit has been reached. Please try again in 1 minute or upgrade to a Pay-As-You-Go plan.";
       }
       else if (error.message?.includes("503") || JSON.stringify(error).includes("quota")) {
-        errorMessage ="⚠️ **AI Service Busy:** Gemini 3.5 Flash is currently experiencing high demand. This is usually temporary. Please try again in a few moments.";      }
+        errorMessage ="⚠️ **AI Service Busy:** Gemini Flash is currently experiencing high demand. This is usually temporary. Please try again in a few moments.";      }
 
       setMessages((prev) => [
         ...prev,

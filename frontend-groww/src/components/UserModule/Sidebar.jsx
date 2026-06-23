@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { UserPicture } from "../../App";
+import { UserName, UserPicture } from "../../App";
 const TEAL = "#00b386";
 const TEAL_LIGHT = "#e6f7f3";
 const BORDER = "#e8e8e8";
@@ -50,6 +50,7 @@ const menuItems = [
 
 export default function Sidebar() {
   const {userPic,setuserPic}=useContext(UserPicture)
+  const {name,setname}=useContext(UserName)
   console.log(userPic)
 
   return (
@@ -79,7 +80,7 @@ export default function Sidebar() {
             marginBottom: 12,
           }}
         />
-        <span style={{ fontWeight: 600, fontSize: 15, color: TEXT_PRIMARY }}>{user.name}</span>
+        <span style={{ fontWeight: 600, fontSize: 15, color: TEXT_PRIMARY }}>{name??user.name}</span>
       </div>
       <nav>
         {menuItems.map((item) => (

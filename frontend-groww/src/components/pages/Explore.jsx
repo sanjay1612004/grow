@@ -1,7 +1,8 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { createPortal } from "react-dom";
 import { Link, useNavigate } from "react-router-dom";
+import { UserName } from "../../App";
 
 // ── tiny SVG spark line ──────────────────────────────────────────────────────
 function Spark({ up = true }) {
@@ -19,9 +20,10 @@ function Spark({ up = true }) {
 
 // ── Add To Watchlist Modal ───────────────────────────────────────────────────
 function AddToWatchlistModal({ stockName, onClose, onSave }) {
+  const {name,setname}=useContext(UserName)
   const [watchlists] = useState([
-    { id: 1, name: "Sanjay's Watchlist", count: 6 },
-  ]);
+{ id: 1, name: `${name}'s Watchlist`, count: 6 }  
+]);
   const [added, setAdded] = useState({});
 
   const handleAdd = (id) => {
