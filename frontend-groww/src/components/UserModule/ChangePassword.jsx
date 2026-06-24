@@ -25,12 +25,25 @@ export default function ChangePassword() {
   const handleSubmit = async () => {
   setMessage("");
   setMessageType("");
-
+  
   if (!newPass || !confirmPass) {
     setMessage("Please fill all fields");
     setMessageType("error");
     return;
   }
+
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+
+  if (!passwordRegex.test(newPass)) {
+    setMessage(
+      "Password must be at least 8 characters and contain uppercase, lowercase, number, and special character."
+    );
+    setMessageType("error");
+    return;
+  }
+
+
 
   if (newPass !== confirmPass) {
     setMessage("Passwords do not match");

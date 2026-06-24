@@ -33,7 +33,7 @@ export default function ChangeGrowwPin() {
   }
 
   if (newPin !== confirmPin) {
-    setMessage("Passwords do not match");
+    setMessage("Pin do not match");
     setMessageType("error");
     return;
   }
@@ -50,7 +50,7 @@ export default function ChangeGrowwPin() {
 
     console.log(res);
 
-    setMessage("Password updated successfully!");
+    setMessage("Pin updated successfully!");
     setMessageType("success");
     setNewPin("");
     setConfirmPin("");

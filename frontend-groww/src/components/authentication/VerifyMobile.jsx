@@ -105,11 +105,23 @@ const VerifyMobile = () => {
               "
               maxLength={10}
               value={phoneNumber}
-              onChange={(e)=>setphoneNumber(e.target.value)} 
+              onChange={(e) => {
+                const value = e.target.value;
+
+                // Check if anything other than numbers is entered
+                if (/[^0-9]/.test(value)) {
+                  setError("Only numbers should be entered");
+                  return;
+                }
+
+                setError("");
+                setphoneNumber(value);
+              }}
+
             />
           </div>
           {error && (
-              <p className="mt-2 text-sm text-red-500">
+              <p className="mt-1 text-sm text-red-500">
                 {error}
               </p>
             )}
@@ -134,15 +146,15 @@ const VerifyMobile = () => {
           </button>
 
           {/* Footer */}
-          <div className="mt-3 text-[14px]">
+          {/* <div className="mt-3 mb-23 text-[14px]">
             <span className="text-black">
-              Your Registered Gamil
+              Your Registered Gmail
             </span>
 
             <button className="ml-2 text-[#0F8A63] font-medium" >
               Logout
             </button>
-          </div>
+          </div> */}
 
         </div>
       </div>
